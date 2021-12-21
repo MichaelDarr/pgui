@@ -1,0 +1,48 @@
+{
+    "rules": {
+        "no-console": "error",
+        "array-bracket-spacing": [
+            "error",
+            "never"
+        ],
+        "eol-last": [
+            "error",
+            "always"
+        ],
+        "eqeqeq": [
+            "error",
+            "always",
+            { "null": "ignore" }
+        ],
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignoreUrls": true,
+                "tabWidth": 4
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "@typescript-eslint/indent": [
+            "error",
+            4
+        ],
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {"argsIgnorePattern": "^_"}
+        ],
+        "@typescript-eslint/unbound-method": "error",
+        "@typescript-eslint/quotes": [
+            "error",
+            "single",
+            { "avoidEscape": true }
+        ]
+    }
+}
