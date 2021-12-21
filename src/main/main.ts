@@ -12,13 +12,16 @@
  */
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { ChildProcess, execFile } from 'child_process';
 import path from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { MenuBuilder } from './menu';
+import { findOpenSocket } from './socket';
 import { resolveHtmlPath } from './util';
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow|null = null;
+let serverProcess: ChildProcess|null = null;
 
 ipcMain.on('ipc-example', (event, arg) => {
     const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -48,18 +51,27 @@ const installExtensions = (): Promise<void> => {
     ).catch(console.log);
 };
 
-const createWindow = async () => {
+const getAssetsDirPath = (): string => {
+    if (app.isPackaged) {
+        return path.join(process.resourcesPath, 'assets');
+    }
+    return path.join(__dirname, '../../assets');
+}
+
+const getAssetPath = (filename: string): string => {
+    const assetsDirPath = getAssetsDirPath();
+    return path.join(assetsDirPath, filename);
+}
+
+const getBinaryPath = (filename: string): string => {
+    const assetsDirPath = getAssetsDirPath();
+    return path.join(assetsDirPath, 'bin', filename);
+}
+
+const createWindow = async (socketName: string) => {
     if (isDevelopment) {
         await installExtensions();
     }
-
-    const RESOURCES_PATH = app.isPackaged
-        ? path.join(process.resourcesPath, 'assets')
-        : path.join(__dirname, '../../assets');
-
-    const getAssetPath = (...paths: string[]): string => {
-        return path.join(RESOURCES_PATH, ...paths);
-    };
 
     mainWindow = new BrowserWindow({
         show: false,
@@ -72,6 +84,10 @@ const createWindow = async () => {
     });
 
     void mainWindow.loadURL(resolveHtmlPath('index.html'));
+
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow?.webContents.send('set-socket', socketName)
+    });
 
     mainWindow.on('ready-to-show', () => {
         if (!mainWindow) {
@@ -92,6 +108,11 @@ const createWindow = async () => {
     menuBuilder.buildMenu();
 };
 
+const createBackendProcess = (socketName: string) => {
+    const backendBinary = getBinaryPath('backend');
+    serverProcess = execFile(backendBinary, [socketName])
+}
+
 /**
  * Add event listeners
  */
@@ -104,16 +125,24 @@ app.on('window-all-closed', () => {
     }
 });
 
-app
-    .whenReady()
-    .then(() => {
-        void createWindow();
-        app.on('activate', () => {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
-            if (mainWindow === null) {
-                void createWindow();
-            }
-        });
-    })
-    .catch(console.log);
+app.whenReady().then(async () => {
+    const serverSocket = await findOpenSocket();
+
+    void createWindow(serverSocket);
+    createBackendProcess(serverSocket)
+
+    app.on('activate', () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (mainWindow === null) {
+            void createWindow(serverSocket);
+        }
+    });
+}).catch(console.log);
+
+app.on('before-quit', () => {
+    if (serverProcess) {
+        serverProcess.kill()
+        serverProcess = null
+    }
+});

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "github.com/MichaelDarr/pgui/proto";
+
+package postgres;
+
+service PostgresService {
+  rpc Connect(ConnectRequest) returns (ConnectResponse) {}
+}
+
+message ConnectRequest {
+  string host = 1;
+  int32 port = 2;
+}
+
+message ConnectResponse {
+  string connectionID = 1;
+}
