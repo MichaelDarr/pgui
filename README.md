@@ -1,2 +1,3 @@
 # pgui
-A Postgres GUI
+
+A modern, open-source desktop GUI for managing PostgreSQL databases. 
