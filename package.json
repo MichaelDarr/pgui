@@ -143,6 +143,7 @@
     "@types/terser-webpack-plugin": "^5.0.4",
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "before-build-webpack": "^0.2.12",
     "browserslist-config-erb": "^0.0.3",
     "chalk": "^4.1.2",
     "concurrently": "^6.3.0",

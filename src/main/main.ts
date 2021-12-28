@@ -67,6 +67,7 @@ const createWindow = async (socketName: string) => {
     if (isDevelopment) {
         await installExtensions();
     }
+    console.log({ path: path.join(__dirname, 'preload.js') });
 
     mainWindow = new BrowserWindow({
         show: false,

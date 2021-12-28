@@ -2,13 +2,13 @@
 /* eslint @typescript-eslint/no-unsafe-call: off, @typescript-eslint/no-unsafe-member-access: off, @typescript-eslint/no-unsafe-return: off */
 /* eslint @typescript-eslint/no-unsafe-assignment: off */
 
-const { contextBridge } = require('electron');
-const { credentials } = require('@grpc/grpc-js');
+import { contextBridge } from 'electron';
+import { credentials } from '@grpc/grpc-js';
 
-const PostgresProto = require('../protos/postgres/postgres_pb');
-const { PostgresServiceClient } = require('../protos/postgres/postgres_grpc_pb');
+import PostgresProto from '../protos/postgres/postgres_pb';
+import { PostgresServiceClient } from '../protos/postgres/postgres_grpc_pb';
 
-let client = null;
+let client: PostgresServiceClient|null = null;
 
 const createClient = () => {
     if (client === null) {
@@ -17,13 +17,17 @@ const createClient = () => {
             credentials.createInsecure(),
         );
     }
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     return Object.keys(
         Reflect.getPrototypeOf(client)??{}
     ).concat([
         'waitForReady',
-    ]).reduce((acc, name) => ({
+    ]).reduce<Record<keyof PostgresServiceClient, (...a: any[]) => any>>((acc, name) => ({
         ...acc,
-        [name]: (...args) => {
+        [name]: (...args: any[]) => {
+            if (client === null) {
+                return;
+            }
             if (name === 'connect') {
                 const arg = new PostgresProto.ConnectRequest();
                 console.log({ src: 'preload inner', arg })
@@ -32,15 +36,20 @@ const createClient = () => {
                 console.log({ src: 'preload sending', arg, argOne: args[1] });
                 client[name](arg, (err, value) => {
                     console.log({ err, value });
-                    const myUUID = value.getConnectionid()
-                    console.log({ src: 'preload sent', myUUID });
+                    if (value) {
+                        const myUUID = value.getConnectionid()
+                        console.log({ src: 'preload sent', myUUID });
+                    }
                 });
             } else {
                 console.log({ src: 'preload', args })
+                // @ts-ignore
                 return client[name](...args)
             }
         },
+    // @ts-ignore
     }), {});
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
 }
 
 contextBridge.exposeInMainWorld('electron', {

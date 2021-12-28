@@ -30,3 +30,6 @@ npm-debug.log.*
 
 # Binaries
 assets/bin
+
+# Development environment files
+src/main/preload.js
