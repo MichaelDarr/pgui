@@ -13,6 +13,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { ChildProcess, execFile } from 'child_process';
+import { createWriteStream } from 'fs';
 import path from 'path';
 import { app, BrowserWindow } from 'electron';
 
@@ -80,7 +81,7 @@ const createWindow = async (socketName: string) => {
     void mainWindow.loadURL(resolveHtmlPath('index.html'));
 
     mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow?.webContents.send('set-socket', socketName)
+        mainWindow?.webContents.send('set-socket', socketName);
     });
 
     mainWindow.on('ready-to-show', () => {
@@ -104,7 +105,15 @@ const createWindow = async (socketName: string) => {
 
 const createBackendProcess = (socketName: string) => {
     const backendBinary = getBinaryPath('backend');
-    serverProcess = execFile(backendBinary, [socketName])
+    serverProcess = execFile(backendBinary, [socketName]);
+    if (serverProcess === null) {
+        throw new Error('Failed to start server process');
+    }
+    if (isDevelopment) {
+        const logStream = createWriteStream('backend.log', { flags: 'a' });
+        serverProcess.stderr?.pipe(logStream);
+        serverProcess.stdout?.pipe(logStream);
+    }
 }
 
 /**
@@ -123,7 +132,7 @@ app.whenReady().then(async () => {
     const serverSocket = await findOpenSocket();
 
     void createWindow(serverSocket);
-    createBackendProcess(serverSocket)
+    createBackendProcess(serverSocket);
 
     app.on('activate', () => {
         // On macOS it's common to re-create a window in the app when the
@@ -136,7 +145,7 @@ app.whenReady().then(async () => {
 
 app.on('before-quit', () => {
     if (serverProcess) {
-        serverProcess.kill()
-        serverProcess = null
+        serverProcess.kill('SIGINT');
+        serverProcess = null;
     }
 });

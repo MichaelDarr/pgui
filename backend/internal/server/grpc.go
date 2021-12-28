@@ -26,6 +26,11 @@ func NewGRPC() *GRPC {
 	}
 }
 
+// GracefulStop stops the server gracefully.
+func (g GRPC) GracefulStop() {
+	g.grpcServer.GracefulStop()
+}
+
 // Serve accepts incoming connections.
 func (g GRPC) Serve(socketAddress string) error {
 	if err := os.RemoveAll(socketAddress); err != nil {
@@ -36,4 +41,9 @@ func (g GRPC) Serve(socketAddress string) error {
 		return err
 	}
 	return g.grpcServer.Serve(lis)
+}
+
+// Stop stops the server immediately.
+func (g GRPC) Stop() {
+	g.grpcServer.Stop()
 }
