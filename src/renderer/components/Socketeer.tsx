@@ -1,20 +1,16 @@
 import { FC } from 'react';
 
-import { useBackendSocket } from '../hooks/useBackendSocket';
-
 export const Socketeer: FC = () => {
-    const { socket } = useBackendSocket();
-
-    const getText = (): string => {
-        if (socket === null) {
-            return "No socket recieved"
-        }
-        return `Socket: ${socket}`;
+    const sendIt = (): void => {
+        console.log(window.electron.proto.postgres.PostgresServiceClient);
+        const client = new window.electron.proto.postgres.PostgresServiceClient();
+        console.log({ client });
     }
 
     return (
         <div>
-            <h1>{getText()}</h1>
+            <h1>Socketeer</h1>
+            <button onClick={sendIt}>SEND</button>
         </div>
     );
 };

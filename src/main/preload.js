@@ -1,23 +1,28 @@
 /* eslint @typescript-eslint/no-var-requires: off, no-undef: off, @typescript-eslint/no-unsafe-argument: off */
 /* eslint @typescript-eslint/no-unsafe-call: off, @typescript-eslint/no-unsafe-member-access: off, @typescript-eslint/no-unsafe-return: off */
+/* eslint @typescript-eslint/no-unsafe-assignment: off */
 
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge } = require('electron');
+const { credentials } = require('@grpc/grpc-js');
+
+const PostgresProto = require('../protos/postgres/postgres_pb');
+const { PostgresServiceClient } = require('../protos/postgres/postgres_grpc_pb');
+
+class WrappedPostgresServiceClient extends PostgresServiceClient {
+    constructor(options) {
+        super(
+            '/tmp/pgui1.sock',
+            credentials.createInsecure(),
+            options,
+        )
+    }
+}
 
 contextBridge.exposeInMainWorld('electron', {
-    ipcRenderer: {
-        on(channel, func) {
-            const validChannels = ['set-socket'];
-            if (validChannels.includes(channel)) {
-                // Deliberately strip event as it includes `sender`
-                ipcRenderer.on(channel, (event, ...args) => func(...args));
-            }
-        },
-        once(channel, func) {
-            const validChannels = ['set-socket'];
-            if (validChannels.includes(channel)) {
-                // Deliberately strip event as it includes `sender`
-                ipcRenderer.once(channel, (event, ...args) => func(...args));
-            }
-        },
-    },
+    proto: {
+        postgres: {
+            ...PostgresProto,
+            PostgresServiceClient: WrappedPostgresServiceClient,
+        }
+    }
 });

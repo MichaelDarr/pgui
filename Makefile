@@ -19,8 +19,10 @@ backend: ## build backend binary
 proto:
 	protoc \
         --plugin="protoc-gen-ts=$(ROOT_DIR)/node_modules/.bin/protoc-gen-ts" \
+        --plugin=protoc-gen-grpc="$(ROOT_DIR)/node_modules/.bin/grpc_tools_node_protoc_plugin" \
         --go_out=$(ROOT_DIR)/backend --go_opt=paths=source_relative \
         --go-grpc_out=$(ROOT_DIR)/backend --go-grpc_opt=paths=source_relative \
-		--js_out=import_style=commonjs,binary:$(ROOT_DIR)/src/renderer \
-        --ts_out=$(ROOT_DIR)/src/renderer \
+        --js_out=import_style=commonjs,binary:$(ROOT_DIR)/src \
+        --ts_out=service=grpc-node,mode=grpc-js:$(ROOT_DIR)/src \
+        --grpc_out="grpc_js:$(ROOT_DIR)/src" \
 		protos/**/*.proto

@@ -14,7 +14,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { ChildProcess, execFile } from 'child_process';
 import path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow } from 'electron';
 
 import { MenuBuilder } from './menu';
 import { findOpenSocket } from './socket';
@@ -22,12 +22,6 @@ import { resolveHtmlPath } from './util';
 
 let mainWindow: BrowserWindow|null = null;
 let serverProcess: ChildProcess|null = null;
-
-ipcMain.on('ipc-example', (event, arg) => {
-    const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-    console.log(msgTemplate(String(arg)));
-    event.reply('ipc-example', msgTemplate('pong'));
-});
 
 if (process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support');
