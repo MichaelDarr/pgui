@@ -22,6 +22,7 @@
                 "tabWidth": 4
             }
         ],
+        "no-unused-vars": "off",
         "object-curly-spacing": [
             "error",
             "always"
@@ -36,7 +37,7 @@
         ],
         "@typescript-eslint/no-unused-vars": [
             "error",
-            {"argsIgnorePattern": "^_"}
+            { "argsIgnorePattern": "^_" }
         ],
         "@typescript-eslint/unbound-method": "error",
         "@typescript-eslint/quotes": [

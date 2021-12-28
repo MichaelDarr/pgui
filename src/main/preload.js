@@ -8,39 +8,46 @@ const { credentials } = require('@grpc/grpc-js');
 const PostgresProto = require('../protos/postgres/postgres_pb');
 const { PostgresServiceClient } = require('../protos/postgres/postgres_grpc_pb');
 
-const createClient = (options) => {
-    const client = new PostgresServiceClient(
-        'unix:///tmp/pgui1.sock',
-        credentials.createInsecure(),
-        options
-    );
-    const deadline = new Date();
-    deadline.setSeconds(deadline.getSeconds()+5);
-    client.waitForReady(deadline, err => {
-        if (err) {
-            throw err;
-        }
-        const arg = new PostgresProto.ConnectRequest();
-        arg.setPort(1234);
-        arg.setHost('helloThere');
-        client.connect(arg, (err, value) => {
-            if (err) {
-                throw err;
-            } else if (!value) {
-                throw new Error('no value returned from call')
+let client = null;
+
+const createClient = () => {
+    if (client === null) {
+        client = new PostgresServiceClient(
+            'unix:///tmp/pgui1.sock',
+            credentials.createInsecure(),
+        );
+    }
+    return Object.keys(
+        Reflect.getPrototypeOf(client)??{}
+    ).concat([
+        'waitForReady',
+    ]).reduce((acc, name) => ({
+        ...acc,
+        [name]: (...args) => {
+            if (name === 'connect') {
+                const arg = new PostgresProto.ConnectRequest();
+                console.log({ src: 'preload inner', arg })
+                arg.setPort(1234);
+                arg.setHost('helloThere');
+                console.log({ src: 'preload sending', arg, argOne: args[1] });
+                client[name](arg, (err, value) => {
+                    console.log({ err, value });
+                    const myUUID = value.getConnectionid()
+                    console.log({ src: 'preload sent', myUUID });
+                });
+            } else {
+                console.log({ src: 'preload', args })
+                return client[name](...args)
             }
-            const connectionID = value.getConnectionid()
-            console.log({ connectionID });
-        });
-    });
-    return client;
+        },
+    }), {});
 }
 
 contextBridge.exposeInMainWorld('electron', {
     proto: {
         postgres: {
             ...PostgresProto,
-            createClient,
+            client: createClient,
         }
     }
 });
