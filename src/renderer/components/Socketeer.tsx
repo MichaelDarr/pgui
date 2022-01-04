@@ -1,27 +1,22 @@
 import { FC } from 'react';
 
-// import { ConnectRequest } from '../../protos/postgres/postgres_pb';
+import { postgres } from '../client';
+import { ConnectRequest } from '../../protos/postgres/postgres_pb';
 
 export const Socketeer: FC = () => {
     const sendIt = (): void => {
-        console.log({ we: window.electron })
-        // const client = window.electron.proto.postgres.client();
-        // const deadline = new Date();
-        // deadline.setSeconds(deadline.getSeconds()+1);
-        // client.waitForReady(deadline, err => {
-        //     if (err) {
-        //         console.log(err);
-        //         throw err;
-        //     }
-        //     console.log('HELL YA!');
-        //     const arg = new ConnectRequest();
-        //     arg.setPort(1234);
-        //     arg.setHost('helloThere');
-        //     console.log({ client, arg, src: 'src' });
-        //     client.connect(arg, (err, value) => {
-        //         console.log({ err, value });
-        //     });
-        // });
+        const arg = new ConnectRequest();
+        arg.setPort(1234);
+        arg.setHost('helloThere');
+        postgres.connect(arg, (err, value) => {
+            if (err) {
+                throw err;
+            } else if (!value) {
+                throw new Error('unexpected nullish value')
+            }
+            const connID = value.getConnectionid()
+            console.log({ connID });
+        });
     }
 
     return (

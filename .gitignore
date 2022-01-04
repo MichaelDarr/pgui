@@ -32,4 +32,4 @@ npm-debug.log.*
 assets/bin
 
 # Development environment files
-src/main/preload.js
+src/main/*.js
