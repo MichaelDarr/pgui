@@ -1,14 +1,43 @@
-import type { PostgresServiceClientSource } from '../@types/protobridge';
+import type { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
+
+import type {
+    PostgresServiceRPCName,
+    PostgresServiceRPCRequest,
+    PostgresServiceRPCResponse,
+} from '../main/preload';
 import { ConnectResponse } from '../protos/postgres/postgres_pb';
 
-export const postgres: PostgresServiceClientSource = {
-    connect: (argument, callback) => window.electron.proto.postgres.connect(
+interface Deserializer<T> {
+    deserializeBinary: (bytes: Uint8Array) => T;
+}
+
+interface Serializable {
+    serializeBinary: () => Uint8Array;
+}
+
+export type PostgresService = {
+    [T in PostgresServiceRPCName]: (
+        argument: PostgresServiceRPCRequest<T>,
+        callback: requestCallback<PostgresServiceRPCResponse<T>>
+    ) => ClientUnaryCall;
+};
+
+function createPostgresSourceMethod <T extends Serializable, K>(
+    postgresKey: PostgresServiceRPCName,
+    deserializer: Deserializer<K>,
+): (argument: T, callback: requestCallback<K>) => ClientUnaryCall {
+    return (argument, callback) => window.electron.proto.postgres[postgresKey](
         argument.serializeBinary(),
         (err, value) => {
-            const deserializedValue = value === undefined
-                ? undefined
-                : ConnectResponse.deserializeBinary(value);
+            let deserializedValue: K|undefined;
+            if (value) {
+                deserializedValue = deserializer.deserializeBinary(value);
+            }
             callback(err, deserializedValue);
         }
-    )
+    );
+}
+
+export const postgres: PostgresService = {
+    connect: createPostgresSourceMethod('connect', ConnectResponse),
 }

@@ -1,11 +1,11 @@
-import { PostgresServiceClientTarget } from './protobridge';
+import { PostgresService } from '../main/preload';
 
 export interface ElectronAPI {
     proto: ProtoAPI;
 }
 
 export interface ProtoAPI {
-    postgres: PostgresServiceClientTarget;
+    postgres: PostgresService;
 }
 
 declare global {
