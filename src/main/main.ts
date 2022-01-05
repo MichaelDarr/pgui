@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime';
 import { ChildProcess, execFile } from 'child_process';
 import { createWriteStream } from 'fs';
 import path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, session } from 'electron';
 import debug from 'electron-debug';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import sourceMapSupport from 'source-map-support';
@@ -144,6 +144,17 @@ app.on('window-all-closed', () => {
 });
 
 app.whenReady().then(async () => {
+    // Set a strict content security policy
+    // https://www.electronjs.org/docs/latest/tutorial/security#7-define-a-content-security-policy
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                'Content-Security-Policy': [`default-src 'self'`]
+            }
+        })
+    })
+
     if (isDevelopment) {
         installDevExtensions().then(extensions => {
             if (extensions.length > 0) {
