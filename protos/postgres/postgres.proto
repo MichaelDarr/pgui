@@ -6,6 +6,15 @@ package postgres;
 
 service PostgresService {
   rpc Connect(ConnectRequest) returns (ConnectResponse) {}
+  rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
+}
+
+message Credentials {
+    string host = 1;
+    int32 port = 2;
+    string user = 3;
+    string db = 4;
+    string password = 5;
 }
 
 message ConnectRequest {
@@ -15,4 +24,12 @@ message ConnectRequest {
 
 message ConnectResponse {
   string connectionID = 1;
+}
+
+message TestConnectionRequest {
+    Credentials credentials = 1;
+}
+
+message TestConnectionResponse {
+    bool success = 1;
 }

@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresServiceClient interface {
 	Connect(ctx context.Context, in *ConnectRequest, opts ...grpc.CallOption) (*ConnectResponse, error)
+	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
 }
 
 type postgresServiceClient struct {
@@ -38,11 +39,21 @@ func (c *postgresServiceClient) Connect(ctx context.Context, in *ConnectRequest,
 	return out, nil
 }
 
+func (c *postgresServiceClient) TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error) {
+	out := new(TestConnectionResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/TestConnection", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostgresServiceServer is the server API for PostgresService service.
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
 type PostgresServiceServer interface {
 	Connect(context.Context, *ConnectRequest) (*ConnectResponse, error)
+	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedPostgresServiceServer struct {
 
 func (UnimplementedPostgresServiceServer) Connect(context.Context, *ConnectRequest) (*ConnectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Connect not implemented")
+}
+func (UnimplementedPostgresServiceServer) TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
 }
 func (UnimplementedPostgresServiceServer) mustEmbedUnimplementedPostgresServiceServer() {}
 
@@ -84,6 +98,24 @@ func _PostgresService_Connect_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostgresService_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TestConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).TestConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/TestConnection",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).TestConnection(ctx, req.(*TestConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostgresService_ServiceDesc is the grpc.ServiceDesc for PostgresService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Connect",
 			Handler:    _PostgresService_Connect_Handler,
+		},
+		{
+			MethodName: "TestConnection",
+			Handler:    _PostgresService_TestConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,9 +1,9 @@
 import { FC } from 'react';
 
-import { Socketeer } from './components/Socketeer';
+import { ConnectionTester } from './components/ConnectionTester';
 
 export const App: FC = () => {
     return (
-        <Socketeer />
+        <ConnectionTester />
     );
 };

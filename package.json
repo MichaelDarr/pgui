@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "A PostgreSQL GUI",
   "scripts": {
-    "build": "concurrently \"npm run build:main\" \"npm run build:renderer\" \"npm run build:preload\"",
+    "build": "npm run build:proto && concurrently \"npm run build:backend\" \"npm run build:main\" \"npm run build:renderer\" \"npm run build:preload\"",
+    "build:backend": "make backend",
     "build:main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.prod.ts",
     "build:preload": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.prod.ts",
+    "build:proto": "make proto",
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir src",
     "lint": "cross-env NODE_ENV=development eslint . --cache --ext .js,.jsx,.ts,.tsx",

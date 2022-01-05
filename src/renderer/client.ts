@@ -5,7 +5,10 @@ import type {
     PostgresServiceRPCRequest,
     PostgresServiceRPCResponse,
 } from '../preload/types';
-import { ConnectResponse } from '../protos/postgres/postgres_pb';
+import {
+    ConnectResponse,
+    TestConnectionResponse,
+} from '../protos/postgres/postgres_pb';
 
 interface Deserializer<T> {
     deserializeBinary: (bytes: Uint8Array) => T;
@@ -34,4 +37,5 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 
 export const postgres: PostgresService = {
     connect: createPostgresSourceMethod('connect', ConnectResponse),
+    testConnection: createPostgresSourceMethod('testConnection', TestConnectionResponse),
 }
