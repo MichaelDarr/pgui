@@ -4,7 +4,7 @@ import type {
     PostgresServiceRPCName,
     PostgresServiceRPCRequest,
     PostgresServiceRPCResponse,
-} from '../main/preload';
+} from '../preload/types';
 import { ConnectResponse } from '../protos/postgres/postgres_pb';
 
 interface Deserializer<T> {

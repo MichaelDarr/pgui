@@ -27,12 +27,12 @@ export default merge(baseConfig, {
     target: 'electron-main',
 
     entry: {
-        main: path.join(webpackPaths.srcMainPath, 'main.ts'),
+        main: path.join(webpackPaths.srcMainPath, 'index.ts'),
     },
 
     output: {
         path: webpackPaths.distMainPath,
-        filename: '[name].js',
+        filename: 'main.js',
     },
 
     optimization: {

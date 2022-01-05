@@ -86,7 +86,7 @@ const createWindow = () => {
         height: 728,
         icon: getAssetPath('icon.png'),
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: getAssetPath('preload.js'),
         },
     });
 
@@ -152,8 +152,8 @@ app.whenReady().then(async () => {
                 ...details.responseHeaders,
                 'Content-Security-Policy': [`default-src 'self'`]
             }
-        })
-    })
+        });
+    });
 
     if (isDevelopment) {
         installDevExtensions().then(extensions => {

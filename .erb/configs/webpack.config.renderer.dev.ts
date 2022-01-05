@@ -4,12 +4,11 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import chalk from 'chalk';
 import { merge } from 'webpack-merge';
-import { spawn, execSync, spawnSync } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 import checkNodeEnv from '../scripts/check-node-env';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import WebpackBeforeBuildPlugin from 'before-build-webpack';
 
 // When an ESLint server is running, we can't set the NODE_ENV so we'll check if it's
 // at the dev webpack config is not accidentally run in a production environment
@@ -120,13 +119,6 @@ export default merge(baseConfig, {
             isDevelopment: process.env.NODE_ENV !== 'production',
             nodeModules: webpackPaths.appNodeModulesPath,
         }),
-
-        new WebpackBeforeBuildPlugin(function(stats, callback) {
-            console.log('Compiling preload script');
-            const preloadPath = path.join(webpackPaths.srcMainPath, 'preload.ts');
-            spawnSync('npx', ['tsc', '--outDir', webpackPaths.srcMainPath, preloadPath]);
-            callback();
-        }),
     ],
 
     node: {
@@ -147,6 +139,15 @@ export default merge(baseConfig, {
             disableDotRule: false,
         },
         onBeforeSetupMiddleware() {
+            console.log('Starting Preload Process...');
+            spawn('npm', ['run', 'start:preload'], {
+                shell: true,
+                env: process.env,
+                stdio: 'inherit',
+            })
+            .on('close', (code) => process.exit(code))
+            .on('error', (spawnError) => console.error(spawnError));
+
             console.log('Starting Main Process...');
             spawn('npm', ['run', 'start:main'], {
                 shell: true,

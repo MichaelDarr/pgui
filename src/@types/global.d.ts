@@ -1,4 +1,4 @@
-import { PostgresService } from '../main/preload';
+import { PostgresService } from '../preload/types';
 
 export interface ElectronAPI {
     proto: ProtoAPI;
