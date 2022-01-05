@@ -10,14 +10,15 @@ export const Socketeer: FC = () => {
         arg.setHost('helloThere');
         postgres.connect(arg, (err, value) => {
             if (err) {
-                throw err;
+                console.warn(err)
             } else if (!value) {
-                throw new Error('unexpected nullish value')
+                console.warn(new Error('unexpected nullish value'));
+            } else {
+                const connectionID = value.getConnectionid();
+                console.log({ connectionID });
             }
-            const connID = value.getConnectionid()
-            console.log({ connID });
         });
-    }
+    };
 
     return (
         <div>

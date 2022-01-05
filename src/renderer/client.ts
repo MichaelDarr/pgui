@@ -28,13 +28,7 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 ): (argument: T, callback: requestCallback<K>) => ClientUnaryCall {
     return (argument, callback) => window.electron.proto.postgres[postgresKey](
         argument.serializeBinary(),
-        (err, value) => {
-            let deserializedValue: K|undefined;
-            if (value) {
-                deserializedValue = deserializer.deserializeBinary(value);
-            }
-            callback(err, deserializedValue);
-        }
+        (err, value) => callback(err, value&&deserializer.deserializeBinary(value))
     );
 }
 
