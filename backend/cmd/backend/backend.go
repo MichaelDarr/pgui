@@ -10,12 +10,11 @@ import (
 )
 
 func main() {
-	var socketAddress string
-	if len(os.Args) > 1 {
-		socketAddress = os.Args[1]
-	} else {
-		socketAddress = "/tmp/pgui.sock"
+	if len(os.Args) <= 1 {
+		fmt.Println("backend: port argument required")
+		os.Exit(1)
 	}
+	socketAddress := os.Args[1]
 
 	grpcServer := server.NewGRPC()
 	go func() {
