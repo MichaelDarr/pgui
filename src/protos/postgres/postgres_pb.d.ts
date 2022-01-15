@@ -39,45 +39,47 @@ export namespace Credentials {
   }
 }
 
-export class ConnectRequest extends jspb.Message {
-  getHost(): string;
-  setHost(value: string): void;
+export class SaveConnectionRequest extends jspb.Message {
+  hasCredentials(): boolean;
+  clearCredentials(): void;
+  getCredentials(): Credentials | undefined;
+  setCredentials(value?: Credentials): void;
 
-  getPort(): number;
-  setPort(value: number): void;
+  getName(): string;
+  setName(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ConnectRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: ConnectRequest): ConnectRequest.AsObject;
+  toObject(includeInstance?: boolean): SaveConnectionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SaveConnectionRequest): SaveConnectionRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ConnectRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ConnectRequest;
-  static deserializeBinaryFromReader(message: ConnectRequest, reader: jspb.BinaryReader): ConnectRequest;
+  static serializeBinaryToWriter(message: SaveConnectionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SaveConnectionRequest;
+  static deserializeBinaryFromReader(message: SaveConnectionRequest, reader: jspb.BinaryReader): SaveConnectionRequest;
 }
 
-export namespace ConnectRequest {
+export namespace SaveConnectionRequest {
   export type AsObject = {
-    host: string,
-    port: number,
+    credentials?: Credentials.AsObject,
+    name: string,
   }
 }
 
-export class ConnectResponse extends jspb.Message {
+export class SaveConnectionResponse extends jspb.Message {
   getConnectionid(): string;
   setConnectionid(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ConnectResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: ConnectResponse): ConnectResponse.AsObject;
+  toObject(includeInstance?: boolean): SaveConnectionResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: SaveConnectionResponse): SaveConnectionResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ConnectResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ConnectResponse;
-  static deserializeBinaryFromReader(message: ConnectResponse, reader: jspb.BinaryReader): ConnectResponse;
+  static serializeBinaryToWriter(message: SaveConnectionResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SaveConnectionResponse;
+  static deserializeBinaryFromReader(message: SaveConnectionResponse, reader: jspb.BinaryReader): SaveConnectionResponse;
 }
 
-export namespace ConnectResponse {
+export namespace SaveConnectionResponse {
   export type AsObject = {
     connectionid: string,
   }
@@ -109,6 +111,9 @@ export class TestConnectionResponse extends jspb.Message {
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
 
+  getErrormessage(): string;
+  setErrormessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TestConnectionResponse.AsObject;
   static toObject(includeInstance: boolean, msg: TestConnectionResponse): TestConnectionResponse.AsObject;
@@ -122,6 +127,7 @@ export class TestConnectionResponse extends jspb.Message {
 export namespace TestConnectionResponse {
   export type AsObject = {
     success: boolean,
+    errormessage: string,
   }
 }
 

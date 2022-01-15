@@ -4,26 +4,26 @@
 var grpc = require('@grpc/grpc-js');
 var protos_postgres_postgres_pb = require('../../protos/postgres/postgres_pb.js');
 
-function serialize_postgres_ConnectRequest(arg) {
-  if (!(arg instanceof protos_postgres_postgres_pb.ConnectRequest)) {
-    throw new Error('Expected argument of type postgres.ConnectRequest');
+function serialize_postgres_SaveConnectionRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.SaveConnectionRequest)) {
+    throw new Error('Expected argument of type postgres.SaveConnectionRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_postgres_ConnectRequest(buffer_arg) {
-  return protos_postgres_postgres_pb.ConnectRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_postgres_SaveConnectionRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.SaveConnectionRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_postgres_ConnectResponse(arg) {
-  if (!(arg instanceof protos_postgres_postgres_pb.ConnectResponse)) {
-    throw new Error('Expected argument of type postgres.ConnectResponse');
+function serialize_postgres_SaveConnectionResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.SaveConnectionResponse)) {
+    throw new Error('Expected argument of type postgres.SaveConnectionResponse');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_postgres_ConnectResponse(buffer_arg) {
-  return protos_postgres_postgres_pb.ConnectResponse.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_postgres_SaveConnectionResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.SaveConnectionResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_postgres_TestConnectionRequest(arg) {
@@ -50,16 +50,16 @@ function deserialize_postgres_TestConnectionResponse(buffer_arg) {
 
 
 var PostgresServiceService = exports.PostgresServiceService = {
-  connect: {
-    path: '/postgres.PostgresService/Connect',
+  saveConnection: {
+    path: '/postgres.PostgresService/SaveConnection',
     requestStream: false,
     responseStream: false,
-    requestType: protos_postgres_postgres_pb.ConnectRequest,
-    responseType: protos_postgres_postgres_pb.ConnectResponse,
-    requestSerialize: serialize_postgres_ConnectRequest,
-    requestDeserialize: deserialize_postgres_ConnectRequest,
-    responseSerialize: serialize_postgres_ConnectResponse,
-    responseDeserialize: deserialize_postgres_ConnectResponse,
+    requestType: protos_postgres_postgres_pb.SaveConnectionRequest,
+    responseType: protos_postgres_postgres_pb.SaveConnectionResponse,
+    requestSerialize: serialize_postgres_SaveConnectionRequest,
+    requestDeserialize: deserialize_postgres_SaveConnectionRequest,
+    responseSerialize: serialize_postgres_SaveConnectionResponse,
+    responseDeserialize: deserialize_postgres_SaveConnectionResponse,
   },
   testConnection: {
     path: '/postgres.PostgresService/TestConnection',

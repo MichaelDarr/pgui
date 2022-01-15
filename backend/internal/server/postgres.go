@@ -4,21 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MichaelDarr/pgui/backend/internal/config"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 )
 
 // PostgresServer is an authentication GRPC server.
 type PostgresServer struct {
 	proto.UnimplementedPostgresServiceServer
-}
-
-// Connect connects to a postgres database.
-func (s *PostgresServer) Connect(context.Context, *proto.ConnectRequest) (*proto.ConnectResponse, error) {
-	res := &proto.ConnectResponse{
-		ConnectionID: "d61a7dcf-dc4f-4931-b099-953e0ef43361",
-	}
-	return res, nil
 }
 
 // credentialConnectionString returns a postgres connection string.
@@ -31,6 +25,31 @@ func credentialConnectionString(credentials *proto.Credentials) string {
 		credentials.Password,
 		credentials.Db,
 	)
+}
+
+// SaveConnection saves connection information to a user's configuration.
+func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConnectionRequest) (*proto.SaveConnectionResponse, error) {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	connectionID := uuid.New().String()
+	newConnection := config.Connection{
+		ID:       connectionID,
+		Name:     req.Name,
+		Host:     req.Credentials.Host,
+		Port:     req.Credentials.Port,
+		User:     req.Credentials.User,
+		DB:       req.Credentials.Db,
+		Password: req.Credentials.Password,
+	}
+	if err = cfg.AddConnection(newConnection); err != nil {
+		return nil, err
+	}
+	res := &proto.SaveConnectionResponse{
+		ConnectionID: connectionID,
+	}
+	return res, nil
 }
 
 // TestConnection tests if some credentials can connect to a postgres database.

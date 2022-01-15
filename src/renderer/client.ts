@@ -6,7 +6,7 @@ import type {
     PostgresServiceRPCResponse,
 } from '../preload/types';
 import {
-    ConnectResponse,
+    SaveConnectionResponse,
     TestConnectionResponse,
 } from '../protos/postgres/postgres_pb';
 
@@ -36,6 +36,6 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 }
 
 export const postgres: PostgresService = {
-    connect: createPostgresSourceMethod('connect', ConnectResponse),
+    saveConnection: createPostgresSourceMethod('saveConnection', SaveConnectionResponse),
     testConnection: createPostgresSourceMethod('testConnection', TestConnectionResponse),
 }
