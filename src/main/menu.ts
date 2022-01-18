@@ -147,37 +147,6 @@ export class MenuBuilder {
                 { label: 'Bring All to Front', selector: 'arrangeInFront:' },
             ],
         };
-        const subMenuHelp: MenuItemConstructorOptions = {
-            label: 'Help',
-            submenu: [
-                {
-                    label: 'Learn More',
-                    click() {
-                        void shell.openExternal('https://electronjs.org');
-                    },
-                },
-                {
-                    label: 'Documentation',
-                    click() {
-                        void shell.openExternal(
-                            'https://github.com/electron/electron/tree/main/docs#readme'
-                        );
-                    },
-                },
-                {
-                    label: 'Community Discussions',
-                    click() {
-                        void shell.openExternal('https://www.electronjs.org/community');
-                    },
-                },
-                {
-                    label: 'Search Issues',
-                    click() {
-                        void shell.openExternal('https://github.com/electron/electron/issues');
-                    },
-                },
-            ],
-        };
 
         const subMenuView =
             process.env.NODE_ENV === 'development' ||
@@ -185,7 +154,7 @@ export class MenuBuilder {
                 ? subMenuViewDev
                 : subMenuViewProd;
 
-        return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp];
+        return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow];
     }
 
     buildDefaultTemplate() {

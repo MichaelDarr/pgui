@@ -4,7 +4,6 @@ import { ChildProcess, execFile } from 'child_process';
 import { createWriteStream } from 'fs';
 import path from 'path';
 import { app, BrowserWindow, ipcMain, session } from 'electron';
-import debug from 'electron-debug';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import sourceMapSupport from 'source-map-support';
 
@@ -36,10 +35,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const isDevelopment = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
-if (isDevelopment) {
-    debug();
-}
 
 // Returns a promise resolving to an array of the names of installed extensions
 const installDevExtensions = (): Promise<string[]> => {

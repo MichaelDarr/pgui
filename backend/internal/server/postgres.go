@@ -26,6 +26,18 @@ func credentialConnectionString(credentials *proto.Credentials) string {
 	)
 }
 
+// GetConnections gets all saved connections in a user's configuration.
+func (s *PostgresServer) GetConnections(context.Context, *proto.GetConnectionRequest) (*proto.GetConnectionsResponse, error) {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		return nil, err
+	}
+	res := &proto.GetConnectionsResponse{
+		Connections: cfg.ProtoConnections(),
+	}
+	return res, nil
+}
+
 // SaveConnection saves connection information to a user's configuration.
 func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConnectionRequest) (*proto.SaveConnectionResponse, error) {
 	cfg, err := config.GetConfig()

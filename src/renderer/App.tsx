@@ -1,9 +1,18 @@
-import { FC } from 'react';
+import { CSSProperties, FC } from 'react';
 
-import { ConnectionTester } from './components/ConnectionTester';
+import { Connect } from './views/Connect';
+
+const appContainerStyle: CSSProperties = {
+    height: '100vh',
+    width: '100vw',
+    margin: '0',
+    padding: '0',
+}
 
 export const App: FC = () => {
     return (
-        <ConnectionTester />
+        <div style={appContainerStyle}>
+            <Connect />
+        </div>
     );
 };

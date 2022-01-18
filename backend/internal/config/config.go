@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
 )
 
 // configPath provides paths to the user's configuration.
@@ -60,6 +61,15 @@ func GetConfig() (*Config, error) {
 func (config *Config) AddConnection(connection Connection) error {
 	config.Connection = append(config.Connection, connection)
 	return config.write()
+}
+
+// ProtoConnections gets all connections configured as protobuf messages.
+func (config *Config) ProtoConnections() []*proto.Connection {
+	connections := make([]*proto.Connection, len(config.Connection))
+	for i, connection := range config.Connection {
+		connections[i] = connection.Proto()
+	}
+	return connections
 }
 
 // write saves the configuration to disk.

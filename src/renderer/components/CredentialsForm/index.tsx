@@ -1,16 +1,25 @@
-import { FC, useState } from 'react';
+import { CSSProperties, FC, useState } from 'react';
 import * as uuid from 'uuid';
 
-import { postgres } from '../client';
-import { randomColorHex } from '../utils/color';
+import { postgres } from '../../client';
+import { DivProps } from '../../types';
+import { randomColorHex } from '../../utils/color';
 import {
     Credentials,
     Connection,
     SaveConnectionRequest,
     TestConnectionRequest,
-} from '../../protos/postgres/postgres_pb';
+} from '../../../protos/postgres/postgres_pb';
 
-export const ConnectionTester: FC = () => {
+const containerStyle: CSSProperties = {
+    padding: '1rem',
+    backgroundColor: '#FFFFFF',
+};
+
+export const CredentialsForm: FC<DivProps> = ({
+    style,
+    ...props
+}) => {
     const [name, setName] = useState<string>('CoolConnection');
     const [host, setHost] = useState<string>('localhost');
     const [port, setPort] = useState<string>('5432');
@@ -81,8 +90,8 @@ export const ConnectionTester: FC = () => {
     }
 
     return (
-        <div>
-            <h1>Connection Tester</h1>
+        <div {...props} style={{ ...style, ...containerStyle }}>
+            <h1>New Connection</h1>
             <label>
                 <p>Name</p>
                 <input type='text' value={name} onChange={e => setName(e.target.value)} />
