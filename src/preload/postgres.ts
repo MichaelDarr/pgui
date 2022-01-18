@@ -3,7 +3,11 @@ import { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 import { getCredentials, getServerAddress } from './server';
 import { Deserializer, PostgresService, PostgresServiceRPCName } from './types';
 import { wrapClientUnaryCall } from './rpc';
-import { SaveConnectionRequest, TestConnectionRequest } from '../protos/postgres/postgres_pb';
+import {
+    GetConnectionRequest,
+    SaveConnectionRequest,
+    TestConnectionRequest,
+} from '../protos/postgres/postgres_pb';
 import { PostgresServiceClient } from '../protos/postgres/postgres_grpc_pb';
 
 let postgresClient: PostgresServiceClient|null = null;
@@ -43,6 +47,7 @@ const createPostgresTargetMethod = <T extends PostgresServiceRPCName>(
 }
 
 export const postgresTarget: PostgresService = {
+    getConnections: createPostgresTargetMethod('getConnections', GetConnectionRequest),
     saveConnection: createPostgresTargetMethod('saveConnection', SaveConnectionRequest),
     testConnection: createPostgresTargetMethod('testConnection', TestConnectionRequest),
 };

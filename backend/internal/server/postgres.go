@@ -6,7 +6,6 @@ import (
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -33,21 +32,21 @@ func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConn
 	if err != nil {
 		return nil, err
 	}
-	connectionID := uuid.New().String()
 	newConnection := config.Connection{
-		ID:       connectionID,
-		Name:     req.Name,
-		Host:     req.Credentials.Host,
-		Port:     req.Credentials.Port,
-		User:     req.Credentials.User,
-		DB:       req.Credentials.Db,
-		Password: req.Credentials.Password,
+		ID:       req.Connection.Id,
+		Name:     req.Connection.Name,
+		Color:    req.Connection.Color,
+		Host:     req.Connection.Credentials.Host,
+		Port:     req.Connection.Credentials.Port,
+		User:     req.Connection.Credentials.User,
+		DB:       req.Connection.Credentials.Db,
+		Password: req.Connection.Credentials.Password,
 	}
 	if err = cfg.AddConnection(newConnection); err != nil {
 		return nil, err
 	}
 	res := &proto.SaveConnectionResponse{
-		ConnectionID: connectionID,
+		Connection: req.Connection,
 	}
 	return res, nil
 }

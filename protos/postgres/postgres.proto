@@ -5,8 +5,9 @@ option go_package = "github.com/MichaelDarr/pgui/proto";
 package postgres;
 
 service PostgresService {
-  rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
-  rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
+    rpc GetConnections(GetConnectionRequest) returns (GetConnectionsResponse) {}
+    rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
+    rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
 }
 
 message Credentials {
@@ -17,13 +18,25 @@ message Credentials {
     string password = 5;
 }
 
-message SaveConnectionRequest {
+message Connection {
     Credentials credentials = 1;
-    string name = 2;
+    string id = 2;
+    string name = 3;
+    string color = 4;
+}
+
+message GetConnectionRequest {}
+
+message GetConnectionsResponse {
+    repeated Connection connections = 1;
+}
+
+message SaveConnectionRequest {
+    Connection connection = 1;
 }
 
 message SaveConnectionResponse {
-    string connectionID = 1;
+    Connection connection = 1;
 }
 
 message TestConnectionRequest {

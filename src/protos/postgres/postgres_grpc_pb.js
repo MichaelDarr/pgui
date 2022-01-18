@@ -4,6 +4,28 @@
 var grpc = require('@grpc/grpc-js');
 var protos_postgres_postgres_pb = require('../../protos/postgres/postgres_pb.js');
 
+function serialize_postgres_GetConnectionRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetConnectionRequest)) {
+    throw new Error('Expected argument of type postgres.GetConnectionRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetConnectionRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.GetConnectionRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_GetConnectionsResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetConnectionsResponse)) {
+    throw new Error('Expected argument of type postgres.GetConnectionsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetConnectionsResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.GetConnectionsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_postgres_SaveConnectionRequest(arg) {
   if (!(arg instanceof protos_postgres_postgres_pb.SaveConnectionRequest)) {
     throw new Error('Expected argument of type postgres.SaveConnectionRequest');
@@ -50,6 +72,17 @@ function deserialize_postgres_TestConnectionResponse(buffer_arg) {
 
 
 var PostgresServiceService = exports.PostgresServiceService = {
+  getConnections: {
+    path: '/postgres.PostgresService/GetConnections',
+    requestStream: false,
+    responseStream: false,
+    requestType: protos_postgres_postgres_pb.GetConnectionRequest,
+    responseType: protos_postgres_postgres_pb.GetConnectionsResponse,
+    requestSerialize: serialize_postgres_GetConnectionRequest,
+    requestDeserialize: deserialize_postgres_GetConnectionRequest,
+    responseSerialize: serialize_postgres_GetConnectionsResponse,
+    responseDeserialize: deserialize_postgres_GetConnectionsResponse,
+  },
   saveConnection: {
     path: '/postgres.PostgresService/SaveConnection',
     requestStream: false,

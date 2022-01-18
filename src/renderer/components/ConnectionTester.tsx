@@ -1,8 +1,11 @@
 import { FC, useState } from 'react';
+import * as uuid from 'uuid';
 
 import { postgres } from '../client';
+import { randomColorHex } from '../utils/color';
 import {
     Credentials,
+    Connection,
     SaveConnectionRequest,
     TestConnectionRequest,
 } from '../../protos/postgres/postgres_pb';
@@ -27,11 +30,20 @@ export const ConnectionTester: FC = () => {
         return credentials;
     }
 
+    const getConnection = (): Connection => {
+        const connection = new Connection();
+        const credentials = getCredentials();
+        connection.setCredentials(credentials);
+        connection.setId(uuid.v4());
+        connection.setName(name);
+        connection.setColor(randomColorHex());
+        return connection;
+    }
+
     const testConnection = (): void => {
         const credentials = getCredentials();
         const arg = new TestConnectionRequest();
         arg.setCredentials(credentials);
-        console.log(credentials.toObject());
         postgres.testConnection(arg, (err, value) => {
             if (err) {
                 console.warn(err)
@@ -44,17 +56,16 @@ export const ConnectionTester: FC = () => {
     };
 
     const saveConnection = (): void => {
-        const credentials = getCredentials();
+        const connection = getConnection();
         const arg = new SaveConnectionRequest();
-        arg.setCredentials(credentials);
-        arg.setName(name);
+        arg.setConnection(connection);
         postgres.saveConnection(arg, (err, value) => {
             if (err) {
                 console.warn(err)
             } else if (!value) {
                 console.warn(new Error('unexpected nullish value'));
             } else {
-                console.log({ cid: value.getConnectionid() });
+                console.log(value.getConnection());
             }
         })
     }

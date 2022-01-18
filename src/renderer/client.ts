@@ -6,6 +6,7 @@ import type {
     PostgresServiceRPCResponse,
 } from '../preload/types';
 import {
+    GetConnectionsResponse,
     SaveConnectionResponse,
     TestConnectionResponse,
 } from '../protos/postgres/postgres_pb';
@@ -31,11 +32,14 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 ): (argument: T, callback: requestCallback<K>) => ClientUnaryCall {
     return (argument, callback) => window.electron.proto.postgres[postgresKey](
         argument.serializeBinary(),
-        (err, value) => callback(err, value&&deserializer.deserializeBinary(value))
+        (err, value) => {
+            return callback(err, value&&deserializer.deserializeBinary(value))
+        },
     );
 }
 
 export const postgres: PostgresService = {
+    getConnections: createPostgresSourceMethod('getConnections', GetConnectionsResponse),
     saveConnection: createPostgresSourceMethod('saveConnection', SaveConnectionResponse),
     testConnection: createPostgresSourceMethod('testConnection', TestConnectionResponse),
 }

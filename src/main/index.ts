@@ -82,7 +82,7 @@ const getBinaryPath = (filename: string): string => {
 const createWindow = () => {
     mainWindow = new BrowserWindow({
         show: false,
-        width: 1024,
+        width: 1536,
         height: 728,
         icon: getAssetPath('icon.png'),
         webPreferences: {

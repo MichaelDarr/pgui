@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresServiceClient interface {
+	GetConnections(ctx context.Context, in *GetConnectionRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error)
 	SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error)
 	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
 }
@@ -32,6 +33,15 @@ type postgresServiceClient struct {
 
 func NewPostgresServiceClient(cc grpc.ClientConnInterface) PostgresServiceClient {
 	return &postgresServiceClient{cc}
+}
+
+func (c *postgresServiceClient) GetConnections(ctx context.Context, in *GetConnectionRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error) {
+	out := new(GetConnectionsResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetConnections", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *postgresServiceClient) SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error) {
@@ -56,6 +66,7 @@ func (c *postgresServiceClient) TestConnection(ctx context.Context, in *TestConn
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
 type PostgresServiceServer interface {
+	GetConnections(context.Context, *GetConnectionRequest) (*GetConnectionsResponse, error)
 	SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error)
 	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
@@ -65,6 +76,9 @@ type PostgresServiceServer interface {
 type UnimplementedPostgresServiceServer struct {
 }
 
+func (UnimplementedPostgresServiceServer) GetConnections(context.Context, *GetConnectionRequest) (*GetConnectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
+}
 func (UnimplementedPostgresServiceServer) SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveConnection not implemented")
 }
@@ -82,6 +96,24 @@ type UnsafePostgresServiceServer interface {
 
 func RegisterPostgresServiceServer(s grpc.ServiceRegistrar, srv PostgresServiceServer) {
 	s.RegisterService(&PostgresService_ServiceDesc, srv)
+}
+
+func _PostgresService_GetConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).GetConnections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/GetConnections",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).GetConnections(ctx, req.(*GetConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PostgresService_SaveConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -127,6 +159,10 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "postgres.PostgresService",
 	HandlerType: (*PostgresServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetConnections",
+			Handler:    _PostgresService_GetConnections_Handler,
+		},
 		{
 			MethodName: "SaveConnection",
 			Handler:    _PostgresService_SaveConnection_Handler,

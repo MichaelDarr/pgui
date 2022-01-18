@@ -39,14 +39,83 @@ export namespace Credentials {
   }
 }
 
-export class SaveConnectionRequest extends jspb.Message {
+export class Connection extends jspb.Message {
   hasCredentials(): boolean;
   clearCredentials(): void;
   getCredentials(): Credentials | undefined;
   setCredentials(value?: Credentials): void;
 
+  getId(): string;
+  setId(value: string): void;
+
   getName(): string;
   setName(value: string): void;
+
+  getColor(): string;
+  setColor(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Connection.AsObject;
+  static toObject(includeInstance: boolean, msg: Connection): Connection.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Connection, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Connection;
+  static deserializeBinaryFromReader(message: Connection, reader: jspb.BinaryReader): Connection;
+}
+
+export namespace Connection {
+  export type AsObject = {
+    credentials?: Credentials.AsObject,
+    id: string,
+    name: string,
+    color: string,
+  }
+}
+
+export class GetConnectionRequest extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetConnectionRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetConnectionRequest): GetConnectionRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetConnectionRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetConnectionRequest;
+  static deserializeBinaryFromReader(message: GetConnectionRequest, reader: jspb.BinaryReader): GetConnectionRequest;
+}
+
+export namespace GetConnectionRequest {
+  export type AsObject = {
+  }
+}
+
+export class GetConnectionsResponse extends jspb.Message {
+  clearConnectionsList(): void;
+  getConnectionsList(): Array<Connection>;
+  setConnectionsList(value: Array<Connection>): void;
+  addConnections(value?: Connection, index?: number): Connection;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetConnectionsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetConnectionsResponse): GetConnectionsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetConnectionsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetConnectionsResponse;
+  static deserializeBinaryFromReader(message: GetConnectionsResponse, reader: jspb.BinaryReader): GetConnectionsResponse;
+}
+
+export namespace GetConnectionsResponse {
+  export type AsObject = {
+    connectionsList: Array<Connection.AsObject>,
+  }
+}
+
+export class SaveConnectionRequest extends jspb.Message {
+  hasConnection(): boolean;
+  clearConnection(): void;
+  getConnection(): Connection | undefined;
+  setConnection(value?: Connection): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SaveConnectionRequest.AsObject;
@@ -60,14 +129,15 @@ export class SaveConnectionRequest extends jspb.Message {
 
 export namespace SaveConnectionRequest {
   export type AsObject = {
-    credentials?: Credentials.AsObject,
-    name: string,
+    connection?: Connection.AsObject,
   }
 }
 
 export class SaveConnectionResponse extends jspb.Message {
-  getConnectionid(): string;
-  setConnectionid(value: string): void;
+  hasConnection(): boolean;
+  clearConnection(): void;
+  getConnection(): Connection | undefined;
+  setConnection(value?: Connection): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SaveConnectionResponse.AsObject;
@@ -81,7 +151,7 @@ export class SaveConnectionResponse extends jspb.Message {
 
 export namespace SaveConnectionResponse {
   export type AsObject = {
-    connectionid: string,
+    connection?: Connection.AsObject,
   }
 }
 
