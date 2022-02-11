@@ -4,7 +4,7 @@ import { getCredentials, getServerAddress } from './server';
 import { Deserializer, PostgresService, PostgresServiceRPCName } from './types';
 import { wrapClientUnaryCall } from './rpc';
 import {
-    GetConnectionRequest,
+    GetConnectionsRequest,
     SaveConnectionRequest,
     TestConnectionRequest,
 } from '../protos/postgres/postgres_pb';
@@ -47,7 +47,7 @@ const createPostgresTargetMethod = <T extends PostgresServiceRPCName>(
 }
 
 export const postgresTarget: PostgresService = {
-    getConnections: createPostgresTargetMethod('getConnections', GetConnectionRequest),
+    getConnections: createPostgresTargetMethod('getConnections', GetConnectionsRequest),
     saveConnection: createPostgresTargetMethod('saveConnection', SaveConnectionRequest),
     testConnection: createPostgresTargetMethod('testConnection', TestConnectionRequest),
 };

@@ -132,11 +132,11 @@ export default merge(baseConfig, {
         hot: true,
         headers: { 'Access-Control-Allow-Origin': '*' },
         static: {
-            publicPath: '/',
+            directory: webpackPaths.assetsPath,
         },
         historyApiFallback: {
             verbose: true,
-            disableDotRule: false,
+            disableDotRule: true,
         },
         setupMiddlewares: middlewares => {
             console.log('Starting Preload Process...');
@@ -144,7 +144,11 @@ export default merge(baseConfig, {
                 shell: true,
                 env: process.env,
                 stdio: 'inherit',
-            }).on('close', process.exit).on('error', console.error);
+            }).on('close', code => {
+                process.exit(code);
+            }).on('error', err => {
+                console.log(chalk.red(chalk.bold('preload error: ') + err));
+            });
 
             // Give preload script a 1 second headstart on the main process.
             // This is a dumb way to avoid loading the main process with an old preload script.
@@ -154,7 +158,12 @@ export default merge(baseConfig, {
                     shell: true,
                     env: process.env,
                     stdio: 'inherit',
-                }).on('close', process.exit).on('error', console.error);
+                }).on('close', code => {
+                    process.exit(code);
+                }).on('error', err => {
+                    console.log(chalk.red(chalk.bold('main error: ') + err));
+                });
+
             }, 1000);
 
             return middlewares;

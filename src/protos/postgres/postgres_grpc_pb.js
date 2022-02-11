@@ -4,15 +4,15 @@
 var grpc = require('@grpc/grpc-js');
 var protos_postgres_postgres_pb = require('../../protos/postgres/postgres_pb.js');
 
-function serialize_postgres_GetConnectionRequest(arg) {
-  if (!(arg instanceof protos_postgres_postgres_pb.GetConnectionRequest)) {
-    throw new Error('Expected argument of type postgres.GetConnectionRequest');
+function serialize_postgres_GetConnectionsRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetConnectionsRequest)) {
+    throw new Error('Expected argument of type postgres.GetConnectionsRequest');
   }
   return Buffer.from(arg.serializeBinary());
 }
 
-function deserialize_postgres_GetConnectionRequest(buffer_arg) {
-  return protos_postgres_postgres_pb.GetConnectionRequest.deserializeBinary(new Uint8Array(buffer_arg));
+function deserialize_postgres_GetConnectionsRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.GetConnectionsRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_postgres_GetConnectionsResponse(arg) {
@@ -76,10 +76,10 @@ var PostgresServiceService = exports.PostgresServiceService = {
     path: '/postgres.PostgresService/GetConnections',
     requestStream: false,
     responseStream: false,
-    requestType: protos_postgres_postgres_pb.GetConnectionRequest,
+    requestType: protos_postgres_postgres_pb.GetConnectionsRequest,
     responseType: protos_postgres_postgres_pb.GetConnectionsResponse,
-    requestSerialize: serialize_postgres_GetConnectionRequest,
-    requestDeserialize: deserialize_postgres_GetConnectionRequest,
+    requestSerialize: serialize_postgres_GetConnectionsRequest,
+    requestDeserialize: deserialize_postgres_GetConnectionsRequest,
     responseSerialize: serialize_postgres_GetConnectionsResponse,
     responseDeserialize: deserialize_postgres_GetConnectionsResponse,
   },

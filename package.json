@@ -143,6 +143,7 @@
     "node-ipc": "^10.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "recoil": "^0.6.1",
     "regenerator-runtime": "^0.13.9"
   },
   "devEngines": {

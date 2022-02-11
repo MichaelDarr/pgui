@@ -1,34 +1,38 @@
-import { CSSProperties, FC } from 'react';
+import { FC } from 'react';
 
-import { ConnectionList } from '../components/ConnectionList';
+import { ConnectionSidebar } from '../components/ConnectionSidebar';
 import { CredentialsForm } from '../components/CredentialsForm';
+import { Grid, GridItem } from '../components/Grid';
+import { SectionProps } from '../types';
 
-const connectContainerGrid = `
-" connections  credentials-form " 1fr
-/ 20rem        1fr              `;
+const area = {
+    connectionsSidebar: 'connections-sidebar',
+    credentialsForm: 'credentials-form',
+}
 
-const connectContainerStyle: CSSProperties = {
-    gridTemplate: connectContainerGrid,
-    display: 'grid',
-    height: '100%',
-    width: '100%',
-    alignItems: 'stretch',
-    justifyContent: 'stretch',
-};
+const connectContainerTemplate = `
+" ${area.connectionsSidebar}  ${area.credentialsForm} " 1fr
+/ 20rem                       1fr                     `;
 
-const connectionsStyle: CSSProperties = {
-    gridArea: 'connections',
-};
-
-const credentialsFormStyle: CSSProperties = {
-    gridArea: 'credentials-form',
-};
-
-export const Connect: FC = () => {
+export const Connect: FC<SectionProps> = (props) => {
     return (
-        <div style={connectContainerStyle}>
-            <ConnectionList style={connectionsStyle}/>
-            <CredentialsForm style={credentialsFormStyle} />
-        </div>
+        <Grid
+            {...props}
+            template={connectContainerTemplate}
+            fillParent={true}
+        >
+            <GridItem
+                area={area.connectionsSidebar}
+                style={{ backgroundColor: '#E8E8E8' }}
+            >
+                <ConnectionSidebar/>
+            </GridItem>
+            <GridItem
+                area={area.credentialsForm}
+                style={{ backgroundColor: '#FFFFFF' }}
+            >
+                <CredentialsForm/>
+            </GridItem>
+        </Grid>
     )
 }

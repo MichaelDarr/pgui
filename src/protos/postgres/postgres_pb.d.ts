@@ -73,18 +73,18 @@ export namespace Connection {
   }
 }
 
-export class GetConnectionRequest extends jspb.Message {
+export class GetConnectionsRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetConnectionRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetConnectionRequest): GetConnectionRequest.AsObject;
+  toObject(includeInstance?: boolean): GetConnectionsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetConnectionsRequest): GetConnectionsRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetConnectionRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetConnectionRequest;
-  static deserializeBinaryFromReader(message: GetConnectionRequest, reader: jspb.BinaryReader): GetConnectionRequest;
+  static serializeBinaryToWriter(message: GetConnectionsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetConnectionsRequest;
+  static deserializeBinaryFromReader(message: GetConnectionsRequest, reader: jspb.BinaryReader): GetConnectionsRequest;
 }
 
-export namespace GetConnectionRequest {
+export namespace GetConnectionsRequest {
   export type AsObject = {
   }
 }
