@@ -138,7 +138,7 @@ export default merge(baseConfig, {
             verbose: true,
             disableDotRule: false,
         },
-        onBeforeSetupMiddleware() {
+        setupMiddlewares: () => {
             console.log('Starting Preload Process...');
             spawn('npm', ['run', 'start:preload'], {
                 shell: true,
