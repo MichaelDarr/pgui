@@ -5,7 +5,7 @@ option go_package = "github.com/MichaelDarr/pgui/proto";
 package postgres;
 
 service PostgresService {
-    rpc GetConnections(GetConnectionRequest) returns (GetConnectionsResponse) {}
+    rpc GetConnections(GetConnectionsRequest) returns (GetConnectionsResponse) {}
     rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
     rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
 }
@@ -25,7 +25,7 @@ message Connection {
     string color = 4;
 }
 
-message GetConnectionRequest {}
+message GetConnectionsRequest {}
 
 message GetConnectionsResponse {
     repeated Connection connections = 1;
