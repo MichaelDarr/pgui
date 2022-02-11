@@ -8,23 +8,23 @@ import { SectionProps } from '../../types';
 const area = {
     header: 'header',
     list: 'list',
-}
+};
 
 const gridTemplate = `
-" .     .                .    " 1rem
-" .     ${area.header}   .    " auto
-" .     .                .    " 1rem
-" .     ${area.list}     .    " 1fr
-" .     .                .    " 1rem
-/ 1rem  1fr      1rem `;
+" .     .               .    " 1rem
+" .     ${area.header}  .    " auto
+" .     .               .    " 1rem
+" .     ${area.list}    .    " 1fr
+" .     .               .    " 1rem
+/ 1rem  1fr             1rem `;
 
 export const ConnectionSidebar: FC<SectionProps> = (props) => {
     return (
         <Grid {...props} template={gridTemplate}>
             <GridItem area={area.header}>
-                <Heading size='medium'>Connections</Heading>
+                <Heading size='small'>Connections</Heading>
             </GridItem>
-            <GridItem area={area.header}>
+            <GridItem area={area.list}>
                 <Suspense fallback={<p>loading...</p>}>
                     <ConnectionList />
                 </Suspense>

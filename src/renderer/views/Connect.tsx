@@ -1,8 +1,10 @@
 import { FC } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { ConnectionSidebar } from '../components/ConnectionSidebar';
 import { CredentialsForm } from '../components/CredentialsForm';
 import { Grid, GridItem } from '../components/Grid';
+import { activeConnectionState } from '../state/postgres/connection'
 import { SectionProps } from '../types';
 
 const area = {
@@ -15,6 +17,12 @@ const connectContainerTemplate = `
 / 20rem                       1fr                     `;
 
 export const Connect: FC<SectionProps> = (props) => {
+    const activeConnection = useRecoilValue(activeConnectionState);
+
+    if (activeConnection !== null) {
+        return <h1>Connection saved and activated: {activeConnection.name}</h1>
+    }
+
     return (
         <Grid
             {...props}
@@ -29,6 +37,8 @@ export const Connect: FC<SectionProps> = (props) => {
             </GridItem>
             <GridItem
                 area={area.credentialsForm}
+                alignSelf='center'
+                justifySelf='center'
                 style={{ backgroundColor: '#FFFFFF' }}
             >
                 <CredentialsForm/>

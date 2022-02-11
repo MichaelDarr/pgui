@@ -1,4 +1,4 @@
-import { CSSProperties, FC, useEffect } from 'react';
+import { CSSProperties, FC, Suspense, useEffect } from 'react';
 import { RecoilRoot, useRecoilState } from 'recoil';
 
 import { primaryFontFamilyState } from './state/style/font';
@@ -11,7 +11,9 @@ export const App: FC = () => {
         <RecoilRoot>
             <GlobalStyle/>
             <AppContainer>
-                <Connect />
+                <Suspense fallback={<p>loading...</p>}>
+                    <Connect />
+                </Suspense>
             </AppContainer>
         </RecoilRoot>
     );

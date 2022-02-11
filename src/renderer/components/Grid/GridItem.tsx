@@ -28,7 +28,7 @@ export const GridItem: FC<GridItemNamed|GridItemPlaced> = (props) => {
     // Set syntax-dependant non-overridable styles
     if (gridItemIsNamed(props)) {
         Object.assign(itemStyle, {
-            gridItem: props.area,
+            gridArea: props.area,
         });
     } else {
         Object.assign(itemStyle, {

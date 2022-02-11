@@ -17,7 +17,6 @@ export const connectionsState = selector<Connection.AsObject[]>({
                 rej(new Error('value undefined in response without error'))
             } else {
                 const result = value.getConnectionsList().map(connection => connection.toObject());
-                console.log({ result });
                 res(result);
             }
         });
@@ -37,7 +36,6 @@ export const activeConnectionState = selector<Connection.AsObject|null>({
             return null;
         }
         const connections = get(connectionsState);
-        console.log({ connections });
         const connection = connections.find(({ id }) => id === activeConnectionID);
         if (typeof connection === 'undefined') {
             return null;
