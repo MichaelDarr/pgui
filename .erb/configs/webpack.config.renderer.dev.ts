@@ -138,24 +138,26 @@ export default merge(baseConfig, {
             verbose: true,
             disableDotRule: false,
         },
-        setupMiddlewares: () => {
+        setupMiddlewares: middlewares => {
             console.log('Starting Preload Process...');
             spawn('npm', ['run', 'start:preload'], {
                 shell: true,
                 env: process.env,
                 stdio: 'inherit',
-            })
-            .on('close', (code) => process.exit(code))
-            .on('error', (spawnError) => console.error(spawnError));
+            }).on('close', process.exit).on('error', console.error);
 
-            console.log('Starting Main Process...');
-            spawn('npm', ['run', 'start:main'], {
-                shell: true,
-                env: process.env,
-                stdio: 'inherit',
-            })
-            .on('close', (code) => process.exit(code))
-            .on('error', (spawnError) => console.error(spawnError));
+            // Give preload script a 1 second headstart on the main process.
+            // This is a dumb way to avoid loading the main process with an old preload script.
+            setTimeout(() => {
+                console.log('Starting Main Process...');
+                spawn('npm', ['run', 'start:main'], {
+                    shell: true,
+                    env: process.env,
+                    stdio: 'inherit',
+                }).on('close', process.exit).on('error', console.error);
+            }, 1000);
+
+            return middlewares;
         },
     },
 });
