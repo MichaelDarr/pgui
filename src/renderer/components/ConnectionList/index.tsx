@@ -1,4 +1,5 @@
 import { CSSProperties, FC, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { postgres } from '../../client';
 import { DivProps } from '../../types';
@@ -6,6 +7,15 @@ import {
     Connection,
     GetConnectionRequest,
 } from '../../../protos/postgres/postgres_pb';
+import type { RootState } from '../../../preload/redux';
+
+export const selectConnections = (state: RootState) => (
+    state.connection.connections
+);
+
+export const selectActiveConnectionID = (state: RootState) => (
+    state.connection.activeConnectionID
+);
 
 const containerStyle: CSSProperties = {
     padding: '1rem',
@@ -16,7 +26,30 @@ export const ConnectionList: FC<DivProps> = ({
     style,
     ...props
 }) => {
+    const dispatch = useDispatch();
+    const reduxConnections = useSelector(selectConnections);
+    const reduxActiveConnectionID = useSelector(selectActiveConnectionID);
     const [connections, setConnections] = useState<Connection[]>([]);
+
+    useEffect(() => {
+        console.log({ reduxConnections });
+    }, [reduxConnections]);
+
+    useEffect(() => {
+        console.log({ reduxActiveConnectionID });
+    }, [reduxActiveConnectionID]);
+
+    useEffect(() => {
+        const callIt = setTimeout(() => {
+            console.log('dispatching!');
+            dispatch({ type: 'connection/setConnectionID', payload: 'ah he booo hey' });
+            dispatch({ type: 'connection/fetchConnections', payload: null });
+            console.log('dispatched');
+        }, 2000);
+        return () => {
+            clearTimeout(callIt);
+        }
+    }, []);
 
     useEffect(() => {
         const req = new GetConnectionRequest();
@@ -40,10 +73,24 @@ export const ConnectionList: FC<DivProps> = ({
         )
     }
 
+    const renderConnectionsNew = (): JSX.Element => {
+        if (reduxConnections.length === 0) {
+            return <></>;
+        }
+        return (
+            <ul>
+                {reduxConnections.map(connection => (
+                    <li key={connection.id}>{connection.name} (RECOIL)</li>
+                ))}
+            </ul>
+        )
+    }
+
     return (
         <div {...props} style={{ ...style, ...containerStyle }}>
             <h1>Connections</h1>
             {renderConnections()}
+            {renderConnectionsNew()}
         </div>
     );
 };
