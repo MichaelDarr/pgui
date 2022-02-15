@@ -1,8 +1,6 @@
-import { ChangeEventHandler, FC } from 'react';
+import { ChangeEventHandler, DetailedHTMLProps, FC, InputHTMLAttributes } from 'react';
 
-import { InputProps } from 'renderer/types';
-
-export interface StringInput extends Omit<InputProps, 'type'|'onChange'> {
+export interface StringInput extends Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'type'|'onChange'> {
     value: string;
     type?: 'number'|'password'|'text';
     onChange?: (value: string) => void;
