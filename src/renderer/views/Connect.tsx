@@ -11,11 +11,14 @@ import { palette } from 'renderer/utils/color';
 const area = {
     connectionsSidebar: 'connections-sidebar',
     credentialsForm: 'credentials-form',
+    divider: 'divider',
 }
 
 const connectContainerTemplate = `
-" ${area.connectionsSidebar}  ${area.credentialsForm} " 1fr
-/ 20rem                       1fr                     `;
+" ${area.connectionsSidebar}  ${area.divider}  .    .                        . " 3rem
+" ${area.connectionsSidebar}  ${area.divider}  .    ${area.credentialsForm}  . " auto
+" ${area.connectionsSidebar}  ${area.divider}  .    .                        . " 1fr
+/ 20rem                       2px              1fr  auto                     1fr  `;
 
 export const Connect: FC<SectionProps> = (props) => {
     const activeConnection = useRecoilValue(activeConnectionState);
@@ -30,17 +33,16 @@ export const Connect: FC<SectionProps> = (props) => {
             template={connectContainerTemplate}
             fillParent={true}
         >
-            <GridItem
-                area={area.connectionsSidebar}
-                style={{ backgroundColor: palette.lightGray }}
-            >
+            <GridItem area={area.connectionsSidebar}>
                 <ConnectionSidebar/>
             </GridItem>
             <GridItem
+                area={area.divider}
+                style={{ backgroundColor: palette.lightGray }}
+            ></GridItem>
+            <GridItem
                 area={area.credentialsForm}
-                alignSelf='center'
                 justifySelf='center'
-                style={{ backgroundColor: palette.white }}
             >
                 <CredentialsForm style={{ maxWidth: '30rem' }} />
             </GridItem>

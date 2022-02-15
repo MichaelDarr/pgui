@@ -4,25 +4,34 @@ import { useRecoilValue } from 'recoil';
 import { connectionsState } from 'renderer/state/postgres/connection';
 import { DivProps } from 'renderer/types';
 
-export const ConnectionList: FC<DivProps> = (props) => {
+import { ConnectionItem } from './ConnectionItem';
+
+export const ConnectionList: FC<DivProps> = ({
+    style,
+    ...props
+}) => {
     const connections = useRecoilValue(connectionsState);
 
-    const renderConnections = (): JSX.Element => {
-        if (connections.length === 0) {
-            return <></>;
-        }
-        return (
-            <ul>
-                {connections.map(connection => (
-                    <li key={connection.id}>{connection.name}</li>
-                ))}
-            </ul>
-        )
+    if (connections.length === 0) {
+        return <div style={style} {...props} />;
     }
 
     return (
-        <div {...props}>
-            {renderConnections()}
+        <div
+            {...props}
+            style={{
+                ...style,
+                alignItems: 'stretch',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            {connections.map(connection => (
+                <ConnectionItem
+                    key={connection.id}
+                    connection={connection}
+                />
+            ))}
         </div>
     );
 };

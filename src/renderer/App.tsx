@@ -39,13 +39,13 @@ const GlobalStyle: FC = () => {
 
     useEffect(() => {
         let cancelled = false;
-        const montserrat = getFontFamily('Montserrat');
-        montserrat.load().then(() => {
+        const openSans = getFontFamily('Open Sans');
+        openSans.load().then(() => {
             if (!cancelled) {
-                setPrimaryFontFamily(montserrat.cssFontFamily)
+                setPrimaryFontFamily(openSans.cssFontFamily)
             }
         }).catch(err => {
-            console.warn(`failed to load montserrat font: ${String(err)}`);
+            console.warn(`failed to load open sans font: ${String(err)}`);
         });
         return () => {
             cancelled = true;

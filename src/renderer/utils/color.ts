@@ -36,7 +36,8 @@ export const palette = {
     black: '#000000',
     gray: '#808080',
     lightGray: '#E8E8E8',
-    white: '#FFFFFF'
+    white: '#FFFFFF',
+    pgBlue: '#336791',
 };
 
 // randomColorHex generates a random hex color string.

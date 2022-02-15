@@ -98,6 +98,10 @@ class FontFamily {
 }
 
 const supportedFontFamilyData = {
+    ['Arial']: {
+        category: Category.SansSerif,
+        assets: [],
+    },
     ['Montserrat']: {
         category: Category.SansSerif,
         assets: [
@@ -118,9 +122,20 @@ const supportedFontFamilyData = {
             },
         ],
     },
-    ['Arial']: {
+    ['Open Sans']: {
         category: Category.SansSerif,
-        assets: [],
+        assets: [
+            {
+                filename: 'OpenSans-Regular.ttf',
+                style: Style.Normal,
+                weight: Weight.Regular,
+            },
+            {
+                filename: 'OpenSans-SemiBold.ttf',
+                style: Style.Normal,
+                weight: Weight.SemiBold,
+            },
+        ]
     }
 };
 
