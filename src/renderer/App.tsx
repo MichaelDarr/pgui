@@ -1,11 +1,11 @@
 import { CSSProperties, FC, Suspense, useEffect } from 'react';
 import { RecoilRoot, useRecoilState } from 'recoil';
 
+import { Router } from './Router';
 import { primaryFontFamilyState } from './state/style/font';
 import { DivProps } from './types';
 import { palette } from './utils/color';
 import { getFontFamily } from './utils/font';
-import { Connect } from './views/Connect';
 
 export const App: FC = () => {
     return (
@@ -13,7 +13,7 @@ export const App: FC = () => {
             <GlobalStyle/>
             <AppContainer>
                 <Suspense fallback={<p>loading...</p>}>
-                    <Connect />
+                    <Router />
                 </Suspense>
             </AppContainer>
         </RecoilRoot>

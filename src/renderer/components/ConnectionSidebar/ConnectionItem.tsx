@@ -1,9 +1,11 @@
 import { FC, MouseEventHandler, useMemo, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import { Connection } from 'protos/postgres/postgres_pb';
 import { palette } from 'renderer/utils/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { Paragraph } from 'renderer/components/Text';
+import { activeConnectionIDState } from 'renderer/state/postgres/connection';
 import { SectionProps } from 'renderer/types';
 
 export interface ConnectionItem extends SectionProps {
@@ -29,10 +31,13 @@ const gridTemplate = `
 export const ConnectionItem: FC<ConnectionItem> = ({
     connection,
     style,
+    onClick,
     onMouseEnter,
     onMouseLeave,
     ...props
 }) => {
+    const setActiveConnectionID = useSetRecoilState(activeConnectionIDState);
+
     const [isHovered, setIsHovered] = useState(false);
 
     const fullStyle = useMemo(() => {
@@ -48,6 +53,15 @@ export const ConnectionItem: FC<ConnectionItem> = ({
         }
         return baseStyle;
     }, [isHovered, style]);
+
+    const handleClick: MouseEventHandler<HTMLElement> = e => {
+        if (onClick) {
+            onClick(e);
+        }
+        if (!e.defaultPrevented) {
+            setActiveConnectionID(connection.id);
+        }
+    };
 
     const handleMouseEnter: MouseEventHandler<HTMLElement> = e => {
         if (onMouseEnter) {
@@ -80,6 +94,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             {...props}
             style={fullStyle}
             template={gridTemplate}
+            onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
