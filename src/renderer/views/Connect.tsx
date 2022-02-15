@@ -41,7 +41,7 @@ export const Connect: FC<SectionProps> = (props) => {
                 justifySelf='center'
                 style={{ backgroundColor: '#FFFFFF' }}
             >
-                <CredentialsForm/>
+                <CredentialsForm style={{ maxWidth: '30rem' }} />
             </GridItem>
         </Grid>
     )

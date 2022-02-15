@@ -44,6 +44,7 @@ export const Grid: FC<GridManual|GridShorthand> = (props) => {
         Object.assign(gridStyle, {
             gridTemplate: props.template,
         });
+        Reflect.deleteProperty(rest, 'template');
     } else {
         Object.assign(gridStyle, {
             gridAutoColumns: props.autoColumns,
@@ -59,6 +60,18 @@ export const Grid: FC<GridManual|GridShorthand> = (props) => {
             gridTemplateColumns: props.templateColumns,
             gridTemplateRows: props.templateRows,
         });
+        Reflect.deleteProperty(rest, 'autoColumns');
+        Reflect.deleteProperty(rest, 'autoFlow');
+        Reflect.deleteProperty(rest, 'autoRows');
+        Reflect.deleteProperty(rest, 'columnEnd');
+        Reflect.deleteProperty(rest, 'columnGap');
+        Reflect.deleteProperty(rest, 'columnStart');
+        Reflect.deleteProperty(rest, 'rowEnd');
+        Reflect.deleteProperty(rest, 'rowGap');
+        Reflect.deleteProperty(rest, 'rowStart');
+        Reflect.deleteProperty(rest, 'templateAreas');
+        Reflect.deleteProperty(rest, 'templateColumns');
+        Reflect.deleteProperty(rest, 'templateRows');
     }
 
     return (

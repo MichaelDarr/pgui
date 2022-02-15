@@ -30,6 +30,7 @@ export const GridItem: FC<GridItemNamed|GridItemPlaced> = (props) => {
         Object.assign(itemStyle, {
             gridArea: props.area,
         });
+        Reflect.deleteProperty(rest, 'area');
     } else {
         Object.assign(itemStyle, {
             gridColumn: props.column,
@@ -39,6 +40,12 @@ export const GridItem: FC<GridItemNamed|GridItemPlaced> = (props) => {
             gridRowEnd: props.rowEnd,
             gridRowStart: props.rowStart,
         });
+        Reflect.deleteProperty(rest, 'column');
+        Reflect.deleteProperty(rest, 'columnEnd');
+        Reflect.deleteProperty(rest, 'columnStart');
+        Reflect.deleteProperty(rest, 'row');
+        Reflect.deleteProperty(rest, 'rowEnd');
+        Reflect.deleteProperty(rest, 'rowStart');
     }
 
     return (
