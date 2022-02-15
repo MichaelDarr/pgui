@@ -3,6 +3,7 @@ import { RecoilRoot, useRecoilState } from 'recoil';
 
 import { primaryFontFamilyState } from './state/style/font';
 import { DivProps } from './types';
+import { palette } from './utils/color';
 import { getFontFamily } from './utils/font';
 import { Connect } from './views/Connect';
 
@@ -56,6 +57,7 @@ const GlobalStyle: FC = () => {
         <style>
             {`
                 body {
+                    color: ${palette.black};
                     margin: 0px;
                     padding: 0px;
                     font-family: ${primaryFontFamily};

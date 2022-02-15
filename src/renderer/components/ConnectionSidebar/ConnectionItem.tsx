@@ -3,7 +3,7 @@ import { FC, MouseEventHandler, useMemo, useState } from 'react';
 import { Connection } from 'protos/postgres/postgres_pb';
 import { palette } from 'renderer/utils/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
-import { Snippet } from 'renderer/components/Text';
+import { Paragraph } from 'renderer/components/Text';
 import { SectionProps } from 'renderer/types';
 
 export interface ConnectionItem extends SectionProps {
@@ -11,18 +11,20 @@ export interface ConnectionItem extends SectionProps {
 }
 
 const area = {
-    splotch: 'splotch',
+    stripe: 'stripe',
     name: 'name',
     info: 'info'
 };
 
 const gridTemplate = `
-" .     .                .     .             .       " 0.75rem
-" .     ${area.splotch}  .     ${area.name}  .       " 0.8rem
-" .     ${area.splotch}  .     .             .       " 0.4rem
-" .     ${area.splotch}  .     ${area.info}  .       " 0.8rem
-" .     .                .     .             .       " 0.75rem
-/ 1rem  2rem             1rem  1fr           0.25rem `;
+" .        .               .         .             .       " 0.375rem
+" .        ${area.stripe}  .         .             .       " 0.375rem
+" .        ${area.stripe}  .         ${area.name}  .       " 0.9rem
+" .        ${area.stripe}  .         .             .       " 0.5rem
+" .        ${area.stripe}  .         ${area.info}  .       " 0.9rem
+" .        ${area.stripe}  .         .             .       " 0.375rem
+" .        .               .         .             .       " 0.375rem
+/ 0.75rem  3px             0.75rem  1fr           0.25rem `;
 
 export const ConnectionItem: FC<ConnectionItem> = ({
     connection,
@@ -31,28 +33,28 @@ export const ConnectionItem: FC<ConnectionItem> = ({
     onMouseLeave,
     ...props
 }) => {
-    const [isHovering, setIsHovering] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     const fullStyle = useMemo(() => {
         const baseStyle = {
             cursor: 'pointer',
             ...style,
         };
-        if (isHovering) {
+        if (isHovered) {
             Object.assign(baseStyle, {
-                backgroundColor: palette.pgBlue,
+                backgroundColor: palette.blue,
                 color: palette.white,
             });
         }
         return baseStyle;
-    }, [isHovering, style]);
+    }, [isHovered, style]);
 
     const handleMouseEnter: MouseEventHandler<HTMLElement> = e => {
         if (onMouseEnter) {
             onMouseEnter(e);
         }
         if (!e.defaultPrevented) {
-            setIsHovering(true);
+            setIsHovered(true);
         }
     };
 
@@ -61,9 +63,9 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             onMouseLeave(e);
         }
         if (!e.defaultPrevented) {
-            setIsHovering(false);
+            setIsHovered(false);
         }
-    }
+    };
 
     const credentialInfo = (() => {
         if (typeof connection.credentials === 'undefined') {
@@ -82,27 +84,30 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             onMouseLeave={handleMouseLeave}
         >
             <GridItem
-                area={area.splotch}
+                area={area.stripe}
                 style={{
                     backgroundColor: connection.color,
-                    borderRadius: '50%',
+                    borderRadius: '3px',
                 }}
             />
             <GridItem
                 area={area.name}
                 style={{
-                    lineHeight: '0.8rem',
+                    lineHeight: '0.9rem',
                 }}
             >
-                <Snippet>{connection.name}</Snippet>
+                <Paragraph style={{
+                    color: isHovered ? palette.white : palette.darkGray,
+                    fontWeight: 600,
+                }}>{connection.name}</Paragraph>
             </GridItem>
             <GridItem
                 area={area.info}
                 style={{
-                    lineHeight: '0.8rem',
+                    lineHeight: '0.9rem',
                 }}
             >
-                <Snippet>{credentialInfo}</Snippet>
+                <Paragraph>{credentialInfo}</Paragraph>
             </GridItem>
         </Grid>
     );

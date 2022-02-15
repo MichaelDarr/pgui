@@ -72,7 +72,7 @@ export const SaveConnection: FC<Button> = ({
                 }
             }}
         >
-            SAVE
+            Save
         </Button>
     )
 };

@@ -25,10 +25,11 @@ export const StringInput: FC<StringInput> = ({
             {...props}
             style={{
                 border: `1px solid ${palette.gray}`,
-                borderRadius: '2px',
+                borderRadius: '4px',
                 boxSizing: 'border-box',
-                fontSize: '1rem',
-                padding: '6px',
+                color: palette.darkGray,
+                fontSize: '0.95rem',
+                padding: '0.375rem',
                 width: '100%',
                 ...style,
             }}

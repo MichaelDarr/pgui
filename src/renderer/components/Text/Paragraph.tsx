@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { SpanProps } from 'renderer/types';
 
-export const Snippet: FC<SpanProps> = ({
+export const Paragraph: FC<SpanProps> = ({
     children,
     style,
     ...props
@@ -11,8 +11,7 @@ export const Snippet: FC<SpanProps> = ({
         <span
             {...props}
             style={{
-                fontSize: '0.8rem',
-                letterSpacing: '0.03em',
+                fontSize: '0.9rem',
                 ...style
             }}
         >

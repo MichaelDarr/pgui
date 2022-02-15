@@ -3,11 +3,9 @@ import { useRecoilValue } from 'recoil';
 
 import { Heading } from 'renderer/components/Text/Heading';
 
-import { colorState } from './Color';
 import { connectionNameState } from './ConnectionName';
 
 export const Header: FC<Heading> = props => {
-    const color = useRecoilValue(colorState);
     const connectionName = useRecoilValue(connectionNameState);
 
     if (connectionName === null) {
@@ -19,13 +17,7 @@ export const Header: FC<Heading> = props => {
     }
 
     return (
-        <Heading
-            {...props}
-            style={{
-                borderBottom: `2px solid ${color}`,
-                ...props.style
-            }}
-        >
+        <Heading {...props}>
             {connectionName}
         </Heading>
     );

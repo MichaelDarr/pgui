@@ -1,5 +1,6 @@
 import { CSSProperties, FC } from 'react';
 
+import { palette } from 'renderer/utils/color';
 import { HeadingProps } from 'renderer/types';
 
 export interface Heading extends HeadingProps {
@@ -7,9 +8,9 @@ export interface Heading extends HeadingProps {
 }
 
 const headingSizeMap = {
-    ['large']: '2.5rem',
-    ['medium']: '2rem',
-    ['small']: '1.5rem',
+    ['large']: '1.75rem',
+    ['medium']: '1.5rem',
+    ['small']: '1.25rem',
 }
 
 export const Heading: FC<Heading> = ({
@@ -20,6 +21,7 @@ export const Heading: FC<Heading> = ({
 }) => {
     const headingStyle: CSSProperties = Object.assign(
         {
+            color: palette.blue,
             margin: 0,
             lineHeight: headingSizeMap[size],
         },

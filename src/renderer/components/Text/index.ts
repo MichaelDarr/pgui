@@ -1,2 +1,2 @@
 export { Heading } from './Heading';
-export { Snippet } from './Snippet';
+export { Paragraph } from './Paragraph';

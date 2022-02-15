@@ -33,11 +33,22 @@ const colorHex = (color: Color): string => (
 );
 
 export const palette = {
-    black: '#000000',
-    gray: '#808080',
-    lightGray: '#E8E8E8',
+    // General text
+    black: '#0D0A0B',
+    // Subheadings
+    darkGray: '#474747',
+    // Hovered buttons
+    stoneGray: "#666666",
+    // Input borders
+    gray: '#CED4DA',
+    // Dividers
+    lightGray: '#E7EAE8',
+    // Background
     white: '#FFFFFF',
-    pgBlue: '#336791',
+    // Headings, navigation links, icons, calls to action
+    blue: '#336791',
+    // Links
+    maroon: '#840032'
 };
 
 // randomColorHex generates a random hex color string.

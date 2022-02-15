@@ -29,7 +29,7 @@ export const Color: FC<SpanProps> = ({
                 }
             }}
             style={{
-                borderRadius: '2px',
+                borderRadius: '4px',
                 boxSizing: 'border-box',
                 cursor: 'pointer',
                 display: 'block',

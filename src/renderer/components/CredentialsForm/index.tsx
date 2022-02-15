@@ -28,20 +28,18 @@ const area = {
 }
 
 const gridTemplate = `
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.header}    ${area.header}    ${area.header}    ${area.header}    ${area.header}    .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.connName}  ${area.connName}  ${area.connName}  .                 ${area.color}     .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.host}      ${area.host}      ${area.host}      .                 ${area.port}      .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.username}  .                 ${area.password}  ${area.password}  ${area.password}  .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.dbName}    ${area.dbName}    ${area.dbName}    ${area.dbName}    ${area.dbName}    .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.buttons}   .                 ${area.test}      ${area.test}      ${area.test}      .     " auto
-" .     .                 .                 .                 .                 .                 .     " 1rem
-/ 1rem  13fr              1fr               6fr               1fr               6fr               1rem  `;
+" ${area.header}    ${area.header}    ${area.header}    ${area.header}    ${area.header}   " auto
+" .                 .                 .                 .                 .                " 2rem
+" ${area.connName}  ${area.connName}  ${area.connName}  .                 ${area.color}    " auto
+" .                 .                 .                 .                 .                " 1.5rem
+" ${area.host}      ${area.host}      ${area.host}      .                 ${area.port}     " auto
+" .                 .                 .                 .                 .                " 1.5rem
+" ${area.username}  .                 ${area.password}  ${area.password}  ${area.password} " auto
+" .                 .                 .                 .                 .                " 1.5rem
+" ${area.dbName}    ${area.dbName}    ${area.dbName}    ${area.dbName}    ${area.dbName}   " auto
+" .                 .                 .                 .                 .                " 2.5rem
+" ${area.buttons}   .                 ${area.test}      ${area.test}      ${area.test}     " auto
+/ 13fr              1fr               6fr               1fr               6fr              `;
 
 export const CredentialsForm: FC<SectionProps> = props => {
     return (

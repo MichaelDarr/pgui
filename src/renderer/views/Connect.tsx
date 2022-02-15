@@ -15,10 +15,10 @@ const area = {
 }
 
 const connectContainerTemplate = `
-" ${area.connectionsSidebar}  ${area.divider}  .    .                        . " 3rem
-" ${area.connectionsSidebar}  ${area.divider}  .    ${area.credentialsForm}  . " auto
-" ${area.connectionsSidebar}  ${area.divider}  .    .                        . " 1fr
-/ 20rem                       2px              1fr  auto                     1fr  `;
+" ${area.connectionsSidebar}  ${area.divider}  .    .                        .   " 3rem
+" ${area.connectionsSidebar}  ${area.divider}  .    ${area.credentialsForm}  .   " auto
+" ${area.connectionsSidebar}  ${area.divider}  .    .                        .   " 1fr
+/ 20rem                       2px              1fr  auto                     1fr `;
 
 export const Connect: FC<SectionProps> = (props) => {
     const activeConnection = useRecoilValue(activeConnectionState);
@@ -48,4 +48,4 @@ export const Connect: FC<SectionProps> = (props) => {
             </GridItem>
         </Grid>
     )
-}
+};

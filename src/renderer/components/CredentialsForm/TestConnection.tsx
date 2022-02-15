@@ -67,7 +67,7 @@ export const TestConnection: FC<SpanProps> = props => {
             disabled={credentials === null}
             onClick={refreshTestResult}
         >
-            TEST
+            Test
         </Button>
     );
 
@@ -86,21 +86,18 @@ interface TestResult {
     message?: string;
 }
 
-const TestConnectionResult: FC<TestResult> = ({
-    result,
-    message,
-}) => {
+const TestConnectionResult: FC<TestResult> = ({ result }) => {
     switch (result) {
         case 'error':
             return (
                 <span style={{ color: 'red' }}>
-                    Internal Error: {message}
+                    Internal error
                 </span>
             );
         case 'failure':
             return (
                 <span style={{ color: 'red' }}>
-                    Connection Failed: {message}
+                    Connection failed
                 </span>
             );
         case 'loading':
@@ -112,7 +109,7 @@ const TestConnectionResult: FC<TestResult> = ({
         case 'success':
             return (
                 <span style={{ color: 'green' }}>
-                    Connection Successful
+                    Connection successful
                 </span>
             );
     }
