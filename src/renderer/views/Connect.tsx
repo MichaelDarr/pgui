@@ -6,7 +6,7 @@ import { CredentialsForm } from 'renderer/components/CredentialsForm';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { activeConnectionState } from 'renderer/state/postgres/connection'
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/palette';
+import { palette } from 'renderer/utils/color';
 
 const area = {
     connectionsSidebar: 'connections-sidebar',

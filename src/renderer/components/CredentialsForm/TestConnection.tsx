@@ -67,7 +67,7 @@ export const TestConnection: FC<SpanProps> = props => {
             disabled={credentials === null}
             onClick={refreshTestResult}
         >
-            Test Connection
+            TEST
         </Button>
     );
 

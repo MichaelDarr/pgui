@@ -32,5 +32,12 @@ const colorHex = (color: Color): string => (
     `#${intensityHex(color.red)}${intensityHex(color.green)}${intensityHex(color.blue)}`
 );
 
+export const palette = {
+    black: '#000000',
+    gray: '#808080',
+    lightGray: '#E8E8E8',
+    white: '#FFFFFF'
+};
+
 // randomColorHex generates a random hex color string.
 export const randomColorHex = () => colorHex(randomColor());
