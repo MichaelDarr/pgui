@@ -6,14 +6,15 @@ import { Connection, SaveConnectionRequest } from 'protos/postgres/postgres_pb';
 import { postgres } from 'renderer/client';
 import { Button } from 'renderer/components/Input/Button';
 import { activeConnectionIDState, connectionsState } from 'renderer/state/postgres/connection';
-import { randomColorHex } from 'renderer/utils/color';
 
+import { colorState } from './Color';
 import { connectionNameState } from './ConnectionName';
 import { credentialsState } from './TestConnection';
 
 const connectionState = selector<null|Connection>({
     key: 'CredentailsFormConnection',
     get: ({ get }) => {
+        const color = get(colorState);
         const credentials = get(credentialsState);
         const name = get(connectionNameState);
         if (name === null || credentials === null) {
@@ -24,7 +25,7 @@ const connectionState = selector<null|Connection>({
         connection.setCredentials(credentials);
         connection.setName(name);
         connection.setId(uuid.v4());
-        connection.setColor(randomColorHex());
+        connection.setColor(color);
         return connection;
     },
 });

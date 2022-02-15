@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { Grid, GridItem } from 'renderer/components/Grid';
-import { Heading } from 'renderer/components/Text/Heading';
 import { SectionProps } from 'renderer/types';
 
-import { ConnectionName, connectionNameState } from './ConnectionName';
+import { Color } from './Color';
+import { ConnectionName } from './ConnectionName';
 import { DatabaseName } from './DatabaseName';
+import { Header } from './Header';
 import { Host } from './Host';
 import { Password } from './Password';
 import { Port } from './Port';
@@ -16,6 +16,7 @@ import { Username } from './Username';
 
 const area = {
     buttons: 'buttons',
+    color: 'color',
     connName: 'connection-name',
     dbName: 'database-name',
     header: 'header',
@@ -30,7 +31,7 @@ const gridTemplate = `
 " .     .                 .                 .                 .                 .                 .     " 1rem
 " .     ${area.header}    ${area.header}    ${area.header}    ${area.header}    ${area.header}    .     " auto
 " .     .                 .                 .                 .                 .                 .     " 1rem
-" .     ${area.connName}  ${area.connName}  ${area.connName}  .                 .                 .     " auto
+" .     ${area.connName}  ${area.connName}  ${area.connName}  .                 ${area.color}     .     " auto
 " .     .                 .                 .                 .                 .                 .     " 1rem
 " .     ${area.host}      ${area.host}      ${area.host}      .                 ${area.port}      .     " auto
 " .     .                 .                 .                 .                 .                 .     " 1rem
@@ -43,19 +44,16 @@ const gridTemplate = `
 / 1rem  13fr              1fr               6fr               1fr               6fr               1rem  `;
 
 export const CredentialsForm: FC<SectionProps> = props => {
-    const connectionName = useRecoilValue(connectionNameState);
-
-    const headerText = connectionName === null
-        ? 'Untitled Connection'
-        : connectionName
-
     return (
         <Grid {...props} template={gridTemplate}>
             <GridItem area={area.header}>
-                <Heading size='medium'>{headerText}</Heading>
+                <Header />
             </GridItem>
             <GridItem area={area.connName}>
                 <ConnectionName />
+            </GridItem>
+            <GridItem area={area.color}>
+                <Color />
             </GridItem>
             <GridItem area={area.host}>
                 <Host />

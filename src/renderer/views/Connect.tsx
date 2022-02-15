@@ -1,11 +1,12 @@
 import { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { ConnectionSidebar } from '../components/ConnectionSidebar';
-import { CredentialsForm } from '../components/CredentialsForm';
-import { Grid, GridItem } from '../components/Grid';
-import { activeConnectionState } from '../state/postgres/connection'
-import { SectionProps } from '../types';
+import { ConnectionSidebar } from 'renderer/components/ConnectionSidebar';
+import { CredentialsForm } from 'renderer/components/CredentialsForm';
+import { Grid, GridItem } from 'renderer/components/Grid';
+import { activeConnectionState } from 'renderer/state/postgres/connection'
+import { SectionProps } from 'renderer/types';
+import { palette } from 'renderer/utils/palette';
 
 const area = {
     connectionsSidebar: 'connections-sidebar',
@@ -31,7 +32,7 @@ export const Connect: FC<SectionProps> = (props) => {
         >
             <GridItem
                 area={area.connectionsSidebar}
-                style={{ backgroundColor: '#E8E8E8' }}
+                style={{ backgroundColor: palette.lightGray }}
             >
                 <ConnectionSidebar/>
             </GridItem>
@@ -39,7 +40,7 @@ export const Connect: FC<SectionProps> = (props) => {
                 area={area.credentialsForm}
                 alignSelf='center'
                 justifySelf='center'
-                style={{ backgroundColor: '#FFFFFF' }}
+                style={{ backgroundColor: palette.white }}
             >
                 <CredentialsForm style={{ maxWidth: '30rem' }} />
             </GridItem>
