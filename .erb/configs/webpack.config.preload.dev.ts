@@ -11,6 +11,8 @@ import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 
 export default merge(baseConfig, {
+    context: __dirname,
+
     devtool: 'inline-source-map',
 
     mode: 'development',
@@ -35,6 +37,13 @@ export default merge(baseConfig, {
                 parallel: true,
             }),
         ],
+    },
+
+    resolve: {
+        modules: [
+            webpackPaths.srcMainPath,
+        ],
+        extensions: ['.tsx', '.ts'],
     },
 
     plugins: [

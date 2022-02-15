@@ -1,6 +1,6 @@
 import { CSSProperties, FC } from 'react';
 
-import { HeadingProps } from '../../types';
+import { HeadingProps } from 'renderer/types';
 
 interface Heading extends HeadingProps {
     size?: 'large'|'medium'|'small';

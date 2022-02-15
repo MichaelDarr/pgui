@@ -1,14 +1,15 @@
 import { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 
-import { getCredentials, getServerAddress } from './server';
-import { Deserializer, PostgresService, PostgresServiceRPCName } from './types';
-import { wrapClientUnaryCall } from './rpc';
 import {
     GetConnectionsRequest,
     SaveConnectionRequest,
     TestConnectionRequest,
-} from '../protos/postgres/postgres_pb';
-import { PostgresServiceClient } from '../protos/postgres/postgres_grpc_pb';
+} from 'protos/postgres/postgres_pb';
+import { PostgresServiceClient } from 'protos/postgres/postgres_grpc_pb';
+
+import { wrapClientUnaryCall } from './rpc';
+import { getCredentials, getServerAddress } from './server';
+import { Deserializer, PostgresService, PostgresServiceRPCName } from './types';
 
 let postgresClient: PostgresServiceClient|null = null;
 const getPostgresClient = (): PostgresServiceClient => {

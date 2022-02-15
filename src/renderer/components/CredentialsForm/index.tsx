@@ -1,19 +1,28 @@
 import { FC } from 'react';
-import { atom, DefaultValue, selector, useRecoilCallback, useRecoilState } from 'recoil';
+import {
+    atom,
+    DefaultValue,
+    selector,
+    useRecoilCallback,
+    useRecoilState,
+    useRecoilValue,
+} from 'recoil';
 import * as uuid from 'uuid';
 
-import { Grid, GridItem } from '../Grid';
-import { Heading } from '../Text/Heading';
-import { postgres } from '../../client';
-import { activeConnectionIDState, connectionsState } from '../../state/postgres/connection';
-import { SectionProps } from '../../types';
-import { randomColorHex } from '../../utils/color';
 import {
     Credentials,
     Connection,
     SaveConnectionRequest,
     TestConnectionRequest,
-} from '../../../protos/postgres/postgres_pb';
+} from 'protos/postgres/postgres_pb';
+import { postgres } from 'renderer/client';
+import { Grid, GridItem } from 'renderer/components/Grid';
+import { Heading } from 'renderer/components/Text/Heading';
+import { activeConnectionIDState, connectionsState } from 'renderer/state/postgres/connection';
+import { SectionProps } from 'renderer/types';
+import { randomColorHex } from 'renderer/utils/color';
+
+import { Name, nameState } from './Name';
 
 const databaseState = atom({
     key: 'CredentialsFormDatabase',
@@ -23,10 +32,7 @@ const hostState = atom({
     key: 'CredentialsFormHost',
     default: 'localhost',
 });
-const nameState = atom({
-    key: 'CredentialsFormName',
-    default: 'CoolConnection',
-});
+
 const passwordState = atom({
     key: 'CredentialsFormPassword',
     default: 'pass',
@@ -64,9 +70,24 @@ interface TestResult {
     result: 'untested'|'success'|'failure'|'error';
     message?: string;
 }
-const testResultState = atom<TestResult>({
+const testResultState = selector<TestResult>({
     key: 'CredentialsFormTestResult',
-    default: { result: 'untested' },
+    get: ({ get }) => {
+        const credentials = get(credentialsState);
+        const arg = new TestConnectionRequest();
+        arg.setCredentials(credentials);
+        return new Promise(res => {
+            postgres.testConnection(arg, (err, value) => {
+                if (err) {
+                    res({ result: 'error', message: String(err) });
+                } else if (!value) {
+                    res({ result: 'error', message: String('no response from driver') });
+                } else {
+                    res({ result: value.getSuccess() ? 'success' : 'failure' });
+                }
+            });
+        })
+    }
 });
 
 const credentialsState = selector<Credentials>({
@@ -87,19 +108,33 @@ const credentialsState = selector<Credentials>({
     },
 });
 
-const connectionState = selector<Connection>({
+const connectionState = selector<null|Connection>({
     key: 'CredentailsFormConnection',
     get: ({ get }) => {
         const connection = new Connection();
         const credentials = get(credentialsState);
         connection.setCredentials(credentials);
         const name = get(nameState);
+        if (name === null) {
+            return null;
+        }
         connection.setName(name);
         connection.setId(uuid.v4());
         connection.setColor(randomColorHex());
         return connection;
     },
 });
+
+const connectionHeaderText = selector({
+    key: 'CredentailsFormConnectionHeaderText',
+    get:({ get }) => {
+        const connectionName = get(nameState);
+        if (connectionName === null) {
+            return 'Untitled Connection';
+        }
+        return connectionName;
+    }
+})
 
 const area = {
     header: 'header',
@@ -119,33 +154,24 @@ const gridTemplate = `
 / 1rem  auto             1rem            auto                   1fr `;
 
 export const CredentialsForm: FC<SectionProps> = (props) => {
-    const [name, setName] = useRecoilState(nameState);
+    const headerText = useRecoilValue(connectionHeaderText);
+
     const [host, setHost] = useRecoilState(hostState);
     const [port, setPort] = useRecoilState(portStringifiedState);
     const [user, setUser] = useRecoilState(userState);
     const [db, setDb] = useRecoilState(databaseState);
     const [password, setPassword] = useRecoilState(passwordState);
-    const [testResult, setTestResult] = useRecoilState(testResultState);
+    const testResult = useRecoilValue(testResultState);
 
-    const refreshTestResult = useRecoilCallback(({ snapshot }) => async () => {
-        const credentials = await snapshot.getPromise(credentialsState);
-        const arg = new TestConnectionRequest();
-        arg.setCredentials(credentials);
-        postgres.testConnection(arg, (err, value) => {
-            let newResult: TestResult;
-            if (err) {
-                newResult = { result: 'error', message: String(err) };
-            } else if (!value) {
-                newResult = { result: 'error', message: String('no response from driver') };
-            } else {
-                newResult = { result: value.getSuccess() ? 'success' : 'failure' };
-            }
-            setTestResult(newResult);
-        });
-    }, []);
+    const refreshTestResult = useRecoilCallback(({ refresh }) => () => {
+        refresh(testResultState);
+    })
 
     const saveConnection = useRecoilCallback(({ refresh, set, snapshot }) => async () => {
         const connection = await snapshot.getPromise(connectionState);
+        if (connection === null) {
+            return;
+        }
         const arg = new SaveConnectionRequest();
         arg.setConnection(connection);
         postgres.saveConnection(arg, (err, value) => {
@@ -181,35 +207,26 @@ export const CredentialsForm: FC<SectionProps> = (props) => {
     return (
         <Grid {...props} template={gridTemplate}>
             <GridItem area={area.header}>
-                <Heading size='medium'>New Connection</Heading>
+                <Heading size='medium'>{headerText}</Heading>
             </GridItem>
             <GridItem area={area.form}>
-                <hr />
-                <label>
-                    <p>Name</p>
-                    <input type='text' value={name} onChange={e => setName(e.target.value)} />
-                </label>
-                <hr />
+                <Name />
                 <label>
                     <p>Host</p>
                     <input type='text' value={host} onChange={e => setHost(e.target.value)} />
                 </label>
-                <hr />
                 <label>
                     <p>Port</p>
                     <input type='text' value={port} onChange={e => setPort(e.target.value)} />
                 </label>
-                <hr />
                 <label>
                     <p>User</p>
                     <input type='text' value={user} onChange={e => setUser(e.target.value)} />
                 </label>
-                <hr />
                 <label>
                     <p>DB</p>
                     <input type='text' value={db} onChange={e => setDb(e.target.value)} />
                 </label>
-                <hr />
                 <label>
                     <p>Password</p>
                     <input type='text' value={password} onChange={e => setPassword(e.target.value)} />

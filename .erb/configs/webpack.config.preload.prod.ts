@@ -44,6 +44,13 @@ export default merge(baseConfig, {
         ],
     },
 
+    resolve: {
+        modules: [
+            webpackPaths.srcMainPath,
+        ],
+        extensions: ['.tsx', '.ts'],
+    },
+
     plugins: [
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',

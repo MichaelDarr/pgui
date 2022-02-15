@@ -1,4 +1,4 @@
-import { SectionProps } from '../../types';
+import { SectionProps } from 'renderer/types';
 
 
 interface GridBase extends SectionProps {

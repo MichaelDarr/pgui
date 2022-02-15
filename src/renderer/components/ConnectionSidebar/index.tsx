@@ -1,8 +1,8 @@
 import { FC, Suspense } from 'react';
 
-import { ConnectionList } from './ConnectionList';
-import { Grid, GridItem } from '../Grid';
-import { Heading } from '../Text/Heading';
+import { ConnectionList } from 'renderer/components/ConnectionSidebar/ConnectionList';
+import { Grid, GridItem } from 'renderer/components/Grid';
+import { Heading } from 'renderer/components/Text/Heading';
 import { SectionProps } from '../../types';
 
 const area = {

@@ -22,6 +22,8 @@
     "outDir": "release/app/dist",
     "paths": {
         "*": ["src/@types"],
+        "protos/*": ["./protos/*"],
+        "renderer/*": ["./renderer/*"]
     },
   },
   "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]

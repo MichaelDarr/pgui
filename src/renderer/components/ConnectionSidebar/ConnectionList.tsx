@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { connectionsState } from '../../state/postgres/connection';
-import { DivProps } from '../../types';
+import { connectionsState } from 'renderer/state/postgres/connection';
+import { DivProps } from 'renderer/types';
 
 export const ConnectionList: FC<DivProps> = (props) => {
     const connections = useRecoilValue(connectionsState);
