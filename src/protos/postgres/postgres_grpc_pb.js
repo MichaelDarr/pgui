@@ -26,6 +26,28 @@ function deserialize_postgres_GetConnectionsResponse(buffer_arg) {
   return protos_postgres_postgres_pb.GetConnectionsResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_postgres_GetSchemasRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetSchemasRequest)) {
+    throw new Error('Expected argument of type postgres.GetSchemasRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetSchemasRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.GetSchemasRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_GetSchemasResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetSchemasResponse)) {
+    throw new Error('Expected argument of type postgres.GetSchemasResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetSchemasResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.GetSchemasResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_postgres_SaveConnectionRequest(arg) {
   if (!(arg instanceof protos_postgres_postgres_pb.SaveConnectionRequest)) {
     throw new Error('Expected argument of type postgres.SaveConnectionRequest');
@@ -104,6 +126,17 @@ var PostgresServiceService = exports.PostgresServiceService = {
     requestDeserialize: deserialize_postgres_TestConnectionRequest,
     responseSerialize: serialize_postgres_TestConnectionResponse,
     responseDeserialize: deserialize_postgres_TestConnectionResponse,
+  },
+  getSchemas: {
+    path: '/postgres.PostgresService/GetSchemas',
+    requestStream: false,
+    responseStream: false,
+    requestType: protos_postgres_postgres_pb.GetSchemasRequest,
+    responseType: protos_postgres_postgres_pb.GetSchemasResponse,
+    requestSerialize: serialize_postgres_GetSchemasRequest,
+    requestDeserialize: deserialize_postgres_GetSchemasRequest,
+    responseSerialize: serialize_postgres_GetSchemasResponse,
+    responseDeserialize: deserialize_postgres_GetSchemasResponse,
   },
 };
 

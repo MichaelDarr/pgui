@@ -21,6 +21,7 @@ type PostgresServiceClient interface {
 	GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error)
 	SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error)
 	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
+	GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error)
 }
 
 type postgresServiceClient struct {
@@ -58,6 +59,15 @@ func (c *postgresServiceClient) TestConnection(ctx context.Context, in *TestConn
 	return out, nil
 }
 
+func (c *postgresServiceClient) GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error) {
+	out := new(GetSchemasResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetSchemas", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PostgresServiceServer is the server API for PostgresService service.
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
@@ -65,6 +75,7 @@ type PostgresServiceServer interface {
 	GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error)
 	SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error)
 	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
+	GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
 }
 
@@ -80,6 +91,9 @@ func (UnimplementedPostgresServiceServer) SaveConnection(context.Context, *SaveC
 }
 func (UnimplementedPostgresServiceServer) TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
+}
+func (UnimplementedPostgresServiceServer) GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchemas not implemented")
 }
 func (UnimplementedPostgresServiceServer) mustEmbedUnimplementedPostgresServiceServer() {}
 
@@ -148,6 +162,24 @@ func _PostgresService_TestConnection_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostgresService_GetSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSchemasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).GetSchemas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/GetSchemas",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).GetSchemas(ctx, req.(*GetSchemasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PostgresService_ServiceDesc is the grpc.ServiceDesc for PostgresService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +198,10 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TestConnection",
 			Handler:    _PostgresService_TestConnection_Handler,
+		},
+		{
+			MethodName: "GetSchemas",
+			Handler:    _PostgresService_GetSchemas_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -2,28 +2,15 @@ package server
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
-	"github.com/jackc/pgx/v4"
 )
 
 // PostgresServer is an authentication GRPC server.
 type PostgresServer struct {
 	proto.UnimplementedPostgresServiceServer
-}
-
-// credentialConnectionString returns a postgres connection string.
-func credentialConnectionString(credentials *proto.Credentials) string {
-	return fmt.Sprintf(
-		"host=%v port=%v user=%v password=%v dbname=%v",
-		credentials.Host,
-		credentials.Port,
-		credentials.User,
-		credentials.Password,
-		credentials.Db,
-	)
+	connections
 }
 
 // GetConnections gets all saved connections in a user's configuration.
@@ -44,16 +31,7 @@ func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConn
 	if err != nil {
 		return nil, err
 	}
-	newConnection := config.Connection{
-		ID:       req.Connection.Id,
-		Name:     req.Connection.Name,
-		Color:    req.Connection.Color,
-		Host:     req.Connection.Credentials.Host,
-		Port:     req.Connection.Credentials.Port,
-		User:     req.Connection.Credentials.User,
-		DB:       req.Connection.Credentials.Db,
-		Password: req.Connection.Credentials.Password,
-	}
+	newConnection := config.NewConnectionFromProto(req.Connection)
 	if err = cfg.AddConnection(newConnection); err != nil {
 		return nil, err
 	}
@@ -65,10 +43,18 @@ func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConn
 
 // TestConnection tests if some credentials can connect to a postgres database.
 func (s *PostgresServer) TestConnection(ctx context.Context, req *proto.TestConnectionRequest) (*proto.TestConnectionResponse, error) {
-	connString := credentialConnectionString(req.Credentials)
-	_, err := pgx.Connect(ctx, connString)
+	_, err := config.NewCredentialsFromProto(req.Credentials).Connect(ctx)
 	res := &proto.TestConnectionResponse{
 		Success: err == nil,
 	}
 	return res, nil
+}
+
+// GetSchemas gets a list of all schemas within a connection.
+func (s *PostgresServer) GetSchemas(ctx context.Context, req *proto.GetSchemasRequest) (*proto.GetSchemasResponse, error) {
+	_, err := s.getConnection(req.ConnectionID)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
 }

@@ -63,6 +63,16 @@ func (config *Config) AddConnection(connection Connection) error {
 	return config.write()
 }
 
+// GetConnection retrieves a connection in the configuration by ID.
+func (config *Config) GetConnection(connectionID string) (Connection, error) {
+	for _, connection := range config.Connection {
+		if connection.ID == connectionID {
+			return connection, nil
+		}
+	}
+	return Connection{}, fmt.Errorf("connection id not found: %v", connectionID)
+}
+
 // ProtoConnections gets all connections configured as protobuf messages.
 func (config *Config) ProtoConnections() []*proto.Connection {
 	connections := make([]*proto.Connection, len(config.Connection))

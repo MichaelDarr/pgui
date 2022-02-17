@@ -8,6 +8,7 @@ service PostgresService {
     rpc GetConnections(GetConnectionsRequest) returns (GetConnectionsResponse) {}
     rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
     rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
+    rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse){}
 }
 
 message Credentials {
@@ -46,4 +47,12 @@ message TestConnectionRequest {
 message TestConnectionResponse {
     bool success = 1;
     string errorMessage = 2;
+}
+
+message GetSchemasRequest {
+    string connectionID = 1;
+}
+
+message GetSchemasResponse {
+    repeated string schemas = 1;
 }

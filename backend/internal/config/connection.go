@@ -1,16 +1,33 @@
 package config
 
-import proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
+import (
+	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
+)
 
 type Connection struct {
-	ID       string
-	Name     string
-	Color    string
-	Host     string
-	Port     int32
-	User     string
-	DB       string
-	Password string
+	Credentials
+	ID    string
+	Name  string
+	Color string
+}
+
+// NewConnectionFromProto generates a Connection a protobuf connection.
+func NewConnectionFromProto(connection *proto.Connection) Connection {
+	return Connection{
+		Credentials: NewCredentialsFromProto(connection.Credentials),
+		ID:          connection.Id,
+		Name:        connection.Name,
+		Color:       connection.Color,
+	}
+}
+
+// GetConnection gets the information of a single connection from the configuation.
+func GetConnection(connectionID string) (Connection, error) {
+	cfg, err := GetConfig()
+	if err != nil {
+		return Connection{}, err
+	}
+	return cfg.GetConnection(connectionID)
 }
 
 // Proto gets a connections configured as a protobuf message.

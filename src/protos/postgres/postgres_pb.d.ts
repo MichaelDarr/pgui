@@ -201,3 +201,45 @@ export namespace TestConnectionResponse {
   }
 }
 
+export class GetSchemasRequest extends jspb.Message {
+  getConnectionid(): string;
+  setConnectionid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetSchemasRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetSchemasRequest): GetSchemasRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetSchemasRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetSchemasRequest;
+  static deserializeBinaryFromReader(message: GetSchemasRequest, reader: jspb.BinaryReader): GetSchemasRequest;
+}
+
+export namespace GetSchemasRequest {
+  export type AsObject = {
+    connectionid: string,
+  }
+}
+
+export class GetSchemasResponse extends jspb.Message {
+  clearSchemasList(): void;
+  getSchemasList(): Array<string>;
+  setSchemasList(value: Array<string>): void;
+  addSchemas(value: string, index?: number): string;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetSchemasResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetSchemasResponse): GetSchemasResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetSchemasResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetSchemasResponse;
+  static deserializeBinaryFromReader(message: GetSchemasResponse, reader: jspb.BinaryReader): GetSchemasResponse;
+}
+
+export namespace GetSchemasResponse {
+  export type AsObject = {
+    schemasList: Array<string>,
+  }
+}
+
