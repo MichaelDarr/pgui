@@ -1,10 +1,10 @@
 import { atom, selector } from 'recoil';
 
-import { postgres } from '../../client';
+import { postgres } from 'renderer/client';
 import {
     Connection,
     GetConnectionsRequest,
-} from '../../../protos/postgres/postgres_pb';
+} from 'protos/postgres/postgres_pb';
 
 export const connectionsState = selector<Connection.AsObject[]>({
     key: 'PostgresConnections',

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MichaelDarr/pgui/backend/internal/pg"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
-	"github.com/jackc/pgx/v4"
 )
 
 type Credentials struct {
@@ -28,8 +28,8 @@ func NewCredentialsFromProto(credentials *proto.Credentials) Credentials {
 }
 
 // Connect returns a pgx connection.
-func (c Credentials) Connect(ctx context.Context) (*pgx.Conn, error) {
-	return pgx.Connect(ctx, c.ConnectionString())
+func (c Credentials) Connect(ctx context.Context) (pg.Conn, error) {
+	return pg.Connect(ctx, c.ConnectionString())
 }
 
 // ConnectionString returns a postgres connection string.

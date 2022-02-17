@@ -1,6 +1,9 @@
 package config
 
 import (
+	"context"
+
+	"github.com/MichaelDarr/pgui/backend/internal/pg"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
 )
 
@@ -28,6 +31,11 @@ func GetConnection(connectionID string) (Connection, error) {
 		return Connection{}, err
 	}
 	return cfg.GetConnection(connectionID)
+}
+
+// Connect returns a pgx connection.
+func (c Connection) Connect(ctx context.Context) (pg.Conn, error) {
+	return c.Credentials.Connect(ctx)
 }
 
 // Proto gets a connections configured as a protobuf message.

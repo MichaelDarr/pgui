@@ -4,13 +4,36 @@ import (
 	"context"
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
+	"github.com/MichaelDarr/pgui/backend/internal/pg"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
 )
 
 // PostgresServer is an authentication GRPC server.
 type PostgresServer struct {
 	proto.UnimplementedPostgresServiceServer
-	connections
+	conns map[string]pg.Conn
+}
+
+// newPostgresServer creates a PostgresServer.
+func newPostgresServer() *PostgresServer {
+	return &PostgresServer{
+		conns: make(map[string]pg.Conn),
+	}
+}
+
+// getConn gets a connection, creating it if not present.
+func (s *PostgresServer) getConn(connID string) (pg.Conn, error) {
+	for id, connection := range s.conns {
+		if id == connID {
+			return connection, nil
+		}
+	}
+	conn, err := config.Connect(context.Background(), connID)
+	if err != nil {
+		return pg.Conn{}, err
+	}
+	s.conns[connID] = conn
+	return conn, nil
 }
 
 // GetConnections gets all saved connections in a user's configuration.
@@ -19,10 +42,9 @@ func (s *PostgresServer) GetConnections(context.Context, *proto.GetConnectionsRe
 	if err != nil {
 		return nil, err
 	}
-	res := &proto.GetConnectionsResponse{
+	return &proto.GetConnectionsResponse{
 		Connections: cfg.ProtoConnections(),
-	}
-	return res, nil
+	}, nil
 }
 
 // SaveConnection saves connection information to a user's configuration.
@@ -35,26 +57,30 @@ func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConn
 	if err = cfg.AddConnection(newConnection); err != nil {
 		return nil, err
 	}
-	res := &proto.SaveConnectionResponse{
+	return &proto.SaveConnectionResponse{
 		Connection: req.Connection,
-	}
-	return res, nil
+	}, nil
 }
 
 // TestConnection tests if some credentials can connect to a postgres database.
 func (s *PostgresServer) TestConnection(ctx context.Context, req *proto.TestConnectionRequest) (*proto.TestConnectionResponse, error) {
 	_, err := config.NewCredentialsFromProto(req.Credentials).Connect(ctx)
-	res := &proto.TestConnectionResponse{
+	return &proto.TestConnectionResponse{
 		Success: err == nil,
-	}
-	return res, nil
+	}, nil
 }
 
 // GetSchemas gets a list of all schemas within a connection.
 func (s *PostgresServer) GetSchemas(ctx context.Context, req *proto.GetSchemasRequest) (*proto.GetSchemasResponse, error) {
-	_, err := s.getConnection(req.ConnectionID)
+	conn, err := s.getConn(req.ConnectionID)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	schemas, err := conn.Schemas(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.GetSchemasResponse{
+		Schemas: schemas,
+	}, nil
 }

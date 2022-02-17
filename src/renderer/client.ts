@@ -7,6 +7,7 @@ import type {
 } from '../preload/types';
 import {
     GetConnectionsResponse,
+    GetSchemasResponse,
     SaveConnectionResponse,
     TestConnectionResponse,
 } from '../protos/postgres/postgres_pb';
@@ -40,6 +41,7 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 
 export const postgres: PostgresService = {
     getConnections: createPostgresSourceMethod('getConnections', GetConnectionsResponse),
+    getSchemas: createPostgresSourceMethod('getSchemas', GetSchemasResponse),
     saveConnection: createPostgresSourceMethod('saveConnection', SaveConnectionResponse),
     testConnection: createPostgresSourceMethod('testConnection', TestConnectionResponse),
 }

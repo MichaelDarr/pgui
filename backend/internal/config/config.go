@@ -1,12 +1,14 @@
 package config
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	"github.com/MichaelDarr/pgui/backend/internal/pg"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
 )
 
@@ -57,10 +59,28 @@ func GetConfig() (*Config, error) {
 	return &config, err
 }
 
+// Connect returns a pgx connection.
+func Connect(ctx context.Context, connectionID string) (pg.Conn, error) {
+	config, err := GetConfig()
+	if err != nil {
+		return pg.Conn{}, err
+	}
+	return config.Connect(ctx, connectionID)
+}
+
 // AddConnection writes a new connection into the configuration file.
 func (config *Config) AddConnection(connection Connection) error {
 	config.Connection = append(config.Connection, connection)
 	return config.write()
+}
+
+// Connect returns a pgx connection.
+func (config *Config) Connect(ctx context.Context, connectionID string) (pg.Conn, error) {
+	connection, err := config.GetConnection(connectionID)
+	if err != nil {
+		return pg.Conn{}, err
+	}
+	return connection.Connect(ctx)
 }
 
 // GetConnection retrieves a connection in the configuration by ID.

@@ -17,7 +17,7 @@ type GRPC struct {
 // NewGRPC creates an auth grpc server.
 func NewGRPC() *GRPC {
 	grpcServer := grpc.NewServer()
-	postgresServer := &PostgresServer{}
+	postgresServer := newPostgresServer()
 	proto.RegisterPostgresServiceServer(grpcServer, postgresServer)
 
 	return &GRPC{
