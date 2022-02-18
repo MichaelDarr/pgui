@@ -25,7 +25,7 @@ export const StringInput: FC<StringInput> = ({
             {...props}
             style={{
                 border: `1px solid ${palette.gray}`,
-                borderRadius: '4px',
+                borderRadius: '0.25rem',
                 boxSizing: 'border-box',
                 color: palette.darkGray,
                 fontSize: '0.95rem',

@@ -14,7 +14,7 @@ const area = {
 
 const connectContainerTemplate = `
 " ${area.databaseSidebar}  ${area.divider}  ${area.tableData} " 1fr
-/ 20rem                    1px                1fr               `;
+/ 20rem                    2px                1fr               `;
 
 export const DataBrowser: FC<SectionProps> = (props) => {
     return (
@@ -24,7 +24,7 @@ export const DataBrowser: FC<SectionProps> = (props) => {
             fillParent={true}
         >
             <GridItem area={area.databaseSidebar}>
-                <DatabaseSidebar />
+                <DatabaseSidebar style={{ height: '100%' }}/>
             </GridItem>
             <GridItem
                 area={area.divider}
