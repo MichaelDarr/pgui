@@ -4,6 +4,28 @@
 var grpc = require('@grpc/grpc-js');
 var protos_postgres_postgres_pb = require('../../protos/postgres/postgres_pb.js');
 
+function serialize_postgres_DeleteConnectionRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.DeleteConnectionRequest)) {
+    throw new Error('Expected argument of type postgres.DeleteConnectionRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_DeleteConnectionRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.DeleteConnectionRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_DeleteConnectionResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.DeleteConnectionResponse)) {
+    throw new Error('Expected argument of type postgres.DeleteConnectionResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_DeleteConnectionResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.DeleteConnectionResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_postgres_GetConnectionsRequest(arg) {
   if (!(arg instanceof protos_postgres_postgres_pb.GetConnectionsRequest)) {
     throw new Error('Expected argument of type postgres.GetConnectionsRequest');
@@ -116,6 +138,17 @@ function deserialize_postgres_TestConnectionResponse(buffer_arg) {
 
 
 var PostgresServiceService = exports.PostgresServiceService = {
+  deleteConnection: {
+    path: '/postgres.PostgresService/DeleteConnection',
+    requestStream: false,
+    responseStream: false,
+    requestType: protos_postgres_postgres_pb.DeleteConnectionRequest,
+    responseType: protos_postgres_postgres_pb.DeleteConnectionResponse,
+    requestSerialize: serialize_postgres_DeleteConnectionRequest,
+    requestDeserialize: deserialize_postgres_DeleteConnectionRequest,
+    responseSerialize: serialize_postgres_DeleteConnectionResponse,
+    responseDeserialize: deserialize_postgres_DeleteConnectionResponse,
+  },
   getConnections: {
     path: '/postgres.PostgresService/GetConnections',
     requestStream: false,

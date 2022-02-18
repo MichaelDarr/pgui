@@ -18,6 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresServiceClient interface {
+	DeleteConnection(ctx context.Context, in *DeleteConnectionRequest, opts ...grpc.CallOption) (*DeleteConnectionResponse, error)
 	GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error)
 	GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error)
 	GetSchemaTables(ctx context.Context, in *GetSchemaTablesRequest, opts ...grpc.CallOption) (*GetSchemaTablesResponse, error)
@@ -31,6 +32,15 @@ type postgresServiceClient struct {
 
 func NewPostgresServiceClient(cc grpc.ClientConnInterface) PostgresServiceClient {
 	return &postgresServiceClient{cc}
+}
+
+func (c *postgresServiceClient) DeleteConnection(ctx context.Context, in *DeleteConnectionRequest, opts ...grpc.CallOption) (*DeleteConnectionResponse, error) {
+	out := new(DeleteConnectionResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/DeleteConnection", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *postgresServiceClient) GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error) {
@@ -82,6 +92,7 @@ func (c *postgresServiceClient) TestConnection(ctx context.Context, in *TestConn
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
 type PostgresServiceServer interface {
+	DeleteConnection(context.Context, *DeleteConnectionRequest) (*DeleteConnectionResponse, error)
 	GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error)
 	GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error)
 	GetSchemaTables(context.Context, *GetSchemaTablesRequest) (*GetSchemaTablesResponse, error)
@@ -94,6 +105,9 @@ type PostgresServiceServer interface {
 type UnimplementedPostgresServiceServer struct {
 }
 
+func (UnimplementedPostgresServiceServer) DeleteConnection(context.Context, *DeleteConnectionRequest) (*DeleteConnectionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteConnection not implemented")
+}
 func (UnimplementedPostgresServiceServer) GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
 }
@@ -120,6 +134,24 @@ type UnsafePostgresServiceServer interface {
 
 func RegisterPostgresServiceServer(s grpc.ServiceRegistrar, srv PostgresServiceServer) {
 	s.RegisterService(&PostgresService_ServiceDesc, srv)
+}
+
+func _PostgresService_DeleteConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteConnectionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).DeleteConnection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/DeleteConnection",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).DeleteConnection(ctx, req.(*DeleteConnectionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PostgresService_GetConnections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -219,6 +251,10 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "postgres.PostgresService",
 	HandlerType: (*PostgresServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DeleteConnection",
+			Handler:    _PostgresService_DeleteConnection_Handler,
+		},
 		{
 			MethodName: "GetConnections",
 			Handler:    _PostgresService_GetConnections_Handler,

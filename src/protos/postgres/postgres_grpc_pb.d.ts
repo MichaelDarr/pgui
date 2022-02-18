@@ -7,6 +7,7 @@ import * as protos_postgres_postgres_pb from "../../protos/postgres/postgres_pb"
 import * as grpc from "@grpc/grpc-js";
 
 interface IPostgresServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
+  deleteConnection: grpc.MethodDefinition<protos_postgres_postgres_pb.DeleteConnectionRequest, protos_postgres_postgres_pb.DeleteConnectionResponse>;
   getConnections: grpc.MethodDefinition<protos_postgres_postgres_pb.GetConnectionsRequest, protos_postgres_postgres_pb.GetConnectionsResponse>;
   getSchemas: grpc.MethodDefinition<protos_postgres_postgres_pb.GetSchemasRequest, protos_postgres_postgres_pb.GetSchemasResponse>;
   getSchemaTables: grpc.MethodDefinition<protos_postgres_postgres_pb.GetSchemaTablesRequest, protos_postgres_postgres_pb.GetSchemaTablesResponse>;
@@ -17,6 +18,7 @@ interface IPostgresServiceService extends grpc.ServiceDefinition<grpc.UntypedSer
 export const PostgresServiceService: IPostgresServiceService;
 
 export interface IPostgresServiceServer extends grpc.UntypedServiceImplementation {
+  deleteConnection: grpc.handleUnaryCall<protos_postgres_postgres_pb.DeleteConnectionRequest, protos_postgres_postgres_pb.DeleteConnectionResponse>;
   getConnections: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetConnectionsRequest, protos_postgres_postgres_pb.GetConnectionsResponse>;
   getSchemas: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetSchemasRequest, protos_postgres_postgres_pb.GetSchemasResponse>;
   getSchemaTables: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetSchemaTablesRequest, protos_postgres_postgres_pb.GetSchemaTablesResponse>;
@@ -26,6 +28,9 @@ export interface IPostgresServiceServer extends grpc.UntypedServiceImplementatio
 
 export class PostgresServiceClient extends grpc.Client {
   constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+  deleteConnection(argument: protos_postgres_postgres_pb.DeleteConnectionRequest, callback: grpc.requestCallback<protos_postgres_postgres_pb.DeleteConnectionResponse>): grpc.ClientUnaryCall;
+  deleteConnection(argument: protos_postgres_postgres_pb.DeleteConnectionRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.DeleteConnectionResponse>): grpc.ClientUnaryCall;
+  deleteConnection(argument: protos_postgres_postgres_pb.DeleteConnectionRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.DeleteConnectionResponse>): grpc.ClientUnaryCall;
   getConnections(argument: protos_postgres_postgres_pb.GetConnectionsRequest, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetConnectionsResponse>): grpc.ClientUnaryCall;
   getConnections(argument: protos_postgres_postgres_pb.GetConnectionsRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetConnectionsResponse>): grpc.ClientUnaryCall;
   getConnections(argument: protos_postgres_postgres_pb.GetConnectionsRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetConnectionsResponse>): grpc.ClientUnaryCall;

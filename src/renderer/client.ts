@@ -6,6 +6,7 @@ import type {
     PostgresServiceRPCResponse,
 } from '../preload/types';
 import {
+    DeleteConnectionResponse,
     GetConnectionsResponse,
     GetSchemasResponse,
     GetSchemaTablesResponse,
@@ -41,6 +42,7 @@ function createPostgresSourceMethod <T extends Serializable, K>(
 }
 
 export const postgres: PostgresService = {
+    deleteConnection: createPostgresSourceMethod('deleteConnection', DeleteConnectionResponse),
     getConnections: createPostgresSourceMethod('getConnections', GetConnectionsResponse),
     getSchemas: createPostgresSourceMethod('getSchemas', GetSchemasResponse),
     getSchemaTables: createPostgresSourceMethod('getSchemaTables', GetSchemaTablesResponse),

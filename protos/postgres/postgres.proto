@@ -5,6 +5,7 @@ option go_package = "github.com/MichaelDarr/pgui/proto";
 package postgres;
 
 service PostgresService {
+    rpc DeleteConnection(DeleteConnectionRequest) returns (DeleteConnectionResponse) {}
     rpc GetConnections(GetConnectionsRequest) returns (GetConnectionsResponse) {}
     rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse) {}
     rpc GetSchemaTables(GetSchemaTablesRequest) returns (GetSchemaTablesResponse) {}
@@ -36,6 +37,12 @@ message Table {
     bool hasTriggers = 6;
     bool hasRowSecurityEnabled = 7;
 }
+
+message DeleteConnectionRequest{
+    string connectionID = 1;
+}
+
+message DeleteConnectionResponse{}
 
 message GetConnectionsRequest {}
 

@@ -1,6 +1,7 @@
 import { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 
 import {
+    DeleteConnectionRequest,
     GetConnectionsRequest,
     GetSchemasRequest,
     GetSchemaTablesRequest,
@@ -50,6 +51,7 @@ const createPostgresTargetMethod = <T extends PostgresServiceRPCName>(
 }
 
 export const postgresTarget: PostgresService = {
+    deleteConnection: createPostgresTargetMethod('deleteConnection', DeleteConnectionRequest),
     getConnections: createPostgresTargetMethod('getConnections', GetConnectionsRequest),
     getSchemas: createPostgresTargetMethod('getSchemas', GetSchemasRequest),
     getSchemaTables: createPostgresTargetMethod('getSchemaTables', GetSchemaTablesRequest),

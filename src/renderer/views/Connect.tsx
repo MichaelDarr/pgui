@@ -25,7 +25,7 @@ export const Connect: FC<SectionProps> = (props) => {
             fillParent={true}
         >
             <GridItem area={area.connectionsSidebar}>
-                <ConnectionSidebar/>
+                <ConnectionSidebar style={{ height: '100%' }} />
             </GridItem>
             <GridItem
                 area={area.divider}

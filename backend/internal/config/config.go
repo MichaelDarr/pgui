@@ -83,6 +83,17 @@ func (config *Config) Connect(ctx context.Context, connectionID string) (pg.Conn
 	return connection.Connect(ctx)
 }
 
+// DeleteConnection deletes a connection from the configuration file.
+func (config *Config) DeleteConnection(connectionID string) error {
+	for i, connection := range config.Connection {
+		if connection.ID == connectionID {
+			config.Connection = append(config.Connection[:i], config.Connection[i+1:]...)
+			return config.write()
+		}
+	}
+	return fmt.Errorf("connection id not found: %v", connectionID)
+}
+
 // GetConnection retrieves a connection in the configuration by ID.
 func (config *Config) GetConnection(connectionID string) (Connection, error) {
 	for _, connection := range config.Connection {

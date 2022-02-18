@@ -13,7 +13,7 @@ export const TableIcon: FC<TableIcon> = ({
 }) => {
     return (
         <svg
-            viewBox="0 0 14 14"
+            viewBox='0 0 14 14'
             style={{
                 display: 'block',
                 ...style,

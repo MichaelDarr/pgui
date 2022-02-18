@@ -36,6 +36,15 @@ func (s *PostgresServer) getConn(connID string) (pg.Conn, error) {
 	return conn, nil
 }
 
+// DeleteConnection removes connection information from a user's configuration.
+func (s *PostgresServer) DeleteConnection(ctx context.Context, req *proto.DeleteConnectionRequest) (*proto.DeleteConnectionResponse, error) {
+	cfg, err := config.GetConfig()
+	if err == nil {
+		err = cfg.DeleteConnection(req.ConnectionID)
+	}
+	return &proto.DeleteConnectionResponse{}, err
+}
+
 // GetConnections gets all saved connections in a user's configuration.
 func (s *PostgresServer) GetConnections(context.Context, *proto.GetConnectionsRequest) (*proto.GetConnectionsResponse, error) {
 	cfg, err := config.GetConfig()
