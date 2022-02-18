@@ -2,11 +2,11 @@ import { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { connectionsState } from 'renderer/state/postgres/connection';
-import { DivProps } from 'renderer/types';
+import { SectionProps } from 'renderer/types';
 
 import { ConnectionItem } from './ConnectionItem';
 
-export const ConnectionList: FC<DivProps> = ({
+export const ConnectionList: FC<SectionProps> = ({
     style,
     ...props
 }) => {
@@ -17,7 +17,7 @@ export const ConnectionList: FC<DivProps> = ({
     }
 
     return (
-        <div
+        <section
             {...props}
             style={{
                 ...style,
@@ -32,6 +32,6 @@ export const ConnectionList: FC<DivProps> = ({
                     connection={connection}
                 />
             ))}
-        </div>
+        </section>
     );
 };

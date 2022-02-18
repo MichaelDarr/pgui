@@ -114,7 +114,9 @@ export const ConnectionItem: FC<ConnectionItem> = ({
                 <Paragraph style={{
                     color: isHovered ? palette.white : palette.darkGray,
                     fontWeight: 600,
-                }}>{connection.name}</Paragraph>
+                }}>
+                    {connection.name}
+                </Paragraph>
             </GridItem>
             <GridItem
                 area={area.info}

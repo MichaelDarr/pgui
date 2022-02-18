@@ -5,7 +5,12 @@ import { Paragraph } from 'renderer/components/Text';
 import { tablesState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
 
-export const TableList: FC<SectionProps> = props => {
+import { TableItem } from './TableItem';
+
+export const TableList: FC<SectionProps> = ({
+    style,
+    ...props
+}) => {
     const tables = useRecoilValue(tablesState);
 
     if (tables.size === 0) {
@@ -17,11 +22,20 @@ export const TableList: FC<SectionProps> = props => {
     }
 
     return (
-        <section {...props}>
-            {[...tables.keys()].map(tableName => (
-                <Paragraph key={tableName} style={{ display: 'block' }}>
-                    {tableName}
-                </Paragraph>
+        <section
+            {...props}
+            style={{
+                ...style,
+                alignItems: 'stretch',
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+        >
+            {[...tables.values()].map(table => (
+                <TableItem
+                    key={table.name}
+                    table={table}
+                />
             ))}
         </section>
     );

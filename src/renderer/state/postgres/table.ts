@@ -1,4 +1,4 @@
-import { selector, selectorFamily } from 'recoil';
+import { atom, DefaultValue, selector, selectorFamily } from 'recoil';
 
 import { postgres } from 'renderer/client';
 import { GetSchemaTablesRequest, Table } from 'protos/postgres/postgres_pb';
@@ -41,5 +41,31 @@ export const tablesState = selector<Map<string, Table.AsObject>>({
             return new Map();
         }
         return get(tablesQuery({ connectionID, schema }));
+    },
+});
+
+
+const userSelectedTableState = atom<Table.AsObject|null>({
+    key: 'PostgresUserSelectedTable',
+    default: null,
+});
+
+export const tableState = selector<Table.AsObject|null>({
+    key: 'PostgresSelectedTable',
+    get: ({ get }) => {
+        const tables = get(tablesState);
+        const userSelectedTable = get(userSelectedTableState);
+        if (userSelectedTable !== null && tables.has(userSelectedTable.name)) {
+            return userSelectedTable;
+        }
+        return null;
+    },
+    set: ({ get, set }, newValue) => {
+        if (!(newValue instanceof DefaultValue)) {
+            const tables = get(tablesState);
+            if (newValue === null || tables.has(newValue.name)) {
+                set(userSelectedTableState, newValue);
+            }
+        }
     },
 });
