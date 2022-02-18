@@ -19,9 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PostgresServiceClient interface {
 	GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error)
+	GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error)
+	GetSchemaTables(ctx context.Context, in *GetSchemaTablesRequest, opts ...grpc.CallOption) (*GetSchemaTablesResponse, error)
 	SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error)
 	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
-	GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error)
 }
 
 type postgresServiceClient struct {
@@ -35,6 +36,24 @@ func NewPostgresServiceClient(cc grpc.ClientConnInterface) PostgresServiceClient
 func (c *postgresServiceClient) GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error) {
 	out := new(GetConnectionsResponse)
 	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetConnections", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postgresServiceClient) GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error) {
+	out := new(GetSchemasResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetSchemas", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *postgresServiceClient) GetSchemaTables(ctx context.Context, in *GetSchemaTablesRequest, opts ...grpc.CallOption) (*GetSchemaTablesResponse, error) {
+	out := new(GetSchemaTablesResponse)
+	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetSchemaTables", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,23 +78,15 @@ func (c *postgresServiceClient) TestConnection(ctx context.Context, in *TestConn
 	return out, nil
 }
 
-func (c *postgresServiceClient) GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error) {
-	out := new(GetSchemasResponse)
-	err := c.cc.Invoke(ctx, "/postgres.PostgresService/GetSchemas", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // PostgresServiceServer is the server API for PostgresService service.
 // All implementations must embed UnimplementedPostgresServiceServer
 // for forward compatibility
 type PostgresServiceServer interface {
 	GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error)
+	GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error)
+	GetSchemaTables(context.Context, *GetSchemaTablesRequest) (*GetSchemaTablesResponse, error)
 	SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error)
 	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
-	GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
 }
 
@@ -86,14 +97,17 @@ type UnimplementedPostgresServiceServer struct {
 func (UnimplementedPostgresServiceServer) GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConnections not implemented")
 }
+func (UnimplementedPostgresServiceServer) GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchemas not implemented")
+}
+func (UnimplementedPostgresServiceServer) GetSchemaTables(context.Context, *GetSchemaTablesRequest) (*GetSchemaTablesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchemaTables not implemented")
+}
 func (UnimplementedPostgresServiceServer) SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveConnection not implemented")
 }
 func (UnimplementedPostgresServiceServer) TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
-}
-func (UnimplementedPostgresServiceServer) GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSchemas not implemented")
 }
 func (UnimplementedPostgresServiceServer) mustEmbedUnimplementedPostgresServiceServer() {}
 
@@ -122,6 +136,42 @@ func _PostgresService_GetConnections_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PostgresServiceServer).GetConnections(ctx, req.(*GetConnectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostgresService_GetSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSchemasRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).GetSchemas(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/GetSchemas",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).GetSchemas(ctx, req.(*GetSchemasRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PostgresService_GetSchemaTables_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSchemaTablesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostgresServiceServer).GetSchemaTables(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/postgres.PostgresService/GetSchemaTables",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostgresServiceServer).GetSchemaTables(ctx, req.(*GetSchemaTablesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -162,24 +212,6 @@ func _PostgresService_TestConnection_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PostgresService_GetSchemas_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSchemasRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PostgresServiceServer).GetSchemas(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/postgres.PostgresService/GetSchemas",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PostgresServiceServer).GetSchemas(ctx, req.(*GetSchemasRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // PostgresService_ServiceDesc is the grpc.ServiceDesc for PostgresService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -192,16 +224,20 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostgresService_GetConnections_Handler,
 		},
 		{
+			MethodName: "GetSchemas",
+			Handler:    _PostgresService_GetSchemas_Handler,
+		},
+		{
+			MethodName: "GetSchemaTables",
+			Handler:    _PostgresService_GetSchemaTables_Handler,
+		},
+		{
 			MethodName: "SaveConnection",
 			Handler:    _PostgresService_SaveConnection_Handler,
 		},
 		{
 			MethodName: "TestConnection",
 			Handler:    _PostgresService_TestConnection_Handler,
-		},
-		{
-			MethodName: "GetSchemas",
-			Handler:    _PostgresService_GetSchemas_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

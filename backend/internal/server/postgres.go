@@ -47,6 +47,36 @@ func (s *PostgresServer) GetConnections(context.Context, *proto.GetConnectionsRe
 	}, nil
 }
 
+// GetSchemas gets all schemas within a connection.
+func (s *PostgresServer) GetSchemas(ctx context.Context, req *proto.GetSchemasRequest) (*proto.GetSchemasResponse, error) {
+	conn, err := s.getConn(req.ConnectionID)
+	if err != nil {
+		return nil, err
+	}
+	schemas, err := conn.Schemas(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.GetSchemasResponse{
+		Schemas: schemas,
+	}, nil
+}
+
+// GetTables gets a slice of all tables within a schema.
+func (s *PostgresServer) GetSchemaTables(ctx context.Context, req *proto.GetSchemaTablesRequest) (*proto.GetSchemaTablesResponse, error) {
+	conn, err := s.getConn(req.ConnectionID)
+	if err != nil {
+		return nil, err
+	}
+	tables, err := conn.SchemaTables(ctx, req.Schema)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.GetSchemaTablesResponse{
+		Tables: tables.Proto(),
+	}, nil
+}
+
 // SaveConnection saves connection information to a user's configuration.
 func (s *PostgresServer) SaveConnection(ctx context.Context, req *proto.SaveConnectionRequest) (*proto.SaveConnectionResponse, error) {
 	cfg, err := config.GetConfig()
@@ -67,20 +97,5 @@ func (s *PostgresServer) TestConnection(ctx context.Context, req *proto.TestConn
 	_, err := config.NewCredentialsFromProto(req.Credentials).Connect(ctx)
 	return &proto.TestConnectionResponse{
 		Success: err == nil,
-	}, nil
-}
-
-// GetSchemas gets a list of all schemas within a connection.
-func (s *PostgresServer) GetSchemas(ctx context.Context, req *proto.GetSchemasRequest) (*proto.GetSchemasResponse, error) {
-	conn, err := s.getConn(req.ConnectionID)
-	if err != nil {
-		return nil, err
-	}
-	schemas, err := conn.Schemas(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.GetSchemasResponse{
-		Schemas: schemas,
 	}, nil
 }

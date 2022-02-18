@@ -14,8 +14,7 @@ const area = {
 
 const connectContainerTemplate = `
 " ${area.connectionsSidebar}  ${area.divider}  .    .                        .   " 3rem
-" ${area.connectionsSidebar}  ${area.divider}  .    ${area.credentialsForm}  .   " auto
-" ${area.connectionsSidebar}  ${area.divider}  .    .                        .   " 1fr
+" ${area.connectionsSidebar}  ${area.divider}  .    ${area.credentialsForm}  .   " calc(100vh - 3rem)
 / 20rem                       2px              1fr  auto                     1fr `;
 
 export const Connect: FC<SectionProps> = (props) => {

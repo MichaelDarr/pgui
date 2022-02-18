@@ -6,9 +6,10 @@ package postgres;
 
 service PostgresService {
     rpc GetConnections(GetConnectionsRequest) returns (GetConnectionsResponse) {}
+    rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse) {}
+    rpc GetSchemaTables(GetSchemaTablesRequest) returns (GetSchemaTablesResponse) {}
     rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
     rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
-    rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse){}
 }
 
 message Credentials {
@@ -26,10 +27,37 @@ message Connection {
     string color = 4;
 }
 
+message Table {
+    string name = 1;
+    string schema = 2;
+    string owner = 3;
+    bool hasIndexes = 4;
+    bool hasRules = 5;
+    bool hasTriggers = 6;
+    bool hasRowSecurityEnabled = 7;
+}
+
 message GetConnectionsRequest {}
 
 message GetConnectionsResponse {
     repeated Connection connections = 1;
+}
+
+message GetSchemasRequest {
+    string connectionID = 1;
+}
+
+message GetSchemasResponse {
+    repeated string schemas = 1;
+}
+
+message GetSchemaTablesRequest {
+    string connectionID = 1;
+    string schema = 2;
+}
+
+message GetSchemaTablesResponse {
+    repeated Table tables = 1;
 }
 
 message SaveConnectionRequest {
@@ -47,12 +75,4 @@ message TestConnectionRequest {
 message TestConnectionResponse {
     bool success = 1;
     string errorMessage = 2;
-}
-
-message GetSchemasRequest {
-    string connectionID = 1;
-}
-
-message GetSchemasResponse {
-    repeated string schemas = 1;
 }

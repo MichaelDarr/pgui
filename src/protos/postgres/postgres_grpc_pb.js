@@ -26,6 +26,28 @@ function deserialize_postgres_GetConnectionsResponse(buffer_arg) {
   return protos_postgres_postgres_pb.GetConnectionsResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_postgres_GetSchemaTablesRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetSchemaTablesRequest)) {
+    throw new Error('Expected argument of type postgres.GetSchemaTablesRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetSchemaTablesRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.GetSchemaTablesRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_GetSchemaTablesResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetSchemaTablesResponse)) {
+    throw new Error('Expected argument of type postgres.GetSchemaTablesResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetSchemaTablesResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.GetSchemaTablesResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_postgres_GetSchemasRequest(arg) {
   if (!(arg instanceof protos_postgres_postgres_pb.GetSchemasRequest)) {
     throw new Error('Expected argument of type postgres.GetSchemasRequest');
@@ -105,6 +127,28 @@ var PostgresServiceService = exports.PostgresServiceService = {
     responseSerialize: serialize_postgres_GetConnectionsResponse,
     responseDeserialize: deserialize_postgres_GetConnectionsResponse,
   },
+  getSchemas: {
+    path: '/postgres.PostgresService/GetSchemas',
+    requestStream: false,
+    responseStream: false,
+    requestType: protos_postgres_postgres_pb.GetSchemasRequest,
+    responseType: protos_postgres_postgres_pb.GetSchemasResponse,
+    requestSerialize: serialize_postgres_GetSchemasRequest,
+    requestDeserialize: deserialize_postgres_GetSchemasRequest,
+    responseSerialize: serialize_postgres_GetSchemasResponse,
+    responseDeserialize: deserialize_postgres_GetSchemasResponse,
+  },
+  getSchemaTables: {
+    path: '/postgres.PostgresService/GetSchemaTables',
+    requestStream: false,
+    responseStream: false,
+    requestType: protos_postgres_postgres_pb.GetSchemaTablesRequest,
+    responseType: protos_postgres_postgres_pb.GetSchemaTablesResponse,
+    requestSerialize: serialize_postgres_GetSchemaTablesRequest,
+    requestDeserialize: deserialize_postgres_GetSchemaTablesRequest,
+    responseSerialize: serialize_postgres_GetSchemaTablesResponse,
+    responseDeserialize: deserialize_postgres_GetSchemaTablesResponse,
+  },
   saveConnection: {
     path: '/postgres.PostgresService/SaveConnection',
     requestStream: false,
@@ -126,17 +170,6 @@ var PostgresServiceService = exports.PostgresServiceService = {
     requestDeserialize: deserialize_postgres_TestConnectionRequest,
     responseSerialize: serialize_postgres_TestConnectionResponse,
     responseDeserialize: deserialize_postgres_TestConnectionResponse,
-  },
-  getSchemas: {
-    path: '/postgres.PostgresService/GetSchemas',
-    requestStream: false,
-    responseStream: false,
-    requestType: protos_postgres_postgres_pb.GetSchemasRequest,
-    responseType: protos_postgres_postgres_pb.GetSchemasResponse,
-    requestSerialize: serialize_postgres_GetSchemasRequest,
-    requestDeserialize: deserialize_postgres_GetSchemasRequest,
-    responseSerialize: serialize_postgres_GetSchemasResponse,
-    responseDeserialize: deserialize_postgres_GetSchemasResponse,
   },
 };
 

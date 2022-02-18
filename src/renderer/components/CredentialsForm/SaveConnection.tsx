@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import { Connection, SaveConnectionRequest } from 'protos/postgres/postgres_pb';
 import { postgres } from 'renderer/client';
 import { Button } from 'renderer/components/Input/Button';
-import { activeConnectionIDState, connectionsState } from 'renderer/state/postgres/connection';
+import { connectionIDState, connectionsState } from 'renderer/state/postgres/connection';
 
 import { colorState } from './Color';
 import { connectionNameState } from './ConnectionName';
@@ -54,7 +54,7 @@ export const SaveConnection: FC<Button> = ({
             refresh(connectionsState);
             const newConnectionID = value.getConnection()?.getId();
             if (typeof newConnectionID !== 'undefined') {
-                set(activeConnectionIDState, newConnectionID);
+                set(connectionIDState, newConnectionID);
             }
         })
     }, [connection]);

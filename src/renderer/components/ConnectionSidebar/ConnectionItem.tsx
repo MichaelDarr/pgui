@@ -5,7 +5,7 @@ import { Connection } from 'protos/postgres/postgres_pb';
 import { palette } from 'renderer/utils/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { Paragraph } from 'renderer/components/Text';
-import { activeConnectionIDState } from 'renderer/state/postgres/connection';
+import { connectionIDState } from 'renderer/state/postgres/connection';
 import { SectionProps } from 'renderer/types';
 
 export interface ConnectionItem extends SectionProps {
@@ -36,7 +36,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
     onMouseLeave,
     ...props
 }) => {
-    const setActiveConnectionID = useSetRecoilState(activeConnectionIDState);
+    const setConnectionID = useSetRecoilState(connectionIDState);
 
     const [isHovered, setIsHovered] = useState(false);
 
@@ -59,7 +59,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             onClick(e);
         }
         if (!e.defaultPrevented) {
-            setActiveConnectionID(connection.id);
+            setConnectionID(connection.id);
         }
     };
 

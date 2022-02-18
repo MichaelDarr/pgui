@@ -18,6 +18,7 @@ export const Select: FC<Select> = ({
                 borderRadius: '0.25rem',
                 boxSizing: 'border-box',
                 color: palette.darkGray,
+                cursor: 'pointer',
                 fontSize: '0.95rem',
                 padding: '0.375rem 0rem',
                 width: '100%',

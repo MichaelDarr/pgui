@@ -24,9 +24,14 @@ const gridTemplate = `
 export const DatabaseSidebar: FC<SectionProps> = props => {
     return (
         <Grid {...props} template={gridTemplate}>
-        <GridItem area={area.tables}>
-            <TableList />
-        </GridItem>
+            <GridItem
+                area={area.tables}
+                style={{
+                    overflowY: 'scroll',
+                }}
+            >
+                <TableList />
+            </GridItem>
             <GridItem
                 area={area.divider}
                 style={{ backgroundColor: palette.lightGray }}

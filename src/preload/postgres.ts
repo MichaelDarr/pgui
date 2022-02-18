@@ -3,6 +3,7 @@ import { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 import {
     GetConnectionsRequest,
     GetSchemasRequest,
+    GetSchemaTablesRequest,
     SaveConnectionRequest,
     TestConnectionRequest,
 } from 'protos/postgres/postgres_pb';
@@ -51,6 +52,7 @@ const createPostgresTargetMethod = <T extends PostgresServiceRPCName>(
 export const postgresTarget: PostgresService = {
     getConnections: createPostgresTargetMethod('getConnections', GetConnectionsRequest),
     getSchemas: createPostgresTargetMethod('getSchemas', GetSchemasRequest),
+    getSchemaTables: createPostgresTargetMethod('getSchemaTables', GetSchemaTablesRequest),
     saveConnection: createPostgresTargetMethod('saveConnection', SaveConnectionRequest),
     testConnection: createPostgresTargetMethod('testConnection', TestConnectionRequest),
 };

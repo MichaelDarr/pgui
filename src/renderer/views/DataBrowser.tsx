@@ -13,8 +13,8 @@ const area = {
 }
 
 const connectContainerTemplate = `
-" ${area.databaseSidebar}  ${area.divider}  ${area.tableData} " 1fr
-/ 20rem                    2px                1fr               `;
+" ${area.databaseSidebar}  ${area.divider}  ${area.tableData}         " 100vh
+/ 20rem                    2px              calc(100vw - 20rem - 2px) `;
 
 export const DataBrowser: FC<SectionProps> = (props) => {
     return (

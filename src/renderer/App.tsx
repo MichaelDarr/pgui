@@ -60,6 +60,7 @@ const GlobalStyle: FC = () => {
                     color: ${palette.black};
                     margin: 0px;
                     padding: 0px;
+                    overflow: hidden;
                     font-family: ${primaryFontFamily};
                 }
             `}

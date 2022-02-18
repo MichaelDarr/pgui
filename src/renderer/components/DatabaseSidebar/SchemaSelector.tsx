@@ -2,14 +2,14 @@ import { FC } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Select } from 'renderer/components/Input/Select';
-import { activeSchemasState, selectedSchemaState } from 'renderer/state/postgres/schema';
+import { schemasState, schemaState } from 'renderer/state/postgres/schema';
 import { SectionProps } from 'renderer/types';
 
 export const SchemaSelector: FC<SectionProps> = props => {
-    const activeSchemas = useRecoilValue(activeSchemasState);
-    const [selectedSchema, setSelectedSchema] = useRecoilState(selectedSchemaState);
+    const schemas = useRecoilValue(schemasState);
+    const [schema, setSchema] = useRecoilState(schemaState);
 
-    const sortedSchemas = [...activeSchemas].sort((a, b) => {
+    const sortedSchemas = [...schemas].sort((a, b) => {
         if (a === 'public') {
             return -1;
         }
@@ -30,13 +30,13 @@ export const SchemaSelector: FC<SectionProps> = props => {
     return (
         <section {...props}>
             <Select
-                onChange={e => setSelectedSchema(e.target.value)}
-                value={selectedSchema??-1}
+                onChange={e => setSchema(e.target.value)}
+                value={schema??-1}
             >
                 {sortedSchemas.length === 0 && (
                     <option disabled value={-1}>No schemas detected</option>
                 )}
-                {sortedSchemas.length > 0 && selectedSchema === null && (
+                {sortedSchemas.length > 0 && schema === null && (
                     <option disabled value={-1}>Select a schema</option>
                 )}
                 {sortedSchemas.map(schema => (

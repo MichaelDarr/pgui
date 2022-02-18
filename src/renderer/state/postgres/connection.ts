@@ -1,10 +1,10 @@
 import { atom, selector } from 'recoil';
 
-import { postgres } from 'renderer/client';
 import {
     Connection,
     GetConnectionsRequest,
 } from 'protos/postgres/postgres_pb';
+import { postgres } from 'renderer/client';
 
 export const connectionsState = selector<Connection.AsObject[]>({
     key: 'PostgresConnections',
@@ -16,27 +16,26 @@ export const connectionsState = selector<Connection.AsObject[]>({
             } else if (typeof value === 'undefined') {
                 rej(new Error('value undefined in response without error'))
             } else {
-                const result = value.getConnectionsList().map(connection => connection.toObject());
-                res(result);
+                res(value.getConnectionsList().map(connection => connection.toObject()));
             }
         });
-    })
+    }),
 });
 
-export const activeConnectionIDState = atom<string|null>({
+export const connectionIDState = atom<string|null>({
     key: 'PostgresActiveConnection',
     default: null,
 });
 
-export const activeConnectionState = selector<Connection.AsObject|null>({
+export const connectionState = selector<Connection.AsObject|null>({
     key: 'PostgresActiveConnectionState',
     get: ({ get }) => {
-        const activeConnectionID = get(activeConnectionIDState);
-        if (activeConnectionID === null) {
+        const connectionID = get(connectionIDState);
+        if (connectionID === null) {
             return null;
         }
         const connections = get(connectionsState);
-        const connection = connections.find(({ id }) => id === activeConnectionID);
+        const connection = connections.find(({ id }) => id === connectionID);
         if (typeof connection === 'undefined') {
             return null;
         }
