@@ -21,7 +21,7 @@ const gridTemplate = `
 " .         ${area.power}  .         ${area.stripe}  .         .             .       " 0.5rem
 " .         ${area.power}  .         ${area.stripe}  .         ${area.info}  .       " 0.875rem
 " .         .              .         ${area.stripe}  .         .             .       " 0.375rem
-/ 0.375rem  2.25rem        0.375rem  3px             0.75rem   1fr           0.25rem `;
+/ 0.375rem  2.25rem        0.375rem  3px             0.375rem  1fr           0.25rem `;
 
 export const Connection: FC<SectionProps> = props => {
     const [powerHovered, setPowerHovered] = useState(false);
