@@ -1,9 +1,10 @@
-import { useSetRecoilState } from 'recoil';
-import { FC, MouseEventHandler, useMemo, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { FC, MouseEventHandler, useState } from 'react';
 
 import { Table } from 'protos/postgres/postgres_pb';
 import { palette } from 'renderer/utils/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
+import { TableIcon } from 'renderer/components/Icons/TableIcon';
 import { Paragraph } from 'renderer/components/Text';
 import { tableState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
@@ -19,9 +20,9 @@ const area = {
 
 const gridTemplate = `
 " .        .               .         .             .       " 0.5rem
-" .        ${area.icon}    .         ${area.name}  .       " 0.9rem
+" .        ${area.icon}    .         ${area.name}  .       " 0.875rem
 " .        .               .         .             .       " 0.5rem
-/ 0.75rem  0.9rem          0.75rem  1fr            0.25rem `;
+/ 0.75rem  0.875rem        0.75rem  1fr            0.25rem `;
 
 export const TableItem: FC<TableItem> = ({
     table,
@@ -31,23 +32,31 @@ export const TableItem: FC<TableItem> = ({
     onMouseLeave,
     ...props
 }) => {
-    const setTable = useSetRecoilState(tableState);
+    const [selectedTable, setTable] = useRecoilState(tableState);
 
     const [isHovered, setIsHovered] = useState(false);
 
-    const fullStyle = useMemo(() => {
+    const isSelected = selectedTable?.name === table.name;
+
+    const fullStyle = (() => {
         const baseStyle = {
+            color: palette.black,
             cursor: 'pointer',
             ...style,
         };
-        if (isHovered) {
+        if (isSelected) {
             Object.assign(baseStyle, {
                 backgroundColor: palette.blue,
                 color: palette.white,
             });
+        } else if (isHovered) {
+            Object.assign(baseStyle, {
+                backgroundColor: palette.lightGray,
+                color: palette.maroon,
+            });
         }
         return baseStyle;
-    }, [isHovered, style]);
+    })();
 
     const handleClick: MouseEventHandler<HTMLElement> = e => {
         if (onClick) {
@@ -85,18 +94,20 @@ export const TableItem: FC<TableItem> = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <GridItem area={area.icon} />
+            <GridItem
+                area={area.icon}
+            >
+                <TableIcon
+                    iconColor={isSelected ? palette.lightGray : palette.blue}
+                />
+            </GridItem>
             <GridItem
                 area={area.name}
                 style={{
-                    lineHeight: '0.9rem',
+                    lineHeight: '0.75rem',
                 }}
             >
-                <Paragraph
-                    style={{
-                        color: isHovered ? palette.white : palette.darkGray,
-                    }}
-                >
+                <Paragraph>
                     {table.name}
                 </Paragraph>
             </GridItem>

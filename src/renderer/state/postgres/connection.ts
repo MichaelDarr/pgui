@@ -6,7 +6,7 @@ import {
 } from 'protos/postgres/postgres_pb';
 import { postgres } from 'renderer/client';
 
-export const connectionsState = selector<Connection.AsObject[]>({
+export const connectionsState = selector<Map<string, Connection.AsObject>>({
     key: 'PostgresConnections',
     get: () => new Promise((res, rej) => {
         const req = new GetConnectionsRequest();
@@ -16,7 +16,10 @@ export const connectionsState = selector<Connection.AsObject[]>({
             } else if (typeof value === 'undefined') {
                 rej(new Error('value undefined in response without error'))
             } else {
-                res(value.getConnectionsList().map(connection => connection.toObject()));
+                res(new Map(value.getConnectionsList().map(connection => [
+                    connection.getId(),
+                    connection.toObject(),
+                ])));
             }
         });
     }),
@@ -34,9 +37,8 @@ export const connectionState = selector<Connection.AsObject|null>({
         if (connectionID === null) {
             return null;
         }
-        const connections = get(connectionsState);
-        const connection = connections.find(({ id }) => id === connectionID);
-        if (typeof connection === 'undefined') {
+        const connection = get(connectionsState).get(connectionID);
+        if (!connection) {
             return null;
         }
         return connection;

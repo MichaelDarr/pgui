@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
 
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { SectionProps } from 'renderer/types';
@@ -30,14 +30,18 @@ export const DatabaseSidebar: FC<SectionProps> = props => {
                     overflowY: 'scroll',
                 }}
             >
-                <TableList />
+                <Suspense fallback={<p>loading...</p>}>
+                    <TableList />
+                </Suspense>
             </GridItem>
             <GridItem
                 area={area.divider}
                 style={{ backgroundColor: palette.lightGray }}
             />
             <GridItem area={area.schema}>
-                <SchemaSelector />
+                <Suspense fallback={<p>loading...</p>}>
+                    <SchemaSelector />
+                </Suspense>
             </GridItem>
         </Grid>
     );

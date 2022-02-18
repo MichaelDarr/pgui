@@ -21,9 +21,9 @@ const area = {
 const gridTemplate = `
 " .        .               .         .             .       " 0.375rem
 " .        ${area.stripe}  .         .             .       " 0.375rem
-" .        ${area.stripe}  .         ${area.name}  .       " 0.9rem
+" .        ${area.stripe}  .         ${area.name}  .       " 0.875rem
 " .        ${area.stripe}  .         .             .       " 0.5rem
-" .        ${area.stripe}  .         ${area.info}  .       " 0.9rem
+" .        ${area.stripe}  .         ${area.info}  .       " 0.875rem
 " .        ${area.stripe}  .         .             .       " 0.375rem
 " .        .               .         .             .       " 0.375rem
 / 0.75rem  3px             0.75rem  1fr           0.25rem `;
@@ -108,7 +108,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             <GridItem
                 area={area.name}
                 style={{
-                    lineHeight: '0.9rem',
+                    lineHeight: '0.875rem',
                 }}
             >
                 <Paragraph style={{
@@ -121,7 +121,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             <GridItem
                 area={area.info}
                 style={{
-                    lineHeight: '0.9rem',
+                    lineHeight: '0.875rem',
                 }}
             >
                 <Paragraph>{credentialInfo}</Paragraph>

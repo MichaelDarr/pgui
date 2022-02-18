@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { Paragraph } from 'renderer/components/Text';
 import { tablesState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
 
 import { TableItem } from './TableItem';
+import { TableNoItems } from './TableNoItems';
 
 export const TableList: FC<SectionProps> = ({
     style,
@@ -15,11 +15,21 @@ export const TableList: FC<SectionProps> = ({
 
     if (tables.size === 0) {
         return (
-            <Paragraph {...props}>
-                No tables in schema
-            </Paragraph>
+            <TableNoItems {...props}/>
         );
     }
+
+    const sortedTables = [...tables.values()].sort((a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    });
 
     return (
         <section
@@ -31,7 +41,7 @@ export const TableList: FC<SectionProps> = ({
                 flexDirection: 'column',
             }}
         >
-            {[...tables.values()].map(table => (
+            {sortedTables.map(table => (
                 <TableItem
                     key={table.name}
                     table={table}

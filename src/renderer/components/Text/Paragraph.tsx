@@ -11,7 +11,7 @@ export const Paragraph: FC<SpanProps> = ({
         <span
             {...props}
             style={{
-                fontSize: '0.9rem',
+                fontSize: '0.875rem',
                 ...style
             }}
         >

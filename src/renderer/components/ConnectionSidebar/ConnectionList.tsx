@@ -12,9 +12,21 @@ export const ConnectionList: FC<SectionProps> = ({
 }) => {
     const connections = useRecoilValue(connectionsState);
 
-    if (connections.length === 0) {
-        return <div style={style} {...props} />;
+    if (connections.size === 0) {
+        return <section style={style} {...props} />;
     }
+
+    const sortedConnections = [...connections.values()].sort((a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+        return 0;
+    });
 
     return (
         <section
@@ -26,7 +38,7 @@ export const ConnectionList: FC<SectionProps> = ({
                 flexDirection: 'column',
             }}
         >
-            {connections.map(connection => (
+            {sortedConnections.map(connection => (
                 <ConnectionItem
                     key={connection.id}
                     connection={connection}
