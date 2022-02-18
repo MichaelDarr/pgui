@@ -1,4 +1,4 @@
-import { atom, selector } from 'recoil';
+import { atom, DefaultValue, selector } from 'recoil';
 
 import {
     Connection,
@@ -42,5 +42,15 @@ export const connectionState = selector<Connection.AsObject|null>({
             return null;
         }
         return connection;
+    },
+    set: ({ get, set }, newValue) => {
+        if (newValue instanceof DefaultValue) {
+            return;
+        }
+        if (newValue === null) {
+            set(connectionIDState, null);
+        } else if (get(connectionsState).has(newValue.id)) {
+            set(connectionIDState, newValue.id)
+        }
     }
 });
