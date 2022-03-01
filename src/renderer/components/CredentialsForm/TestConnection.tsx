@@ -4,7 +4,7 @@ import { selector, useRecoilValue } from 'recoil';
 import { Credentials, TestConnectionRequest } from 'protos/postgres/postgres_pb';
 import { postgres } from 'renderer/client';
 import { Button } from 'renderer/components/Input/Button';
-import { SpanProps } from 'renderer/types';
+import { SpanProps, TestResult } from 'renderer/types';
 
 import { databaseNameState } from './DatabaseName';
 import { hostState } from './Host';
@@ -48,16 +48,15 @@ export const TestConnection: FC<SpanProps> = props => {
             setTestResult(null);
             return;
         }
-        setTestResult({ result: 'loading'});
         const arg = new TestConnectionRequest();
         arg.setCredentials(credentials);
         postgres.testConnection(arg, (err, value) => {
             if (err) {
-                setTestResult({ result: 'error', message: String(err) });
+                setTestResult({ success: false, message: String(err) });
             } else if (!value) {
-                setTestResult({ result: 'error', message: String('no response from driver') });
+                setTestResult({ success: false, message: String('no response from driver') });
             } else {
-                setTestResult({ result: value.getSuccess() ? 'success' : 'failure' });
+                setTestResult({ success: value.getSuccess() });
             }
         });
     };
@@ -81,36 +80,24 @@ export const TestConnection: FC<SpanProps> = props => {
     )
 };
 
-interface TestResult {
-    result: 'error'|'failure'|'loading'|'success';
-    message?: string;
-}
-
-const TestConnectionResult: FC<TestResult> = ({ result }) => {
-    switch (result) {
-        case 'error':
-            return (
-                <span style={{ color: 'red' }}>
-                    Internal error
-                </span>
-            );
-        case 'failure':
-            return (
-                <span style={{ color: 'red' }}>
-                    Connection failed
-                </span>
-            );
-        case 'loading':
-            return (
-                <span>
-                    Testing...
-                </span>
-            );
-        case 'success':
-            return (
-                <span style={{ color: 'green' }}>
-                    Connection successful
-                </span>
-            );
+const TestConnectionResult: FC<TestResult> = ({ success, message }) => {
+    if (success) {
+        return (
+            <span style={{ color: 'green' }}>
+                Connection successful
+            </span>
+        );
     }
+    if (typeof message !== 'undefined' && message !== '') {
+        return (
+            <span style={{ color: 'red' }}>
+                Connection failed: {message}
+            </span>
+        );
+    }
+    return (
+        <span style={{ color: 'red' }}>
+            Connection failed
+        </span>
+    );
 };

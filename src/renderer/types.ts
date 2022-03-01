@@ -6,3 +6,8 @@ export type HeadingProps = HTMLAttributes<HTMLHeadingElement>;
 export type SectionProps = ElementProps;
 export type SpanProps = HTMLAttributes<HTMLSpanElement>;
 export type SVGProps = ReactSVGProps<SVGSVGElement>;
+
+export interface TestResult {
+    success: boolean;
+    message?: string;
+}

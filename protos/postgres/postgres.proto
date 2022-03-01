@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 option go_package = "github.com/MichaelDarr/pgui/proto";
 
 package postgres;
@@ -9,8 +11,16 @@ service PostgresService {
     rpc GetConnections(GetConnectionsRequest) returns (GetConnectionsResponse) {}
     rpc GetSchemas(GetSchemasRequest) returns (GetSchemasResponse) {}
     rpc GetSchemaTables(GetSchemaTablesRequest) returns (GetSchemaTablesResponse) {}
+    rpc GetTable(stream GetTableRequest) returns (stream GetTableResponse) {}
     rpc SaveConnection(SaveConnectionRequest) returns (SaveConnectionResponse) {}
     rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {}
+}
+
+message Connection {
+    Credentials credentials = 1;
+    string id = 2;
+    string name = 3;
+    string color = 4;
 }
 
 message Credentials {
@@ -21,11 +31,33 @@ message Credentials {
     string password = 5;
 }
 
-message Connection {
-    Credentials credentials = 1;
-    string id = 2;
-    string name = 3;
-    string color = 4;
+message Field {
+    string name = 1;
+    uint32 tableOID = 2;
+}
+
+/* QueryRequestStream represents a request regarding an open stream of data
+ * queried from Postgres. */
+
+message QueryRequestStream {
+    int32 rows = 1; // Number of additional rows to be read and streamed
+    bool metadata = 2; // If true, send query metadata before additional rows
+}
+
+/* QueryResultStream represents data from an active Postgres query. */
+
+message QueryResultStream {
+    message MetadataResult {
+        repeated Field fields = 1;
+        int64 rowsRead = 2;
+    }
+    message RowResult {
+        repeated google.protobuf.Any value = 2;
+    }
+    oneof data {
+        MetadataResult metadata = 1;
+        RowResult row = 2;
+    }
 }
 
 message Table {
@@ -38,11 +70,11 @@ message Table {
     bool hasRowSecurityEnabled = 7;
 }
 
-message DeleteConnectionRequest{
+message DeleteConnectionRequest {
     string connectionID = 1;
 }
 
-message DeleteConnectionResponse{}
+message DeleteConnectionResponse {}
 
 message GetConnectionsRequest {}
 
@@ -65,6 +97,22 @@ message GetSchemaTablesRequest {
 
 message GetSchemaTablesResponse {
     repeated Table tables = 1;
+}
+
+message GetTableRequest {
+    message InitializeQuery {
+        string connectionID = 1;
+        string schema = 2;
+        string table = 3;
+    }
+    oneof request {
+        InitializeQuery initialize = 1;
+        QueryRequestStream query = 2;
+    }
+}
+
+message GetTableResponse {
+    QueryResultStream result = 1;
 }
 
 message SaveConnectionRequest {

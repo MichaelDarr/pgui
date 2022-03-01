@@ -6,7 +6,7 @@ import { GetSchemasRequest } from 'protos/postgres/postgres_pb';
 import { connectionIDState } from './connection';
 
 const schemasQuery = selectorFamily<Set<string>, string>({
-    key: 'PostgresAllSchemas',
+    key: 'PostgresSchemasQuery',
     get: connectionID => () => new Promise((res, rej) => {
         const req = new GetSchemasRequest();
         req.setConnectionid(connectionID);
@@ -39,7 +39,7 @@ const userSelectedSchemaState = atom<string|null>({
 });
 
 export const schemaState = selector<string|null>({
-    key: 'PostgresSelectedSchema',
+    key: 'PostgresSchema',
     get: ({ get }) => {
         const schemas = get(schemasState);
         const userSelectedSchema = get(userSelectedSchemaState);

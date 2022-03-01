@@ -60,6 +60,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
     const [deleteIsHovered, setDeleteIsHovered] = useState(false);
     const [isBeingDeleted, setIsBeingDeleted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [failedToConnect, setFailedToConnect] = useState(false);
 
     const hasActions = connectionIDWithActions === connection.id;
 
@@ -93,6 +94,7 @@ export const ConnectionItem: FC<ConnectionItem> = ({
             onClick(e);
         }
         if (!e.defaultPrevented) {
+            setFailedToConnect(false);
             setConnectionID(connection.id);
         }
     };
@@ -197,6 +199,9 @@ export const ConnectionItem: FC<ConnectionItem> = ({
                     fontWeight: 600,
                 }}>
                     {connection.name}
+                    {failedToConnect && (
+                        ' (connection failed)'
+                    )}
                 </Paragraph>
             </GridItem>
             <GridItem

@@ -1,9 +1,9 @@
 import type { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 
 import type {
-    PostgresServiceRPCName,
-    PostgresServiceRPCRequest,
-    PostgresServiceRPCResponse,
+    PostgresServiceUnaryName,
+    PostgresServiceUnaryRequest,
+    PostgresServiceUnaryResponse,
 } from '../preload/types';
 import {
     DeleteConnectionResponse,
@@ -23,14 +23,14 @@ interface Serializable {
 }
 
 export type PostgresService = {
-    [T in PostgresServiceRPCName]: (
-        argument: PostgresServiceRPCRequest<T>,
-        callback: requestCallback<PostgresServiceRPCResponse<T>>
+    [T in PostgresServiceUnaryName]: (
+        argument: PostgresServiceUnaryRequest<T>,
+        callback: requestCallback<PostgresServiceUnaryResponse<T>>
     ) => ClientUnaryCall;
 };
 
 function createPostgresSourceMethod <T extends Serializable, K>(
-    postgresKey: PostgresServiceRPCName,
+    postgresKey: PostgresServiceUnaryName,
     deserializer: Deserializer<K>,
 ): (argument: T, callback: requestCallback<K>) => ClientUnaryCall {
     return (argument, callback) => window.electron.proto.postgres[postgresKey](

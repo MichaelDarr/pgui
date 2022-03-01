@@ -3,6 +3,7 @@
 'use strict';
 var grpc = require('@grpc/grpc-js');
 var protos_postgres_postgres_pb = require('../../protos/postgres/postgres_pb.js');
+var google_protobuf_any_pb = require('google-protobuf/google/protobuf/any_pb.js');
 
 function serialize_postgres_DeleteConnectionRequest(arg) {
   if (!(arg instanceof protos_postgres_postgres_pb.DeleteConnectionRequest)) {
@@ -90,6 +91,28 @@ function serialize_postgres_GetSchemasResponse(arg) {
 
 function deserialize_postgres_GetSchemasResponse(buffer_arg) {
   return protos_postgres_postgres_pb.GetSchemasResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_GetTableRequest(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetTableRequest)) {
+    throw new Error('Expected argument of type postgres.GetTableRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetTableRequest(buffer_arg) {
+  return protos_postgres_postgres_pb.GetTableRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_postgres_GetTableResponse(arg) {
+  if (!(arg instanceof protos_postgres_postgres_pb.GetTableResponse)) {
+    throw new Error('Expected argument of type postgres.GetTableResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_postgres_GetTableResponse(buffer_arg) {
+  return protos_postgres_postgres_pb.GetTableResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_postgres_SaveConnectionRequest(arg) {
@@ -181,6 +204,17 @@ var PostgresServiceService = exports.PostgresServiceService = {
     requestDeserialize: deserialize_postgres_GetSchemaTablesRequest,
     responseSerialize: serialize_postgres_GetSchemaTablesResponse,
     responseDeserialize: deserialize_postgres_GetSchemaTablesResponse,
+  },
+  getTable: {
+    path: '/postgres.PostgresService/GetTable',
+    requestStream: true,
+    responseStream: true,
+    requestType: protos_postgres_postgres_pb.GetTableRequest,
+    responseType: protos_postgres_postgres_pb.GetTableResponse,
+    requestSerialize: serialize_postgres_GetTableRequest,
+    requestDeserialize: deserialize_postgres_GetTableRequest,
+    responseSerialize: serialize_postgres_GetTableResponse,
+    responseDeserialize: deserialize_postgres_GetTableResponse,
   },
   saveConnection: {
     path: '/postgres.PostgresService/SaveConnection',

@@ -11,6 +11,7 @@ interface IPostgresServiceService extends grpc.ServiceDefinition<grpc.UntypedSer
   getConnections: grpc.MethodDefinition<protos_postgres_postgres_pb.GetConnectionsRequest, protos_postgres_postgres_pb.GetConnectionsResponse>;
   getSchemas: grpc.MethodDefinition<protos_postgres_postgres_pb.GetSchemasRequest, protos_postgres_postgres_pb.GetSchemasResponse>;
   getSchemaTables: grpc.MethodDefinition<protos_postgres_postgres_pb.GetSchemaTablesRequest, protos_postgres_postgres_pb.GetSchemaTablesResponse>;
+  getTable: grpc.MethodDefinition<protos_postgres_postgres_pb.GetTableRequest, protos_postgres_postgres_pb.GetTableResponse>;
   saveConnection: grpc.MethodDefinition<protos_postgres_postgres_pb.SaveConnectionRequest, protos_postgres_postgres_pb.SaveConnectionResponse>;
   testConnection: grpc.MethodDefinition<protos_postgres_postgres_pb.TestConnectionRequest, protos_postgres_postgres_pb.TestConnectionResponse>;
 }
@@ -22,6 +23,7 @@ export interface IPostgresServiceServer extends grpc.UntypedServiceImplementatio
   getConnections: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetConnectionsRequest, protos_postgres_postgres_pb.GetConnectionsResponse>;
   getSchemas: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetSchemasRequest, protos_postgres_postgres_pb.GetSchemasResponse>;
   getSchemaTables: grpc.handleUnaryCall<protos_postgres_postgres_pb.GetSchemaTablesRequest, protos_postgres_postgres_pb.GetSchemaTablesResponse>;
+  getTable: grpc.handleBidiStreamingCall<protos_postgres_postgres_pb.GetTableRequest, protos_postgres_postgres_pb.GetTableResponse>;
   saveConnection: grpc.handleUnaryCall<protos_postgres_postgres_pb.SaveConnectionRequest, protos_postgres_postgres_pb.SaveConnectionResponse>;
   testConnection: grpc.handleUnaryCall<protos_postgres_postgres_pb.TestConnectionRequest, protos_postgres_postgres_pb.TestConnectionResponse>;
 }
@@ -40,6 +42,8 @@ export class PostgresServiceClient extends grpc.Client {
   getSchemaTables(argument: protos_postgres_postgres_pb.GetSchemaTablesRequest, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetSchemaTablesResponse>): grpc.ClientUnaryCall;
   getSchemaTables(argument: protos_postgres_postgres_pb.GetSchemaTablesRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetSchemaTablesResponse>): grpc.ClientUnaryCall;
   getSchemaTables(argument: protos_postgres_postgres_pb.GetSchemaTablesRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.GetSchemaTablesResponse>): grpc.ClientUnaryCall;
+  getTable(metadataOrOptions?: grpc.Metadata | grpc.CallOptions | null): grpc.ClientDuplexStream<protos_postgres_postgres_pb.GetTableRequest, protos_postgres_postgres_pb.GetTableResponse>;
+  getTable(metadata?: grpc.Metadata | null, options?: grpc.CallOptions | null): grpc.ClientDuplexStream<protos_postgres_postgres_pb.GetTableRequest, protos_postgres_postgres_pb.GetTableResponse>;
   saveConnection(argument: protos_postgres_postgres_pb.SaveConnectionRequest, callback: grpc.requestCallback<protos_postgres_postgres_pb.SaveConnectionResponse>): grpc.ClientUnaryCall;
   saveConnection(argument: protos_postgres_postgres_pb.SaveConnectionRequest, metadataOrOptions: grpc.Metadata | grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.SaveConnectionResponse>): grpc.ClientUnaryCall;
   saveConnection(argument: protos_postgres_postgres_pb.SaveConnectionRequest, metadata: grpc.Metadata | null, options: grpc.CallOptions | null, callback: grpc.requestCallback<protos_postgres_postgres_pb.SaveConnectionResponse>): grpc.ClientUnaryCall;

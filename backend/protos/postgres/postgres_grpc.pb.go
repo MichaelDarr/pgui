@@ -22,6 +22,7 @@ type PostgresServiceClient interface {
 	GetConnections(ctx context.Context, in *GetConnectionsRequest, opts ...grpc.CallOption) (*GetConnectionsResponse, error)
 	GetSchemas(ctx context.Context, in *GetSchemasRequest, opts ...grpc.CallOption) (*GetSchemasResponse, error)
 	GetSchemaTables(ctx context.Context, in *GetSchemaTablesRequest, opts ...grpc.CallOption) (*GetSchemaTablesResponse, error)
+	GetTable(ctx context.Context, opts ...grpc.CallOption) (PostgresService_GetTableClient, error)
 	SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error)
 	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
 }
@@ -70,6 +71,37 @@ func (c *postgresServiceClient) GetSchemaTables(ctx context.Context, in *GetSche
 	return out, nil
 }
 
+func (c *postgresServiceClient) GetTable(ctx context.Context, opts ...grpc.CallOption) (PostgresService_GetTableClient, error) {
+	stream, err := c.cc.NewStream(ctx, &PostgresService_ServiceDesc.Streams[0], "/postgres.PostgresService/GetTable", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &postgresServiceGetTableClient{stream}
+	return x, nil
+}
+
+type PostgresService_GetTableClient interface {
+	Send(*GetTableRequest) error
+	Recv() (*GetTableResponse, error)
+	grpc.ClientStream
+}
+
+type postgresServiceGetTableClient struct {
+	grpc.ClientStream
+}
+
+func (x *postgresServiceGetTableClient) Send(m *GetTableRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *postgresServiceGetTableClient) Recv() (*GetTableResponse, error) {
+	m := new(GetTableResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *postgresServiceClient) SaveConnection(ctx context.Context, in *SaveConnectionRequest, opts ...grpc.CallOption) (*SaveConnectionResponse, error) {
 	out := new(SaveConnectionResponse)
 	err := c.cc.Invoke(ctx, "/postgres.PostgresService/SaveConnection", in, out, opts...)
@@ -96,6 +128,7 @@ type PostgresServiceServer interface {
 	GetConnections(context.Context, *GetConnectionsRequest) (*GetConnectionsResponse, error)
 	GetSchemas(context.Context, *GetSchemasRequest) (*GetSchemasResponse, error)
 	GetSchemaTables(context.Context, *GetSchemaTablesRequest) (*GetSchemaTablesResponse, error)
+	GetTable(PostgresService_GetTableServer) error
 	SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error)
 	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
 	mustEmbedUnimplementedPostgresServiceServer()
@@ -116,6 +149,9 @@ func (UnimplementedPostgresServiceServer) GetSchemas(context.Context, *GetSchema
 }
 func (UnimplementedPostgresServiceServer) GetSchemaTables(context.Context, *GetSchemaTablesRequest) (*GetSchemaTablesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSchemaTables not implemented")
+}
+func (UnimplementedPostgresServiceServer) GetTable(PostgresService_GetTableServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetTable not implemented")
 }
 func (UnimplementedPostgresServiceServer) SaveConnection(context.Context, *SaveConnectionRequest) (*SaveConnectionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveConnection not implemented")
@@ -208,6 +244,32 @@ func _PostgresService_GetSchemaTables_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PostgresService_GetTable_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(PostgresServiceServer).GetTable(&postgresServiceGetTableServer{stream})
+}
+
+type PostgresService_GetTableServer interface {
+	Send(*GetTableResponse) error
+	Recv() (*GetTableRequest, error)
+	grpc.ServerStream
+}
+
+type postgresServiceGetTableServer struct {
+	grpc.ServerStream
+}
+
+func (x *postgresServiceGetTableServer) Send(m *GetTableResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *postgresServiceGetTableServer) Recv() (*GetTableRequest, error) {
+	m := new(GetTableRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func _PostgresService_SaveConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SaveConnectionRequest)
 	if err := dec(in); err != nil {
@@ -276,6 +338,13 @@ var PostgresService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PostgresService_TestConnection_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetTable",
+			Handler:       _PostgresService_GetTable_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "protos/postgres/postgres.proto",
 }

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	"github.com/MichaelDarr/pgui/backend/internal/pg"
@@ -84,6 +85,59 @@ func (s *PostgresServer) GetSchemaTables(ctx context.Context, req *proto.GetSche
 	return &proto.GetSchemaTablesResponse{
 		Tables: tables.Proto(),
 	}, nil
+}
+
+// GetTable queries for table data.
+func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) error {
+	in, err := stream.Recv()
+	if err != nil {
+		return err
+	}
+	init := in.GetInitialize()
+	if init == nil {
+		return errors.New("first message to `GetTable` must be `initialize`")
+	}
+	conn, err := s.getConn(init.ConnectionID)
+	if err != nil {
+		return err
+	}
+	rows, err := conn.Query(stream.Context(), `SELECT * FROM $1.$2`, init.Schema, init.Table)
+	if err != nil {
+		return err
+	}
+
+	var rowsRead int64
+
+	sendFieldDescriptions := func() error {
+		fieldDescriptions := rows.FieldDescriptions()
+		fields := make([]*proto.Field, len(fieldDescriptions))
+		for i, fieldDescription := range fieldDescriptions {
+			fields[i] = &proto.Field{
+				Name:     string(fieldDescription.Name),
+				TableOID: fieldDescription.TableOID,
+			}
+		}
+		return stream.Send(&proto.GetTableResponse{
+			Result: &proto.QueryResultStream{
+				Data: &proto.QueryResultStream_Metadata{
+					Metadata: &proto.QueryResultStream_MetadataResult{
+						Fields:   fields,
+						RowsRead: rowsRead,
+					},
+				},
+			},
+		})
+	}
+
+	// Send field descriptions upon query initialization (before reading any rows).
+	if err = sendFieldDescriptions(); err != nil {
+		return err
+	}
+
+	// TODO => Read table data
+
+	// Close stream
+	return nil
 }
 
 // SaveConnection saves connection information to a user's configuration.

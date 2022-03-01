@@ -12,7 +12,7 @@ interface TableParam {
 }
 
 const tablesQuery = selectorFamily<Map<string, Table.AsObject>, Readonly<TableParam>>({
-    key: 'PostgresAllTables',
+    key: 'PostgresTables',
     get: ({ connectionID, schema }) => () => new Promise((res, rej) => {
         const req = new GetSchemaTablesRequest();
         req.setConnectionid(connectionID);
@@ -51,7 +51,7 @@ const userSelectedTableState = atom<Table.AsObject|null>({
 });
 
 export const tableState = selector<Table.AsObject|null>({
-    key: 'PostgresSelectedTable',
+    key: 'PostgresTable',
     get: ({ get }) => {
         const tables = get(tablesState);
         const userSelectedTable = get(userSelectedTableState);

@@ -2,6 +2,41 @@
 // file: protos/postgres/postgres.proto
 
 import * as jspb from "google-protobuf";
+import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+
+export class Connection extends jspb.Message {
+  hasCredentials(): boolean;
+  clearCredentials(): void;
+  getCredentials(): Credentials | undefined;
+  setCredentials(value?: Credentials): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getColor(): string;
+  setColor(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Connection.AsObject;
+  static toObject(includeInstance: boolean, msg: Connection): Connection.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Connection, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Connection;
+  static deserializeBinaryFromReader(message: Connection, reader: jspb.BinaryReader): Connection;
+}
+
+export namespace Connection {
+  export type AsObject = {
+    credentials?: Credentials.AsObject,
+    id: string,
+    name: string,
+    color: string,
+  }
+}
 
 export class Credentials extends jspb.Message {
   getHost(): string;
@@ -39,37 +74,134 @@ export namespace Credentials {
   }
 }
 
-export class Connection extends jspb.Message {
-  hasCredentials(): boolean;
-  clearCredentials(): void;
-  getCredentials(): Credentials | undefined;
-  setCredentials(value?: Credentials): void;
-
-  getId(): string;
-  setId(value: string): void;
-
+export class Field extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getColor(): string;
-  setColor(value: string): void;
+  getTableoid(): number;
+  setTableoid(value: number): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Connection.AsObject;
-  static toObject(includeInstance: boolean, msg: Connection): Connection.AsObject;
+  toObject(includeInstance?: boolean): Field.AsObject;
+  static toObject(includeInstance: boolean, msg: Field): Field.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Connection, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Connection;
-  static deserializeBinaryFromReader(message: Connection, reader: jspb.BinaryReader): Connection;
+  static serializeBinaryToWriter(message: Field, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Field;
+  static deserializeBinaryFromReader(message: Field, reader: jspb.BinaryReader): Field;
 }
 
-export namespace Connection {
+export namespace Field {
   export type AsObject = {
-    credentials?: Credentials.AsObject,
-    id: string,
     name: string,
-    color: string,
+    tableoid: number,
+  }
+}
+
+export class QueryRequestStream extends jspb.Message {
+  getRows(): number;
+  setRows(value: number): void;
+
+  getMetadata(): boolean;
+  setMetadata(value: boolean): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): QueryRequestStream.AsObject;
+  static toObject(includeInstance: boolean, msg: QueryRequestStream): QueryRequestStream.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: QueryRequestStream, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): QueryRequestStream;
+  static deserializeBinaryFromReader(message: QueryRequestStream, reader: jspb.BinaryReader): QueryRequestStream;
+}
+
+export namespace QueryRequestStream {
+  export type AsObject = {
+    rows: number,
+    metadata: boolean,
+  }
+}
+
+export class QueryResultStream extends jspb.Message {
+  hasMetadata(): boolean;
+  clearMetadata(): void;
+  getMetadata(): QueryResultStream.MetadataResult | undefined;
+  setMetadata(value?: QueryResultStream.MetadataResult): void;
+
+  hasRow(): boolean;
+  clearRow(): void;
+  getRow(): QueryResultStream.RowResult | undefined;
+  setRow(value?: QueryResultStream.RowResult): void;
+
+  getDataCase(): QueryResultStream.DataCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): QueryResultStream.AsObject;
+  static toObject(includeInstance: boolean, msg: QueryResultStream): QueryResultStream.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: QueryResultStream, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): QueryResultStream;
+  static deserializeBinaryFromReader(message: QueryResultStream, reader: jspb.BinaryReader): QueryResultStream;
+}
+
+export namespace QueryResultStream {
+  export type AsObject = {
+    metadata?: QueryResultStream.MetadataResult.AsObject,
+    row?: QueryResultStream.RowResult.AsObject,
+  }
+
+  export class MetadataResult extends jspb.Message {
+    clearFieldsList(): void;
+    getFieldsList(): Array<Field>;
+    setFieldsList(value: Array<Field>): void;
+    addFields(value?: Field, index?: number): Field;
+
+    getRowsread(): number;
+    setRowsread(value: number): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MetadataResult.AsObject;
+    static toObject(includeInstance: boolean, msg: MetadataResult): MetadataResult.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MetadataResult, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MetadataResult;
+    static deserializeBinaryFromReader(message: MetadataResult, reader: jspb.BinaryReader): MetadataResult;
+  }
+
+  export namespace MetadataResult {
+    export type AsObject = {
+      fieldsList: Array<Field.AsObject>,
+      rowsread: number,
+    }
+  }
+
+  export class RowResult extends jspb.Message {
+    clearValueList(): void;
+    getValueList(): Array<google_protobuf_any_pb.Any>;
+    setValueList(value: Array<google_protobuf_any_pb.Any>): void;
+    addValue(value?: google_protobuf_any_pb.Any, index?: number): google_protobuf_any_pb.Any;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): RowResult.AsObject;
+    static toObject(includeInstance: boolean, msg: RowResult): RowResult.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: RowResult, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): RowResult;
+    static deserializeBinaryFromReader(message: RowResult, reader: jspb.BinaryReader): RowResult;
+  }
+
+  export namespace RowResult {
+    export type AsObject = {
+      valueList: Array<google_protobuf_any_pb.Any.AsObject>,
+    }
+  }
+
+  export enum DataCase {
+    DATA_NOT_SET = 0,
+    METADATA = 1,
+    ROW = 2,
   }
 }
 
@@ -276,6 +408,91 @@ export class GetSchemaTablesResponse extends jspb.Message {
 export namespace GetSchemaTablesResponse {
   export type AsObject = {
     tablesList: Array<Table.AsObject>,
+  }
+}
+
+export class GetTableRequest extends jspb.Message {
+  hasInitialize(): boolean;
+  clearInitialize(): void;
+  getInitialize(): GetTableRequest.InitializeQuery | undefined;
+  setInitialize(value?: GetTableRequest.InitializeQuery): void;
+
+  hasQuery(): boolean;
+  clearQuery(): void;
+  getQuery(): QueryRequestStream | undefined;
+  setQuery(value?: QueryRequestStream): void;
+
+  getRequestCase(): GetTableRequest.RequestCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTableRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTableRequest): GetTableRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTableRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTableRequest;
+  static deserializeBinaryFromReader(message: GetTableRequest, reader: jspb.BinaryReader): GetTableRequest;
+}
+
+export namespace GetTableRequest {
+  export type AsObject = {
+    initialize?: GetTableRequest.InitializeQuery.AsObject,
+    query?: QueryRequestStream.AsObject,
+  }
+
+  export class InitializeQuery extends jspb.Message {
+    getConnectionid(): string;
+    setConnectionid(value: string): void;
+
+    getSchema(): string;
+    setSchema(value: string): void;
+
+    getTable(): string;
+    setTable(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): InitializeQuery.AsObject;
+    static toObject(includeInstance: boolean, msg: InitializeQuery): InitializeQuery.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: InitializeQuery, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): InitializeQuery;
+    static deserializeBinaryFromReader(message: InitializeQuery, reader: jspb.BinaryReader): InitializeQuery;
+  }
+
+  export namespace InitializeQuery {
+    export type AsObject = {
+      connectionid: string,
+      schema: string,
+      table: string,
+    }
+  }
+
+  export enum RequestCase {
+    REQUEST_NOT_SET = 0,
+    INITIALIZE = 1,
+    QUERY = 2,
+  }
+}
+
+export class GetTableResponse extends jspb.Message {
+  hasResult(): boolean;
+  clearResult(): void;
+  getResult(): QueryResultStream | undefined;
+  setResult(value?: QueryResultStream): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetTableResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetTableResponse): GetTableResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetTableResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetTableResponse;
+  static deserializeBinaryFromReader(message: GetTableResponse, reader: jspb.BinaryReader): GetTableResponse;
+}
+
+export namespace GetTableResponse {
+  export type AsObject = {
+    result?: QueryResultStream.AsObject,
   }
 }
 
