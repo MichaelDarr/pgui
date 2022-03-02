@@ -163,9 +163,16 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 	}()
 
 	// Stream data to client
+	stopStreaming := make(chan bool)
 	go func() {
-		in := <-incoming
-		init := in.GetInitialize()
+		var init *proto.GetTableRequest_InitializeQuery
+		select {
+		case in := <-incoming:
+			init = in.GetInitialize()
+		case <-stopStreaming:
+			return
+		}
+
 		if init == nil {
 			finished <- errors.New("first message to `GetTable` must be `initialize`")
 			return
@@ -186,8 +193,14 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 
 			// Wait for queries, then take the requested action.
 			for {
-				in = <-incoming
-				query := in.GetQuery()
+				var query *proto.QueryRequestStream
+				select {
+				case in := <-incoming:
+					query = in.GetQuery()
+				case <-stopStreaming:
+					return nil
+				}
+
 				if query == nil {
 					return errors.New("all messages except the first to `getTable` must be `query`")
 				}
@@ -218,10 +231,12 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 		// Stream outbound messages
 		case message := <-outbound:
 			if err := stream.Send(message); err != nil {
+				stopStreaming <- true
 				return err
 			}
 		// No more data to stream or error encountered
 		case err := <-finished:
+			stopStreaming <- true
 			return err
 		}
 	}
