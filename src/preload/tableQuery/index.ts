@@ -1,3 +1,17 @@
+import { Empty } from 'google-protobuf/google/protobuf/empty_pb';
+import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
+import {
+    BoolValue,
+    BytesValue,
+    DoubleValue,
+    FloatValue,
+    Int32Value,
+    Int64Value,
+    UInt32Value,
+    UInt64Value,
+    StringValue,
+} from "google-protobuf/google/protobuf/wrappers_pb";
+
 import {
     GetTableRequest,
     GetTableResponse,
@@ -62,6 +76,125 @@ export const newTableQuery: TableQueryCreator = (options) => {
             case QueryResultStream.DataCase.ROW: {
                 const row = result.getRow();
                 if (row) {
+                    const values = row.getValuesList();
+                    values.forEach(value => {
+                        /* eslint-disable @typescript-eslint/unbound-method */
+                        switch(value.getTypeName()) {
+                            case 'google.protobuf.BoolValue': {
+                                const unpacked = value.unpack(
+                                    BoolValue.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED BOOL');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.BytesValue': {
+                                const unpacked = value.unpack(
+                                    BytesValue.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED BYTES');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.DoubleValue': {
+                                const unpacked = value.unpack(
+                                    DoubleValue.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED DOUBLE');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.FloatValue': {
+                                const unpacked = value.unpack(
+                                    FloatValue.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED FLOAT');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.Int64Value': {
+                                const unpacked = value.unpack(
+                                    Int64Value.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED INT64');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.Int32Value': {
+                                const unpacked = value.unpack(
+                                    Int32Value.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED INT32');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.Empty': {
+                                const unpacked = value.unpack(
+                                    Empty.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED EMPTY');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.StringValue': {
+                                const unpacked = value.unpack(
+                                    StringValue.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED STRING');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.Timestamp': {
+                                const unpacked = value.unpack(
+                                    Timestamp.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED TIMESTAMP');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.UInt64Value': {
+                                const unpacked = value.unpack(
+                                    UInt64Value.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED UINT64');
+                                }
+                                break;
+                            }
+                            case 'google.protobuf.UInt32Value': {
+                                const unpacked = value.unpack(
+                                    UInt32Value.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    console.log('MISSED UINT32');
+                                }
+                                break;
+                            }
+                            default:
+                                console.log({ missed: value.getTypeUrl() });
+                        }
+                        /* eslint-enable @typescript-eslint/unbound-method */
+                    })
                     listeners.emit('row', row.toObject());
                 } else {
                     logError(errorStage, `row message data missing`);
