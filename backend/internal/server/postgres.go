@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/jackc/pgproto3/v2"
+	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	"github.com/MichaelDarr/pgui/backend/internal/pg"
@@ -113,7 +114,7 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 	// Total number of table rows read from the database
 	var rowsRead int64
 
-	// Send a metadata message over the stream
+	// Send metadata over the stream
 	sendMetadata := func(fieldDescriptions []pgproto3.FieldDescription) {
 		fields := make([]*proto.Field, len(fieldDescriptions))
 		for i, fieldDescription := range fieldDescriptions {
@@ -128,6 +129,19 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 					Metadata: &proto.QueryResultStream_MetadataResult{
 						Fields:   fields,
 						RowsRead: rowsRead,
+					},
+				},
+			},
+		}
+	}
+
+	// Send a row's values over the stream
+	sendRow := func(values []*anypb.Any) {
+		outbound <- &proto.GetTableResponse{
+			Result: &proto.QueryResultStream{
+				Data: &proto.QueryResultStream_Row{
+					Row: &proto.QueryResultStream_RowResult{
+						Values: values,
 					},
 				},
 			},
@@ -157,7 +171,7 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 			return
 		}
 
-		err := s.withConn(stream.Context(), init.ConnectionID, func(conn pg.Conn) error {
+		finished <- s.withConn(stream.Context(), init.ConnectionID, func(conn pg.Conn) error {
 			rows, err := conn.Query(
 				stream.Context(),
 				fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
@@ -165,17 +179,38 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 			if err != nil {
 				return err
 			}
+			defer rows.Close()
 
 			// Send metadata before reading any rows.
 			sendMetadata(rows.FieldDescriptions())
 
-			// TODO => Read table data
-
-			return nil
+			// Wait for queries, then take the requested action.
+			for {
+				in = <-incoming
+				query := in.GetQuery()
+				if query == nil {
+					return errors.New("all messages except the first to `getTable` must be `query`")
+				}
+				if query.Metadata {
+					sendMetadata(rows.FieldDescriptions())
+				}
+				for i := 0; i < int(query.Rows); i++ {
+					if !rows.Next() {
+						// TODO => indicate that no more rows are left
+						return nil
+					}
+					vals, err := rows.Values()
+					if err != nil {
+						return err
+					}
+					pbVals, err := pg.NewAnypbSlice(vals)
+					if err != nil {
+						return err
+					}
+					sendRow(pbVals)
+				}
+			}
 		})
-		if err != nil {
-			finished <- err
-		}
 	}()
 
 	for {

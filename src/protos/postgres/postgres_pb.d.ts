@@ -177,10 +177,10 @@ export namespace QueryResultStream {
   }
 
   export class RowResult extends jspb.Message {
-    clearValueList(): void;
-    getValueList(): Array<google_protobuf_any_pb.Any>;
-    setValueList(value: Array<google_protobuf_any_pb.Any>): void;
-    addValue(value?: google_protobuf_any_pb.Any, index?: number): google_protobuf_any_pb.Any;
+    clearValuesList(): void;
+    getValuesList(): Array<google_protobuf_any_pb.Any>;
+    setValuesList(value: Array<google_protobuf_any_pb.Any>): void;
+    addValues(value?: google_protobuf_any_pb.Any, index?: number): google_protobuf_any_pb.Any;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RowResult.AsObject;
@@ -194,7 +194,7 @@ export namespace QueryResultStream {
 
   export namespace RowResult {
     export type AsObject = {
-      valueList: Array<google_protobuf_any_pb.Any.AsObject>,
+      valuesList: Array<google_protobuf_any_pb.Any.AsObject>,
     }
   }
 

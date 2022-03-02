@@ -1725,7 +1725,7 @@ proto.postgres.QueryResultStream.RowResult.prototype.toObject = function(opt_inc
  */
 proto.postgres.QueryResultStream.RowResult.toObject = function(includeInstance, msg) {
   var f, obj = {
-    valueList: jspb.Message.toObjectList(msg.getValueList(),
+    valuesList: jspb.Message.toObjectList(msg.getValuesList(),
     google_protobuf_any_pb.Any.toObject, includeInstance)
   };
 
@@ -1766,7 +1766,7 @@ proto.postgres.QueryResultStream.RowResult.deserializeBinaryFromReader = functio
     case 2:
       var value = new google_protobuf_any_pb.Any;
       reader.readMessage(value,google_protobuf_any_pb.Any.deserializeBinaryFromReader);
-      msg.addValue(value);
+      msg.addValues(value);
       break;
     default:
       reader.skipField();
@@ -1797,7 +1797,7 @@ proto.postgres.QueryResultStream.RowResult.prototype.serializeBinary = function(
  */
 proto.postgres.QueryResultStream.RowResult.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getValueList();
+  f = message.getValuesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       2,
@@ -1809,10 +1809,10 @@ proto.postgres.QueryResultStream.RowResult.serializeBinaryToWriter = function(me
 
 
 /**
- * repeated google.protobuf.Any value = 2;
+ * repeated google.protobuf.Any values = 2;
  * @return {!Array<!proto.google.protobuf.Any>}
  */
-proto.postgres.QueryResultStream.RowResult.prototype.getValueList = function() {
+proto.postgres.QueryResultStream.RowResult.prototype.getValuesList = function() {
   return /** @type{!Array<!proto.google.protobuf.Any>} */ (
     jspb.Message.getRepeatedWrapperField(this, google_protobuf_any_pb.Any, 2));
 };
@@ -1822,7 +1822,7 @@ proto.postgres.QueryResultStream.RowResult.prototype.getValueList = function() {
  * @param {!Array<!proto.google.protobuf.Any>} value
  * @return {!proto.postgres.QueryResultStream.RowResult} returns this
 */
-proto.postgres.QueryResultStream.RowResult.prototype.setValueList = function(value) {
+proto.postgres.QueryResultStream.RowResult.prototype.setValuesList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 2, value);
 };
 
@@ -1832,7 +1832,7 @@ proto.postgres.QueryResultStream.RowResult.prototype.setValueList = function(val
  * @param {number=} opt_index
  * @return {!proto.google.protobuf.Any}
  */
-proto.postgres.QueryResultStream.RowResult.prototype.addValue = function(opt_value, opt_index) {
+proto.postgres.QueryResultStream.RowResult.prototype.addValues = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.google.protobuf.Any, opt_index);
 };
 
@@ -1841,8 +1841,8 @@ proto.postgres.QueryResultStream.RowResult.prototype.addValue = function(opt_val
  * Clears the list making it empty but non-null.
  * @return {!proto.postgres.QueryResultStream.RowResult} returns this
  */
-proto.postgres.QueryResultStream.RowResult.prototype.clearValueList = function() {
-  return this.setValueList([]);
+proto.postgres.QueryResultStream.RowResult.prototype.clearValuesList = function() {
+  return this.setValuesList([]);
 };
 
 

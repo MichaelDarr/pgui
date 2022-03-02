@@ -19,6 +19,7 @@ func (c Conn) Schemas(ctx context.Context) (schemas []string, err error) {
         FROM pg_catalog.pg_namespace
     `)
 	if err == nil {
+		defer rows.Close()
 		internalSchema := regexp.MustCompile(`^pg.*(?:_temp_\d+|_toast)$`)
 		for rows.Next() {
 			var schema string
@@ -49,6 +50,7 @@ func (c Conn) SchemaTables(ctx context.Context, schema string) (tables Tables, e
         WHERE schemaname=$1
     `, schema)
 	if err == nil {
+		defer rows.Close()
 		for rows.Next() {
 			var table Table
 			if err = rows.Scan(
