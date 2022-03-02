@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 
 	"github.com/jackc/pgproto3/v2"
 
@@ -103,18 +104,17 @@ func (s *PostgresServer) GetSchemaTables(ctx context.Context, req *proto.GetSche
 
 // GetTable queries for table data.
 func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) error {
-	in, err := stream.Recv()
-	if err != nil {
-		return err
-	}
-	init := in.GetInitialize()
-	if init == nil {
-		return errors.New("first message to `GetTable` must be `initialize`")
-	}
-
+	// Indicates that there is no more table data to stream (nil) or an error has occured (non-nil)
+	finished := make(chan error)
+	// Messages to be streamed
+	outbound := make(chan *proto.GetTableResponse, 100)
+	// Messages to be read
+	incoming := make(chan *proto.GetTableRequest, 100)
+	// Total number of table rows read from the database
 	var rowsRead int64
 
-	sendFieldDescriptions := func(fieldDescriptions []pgproto3.FieldDescription) error {
+	// Send a metadata message over the stream
+	sendMetadata := func(fieldDescriptions []pgproto3.FieldDescription) {
 		fields := make([]*proto.Field, len(fieldDescriptions))
 		for i, fieldDescription := range fieldDescriptions {
 			fields[i] = &proto.Field{
@@ -122,7 +122,7 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 				TableOID: fieldDescription.TableOID,
 			}
 		}
-		return stream.Send(&proto.GetTableResponse{
+		outbound <- &proto.GetTableResponse{
 			Result: &proto.QueryResultStream{
 				Data: &proto.QueryResultStream_Metadata{
 					Metadata: &proto.QueryResultStream_MetadataResult{
@@ -131,27 +131,65 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 					},
 				},
 			},
-		})
+		}
 	}
 
-	return s.withConn(stream.Context(), init.ConnectionID, func(conn pg.Conn) error {
-		rows, err := conn.Query(
-			stream.Context(),
-			fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
-		)
+	// Read messages into the incoming channel
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				finished <- nil
+			} else if err != nil {
+				finished <- err
+			} else {
+				incoming <- in
+			}
+		}
+	}()
+
+	// Stream data to client
+	go func() {
+		in := <-incoming
+		init := in.GetInitialize()
+		if init == nil {
+			finished <- errors.New("first message to `GetTable` must be `initialize`")
+			return
+		}
+
+		err := s.withConn(stream.Context(), init.ConnectionID, func(conn pg.Conn) error {
+			rows, err := conn.Query(
+				stream.Context(),
+				fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
+			)
+			if err != nil {
+				return err
+			}
+
+			// Send metadata before reading any rows.
+			sendMetadata(rows.FieldDescriptions())
+
+			// TODO => Read table data
+
+			return nil
+		})
 		if err != nil {
+			finished <- err
+		}
+	}()
+
+	for {
+		select {
+		// Stream outbound messages
+		case message := <-outbound:
+			if err := stream.Send(message); err != nil {
+				return err
+			}
+		// No more data to stream or error encountered
+		case err := <-finished:
 			return err
 		}
-
-		// Send field descriptions before reading any rows.
-		if err = sendFieldDescriptions(rows.FieldDescriptions()); err != nil {
-			return err
-		}
-
-		// TODO => Read table data
-
-		return nil
-	})
+	}
 }
 
 // SaveConnection saves connection information to a user's configuration.

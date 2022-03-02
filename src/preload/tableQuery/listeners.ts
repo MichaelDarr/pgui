@@ -4,6 +4,7 @@ export const newListeners = (): Listeners => {
     const listeners: {
         [T in MessageType]: Set<Listener<T>>
     } = {
+        'end': new Set(),
         'metadata': new Set(),
         'row': new Set(),
     };

@@ -23,7 +23,8 @@
     "paths": {
         "*": ["src/@types"],
         "protos/*": ["./protos/*"],
-        "renderer/*": ["./renderer/*"]
+        "preload/*": ["./preload/*"],
+        "renderer/*": ["./renderer/*"],
     },
   },
   "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]

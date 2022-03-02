@@ -1,4 +1,4 @@
-import {
+import type {
     GetTableRequest,
     QueryResultStream,
 } from 'protos/postgres/postgres_pb';
@@ -9,6 +9,7 @@ import {
 type MessageMap = {
     'metadata': QueryResultStream.MetadataResult.AsObject,
     'row': QueryResultStream.RowResult.AsObject,
+    'end': void,
 }
 
 export type MessageType = keyof MessageMap;
@@ -21,7 +22,11 @@ export interface AddedListener {
     remove: () => void;
 }
 
-export type Listener<T extends MessageType> = (message: Message<T>) => void;
+export type Listener<T extends MessageType> = Message<T> extends infer U
+    ? U extends void
+        ? () => void
+        : (message: U) => void
+    : never;
 
 export interface Listeners {
     add: <T extends MessageType>(
@@ -42,15 +47,16 @@ export interface Listeners {
  ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
 export interface TableQueryError {
-    stage: string;
     error: Error;
+    stage: string;
 }
 
-interface TableQuery {
+export interface TableQuery {
+    close: () => void;
     errors: TableQueryError[];
-    onMessage: <T extends MessageType>(
+    on: <T extends MessageType>(
         type: T,
-        callback: (message: MessageMap[T]) => void,
+        callback: Listener<T>,
     ) => AddedListener;
     requestRows: (
         rowCount: number,

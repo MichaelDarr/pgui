@@ -75,6 +75,10 @@ export const newTableQuery: TableQueryCreator = (options) => {
         }
     });
 
+    stream.on('end', () => {
+        listeners.emit('end', undefined);
+    })
+
     /* Write to the stream.
      ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
@@ -126,8 +130,14 @@ export const newTableQuery: TableQueryCreator = (options) => {
      ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
     return {
+        close: () => {
+            stream.end();
+        },
         errors,
-        onMessage: listeners.add,
+        on: (type, listener) => {
+            const addedMessage = listeners.add(type, listener);
+            return addedMessage;
+        },
         requestRows: (rowCount, options = {}) => {
             const { callback, requestMetadata } = options;
             const request = genQueryRequest({
