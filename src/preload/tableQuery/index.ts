@@ -1,10 +1,11 @@
 import {
     GetTableRequest,
     GetTableResponse,
+    QueryRequestStream,
 } from 'protos/postgres/postgres_pb';
 
 import { newListeners } from './listeners';
-import { TableQueryError, TableQueryCreator } from './types';
+import { TableQuery, TableQueryError, TableQueryCreator } from './types';
 import { getPostgresClient } from '../postgres';
 
 export const newTableQuery: TableQueryCreator = ({
@@ -12,6 +13,12 @@ export const newTableQuery: TableQueryCreator = ({
     schema,
     table,
 }) => {
+
+    /* Function-scoped variables
+     ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
+
+    const client = getPostgresClient();
+    const stream = client.getTable();
 
     /* Errors
      ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
@@ -24,27 +31,6 @@ export const newTableQuery: TableQueryCreator = ({
         } else {
             errors.push({ stage, error: new Error(String(error)) })
         }
-    }
-
-    /* Stream reading & writing
-     ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
-
-    const client = getPostgresClient();
-    const stream = client.getTable();
-
-    const sendInitializationQuery = () => {
-        const errorStage = 'send initialization data';
-        const initialize = new GetTableRequest.InitializeQuery();
-        initialize.setConnectionid(connectionID);
-        initialize.setSchema(schema);
-        initialize.setTable(table);
-
-        const request = new GetTableRequest();
-        request.setInitialize(initialize);
-
-        stream.write(request, (err: unknown) => {
-            logError(errorStage, err);
-        })
     };
 
     /* Stream events
@@ -54,6 +40,7 @@ export const newTableQuery: TableQueryCreator = ({
 
     stream.on('data', message => {
         const errorStage = 'receive data';
+
         if (!(message instanceof GetTableResponse)) {
             logError(errorStage, `unknown message type (${typeof message})`);
             return;
@@ -82,13 +69,68 @@ export const newTableQuery: TableQueryCreator = ({
         logError(errorStage, `message result has no data`);
     });
 
-    /* Stream initialization
+    /* Stream reading & writing
      ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
-    sendInitializationQuery();
+    let streamIsInitialized = false;
+
+    const ensureStreamIsInitialized = (): Promise<void> => {
+        const errorStage = 'send initialization data';
+
+        if (streamIsInitialized) {
+            return Promise.resolve();
+        }
+
+        const initialize = new GetTableRequest.InitializeQuery();
+        initialize.setConnectionid(connectionID);
+        initialize.setSchema(schema);
+        initialize.setTable(table);
+
+        const request = new GetTableRequest();
+        request.setInitialize(initialize);
+
+        return new Promise<void>((res, rej) => {
+            stream.write(request, (err: unknown) => {
+                if (err) {
+                    logError(errorStage, err);
+                    rej(err);
+                } else {
+                    streamIsInitialized = true;
+                    res();
+                }
+            })
+        });
+    };
+
+    const requestRows: TableQuery['requestRows'] = (rowCount, options = {}) => {
+        const errorStage = 'request rows';
+
+        const { callback, requestMetadata } = options;
+
+        const queryRequest = new QueryRequestStream();
+        queryRequest.setMetadata(requestMetadata === true);
+        queryRequest.setRows(rowCount);
+
+        const request = new GetTableRequest();
+        request.setQuery(queryRequest);
+
+        ensureStreamIsInitialized().then(() => {
+            stream.write(request, (err: unknown) => {
+                if (callback) {
+                    callback(err);
+                }
+                if (err) {
+                    logError(errorStage, err);
+                }
+            });
+        }).catch(err => {
+            logError(errorStage, err);
+        });
+    };
 
     return {
         errors,
         onMessage: listeners.add,
+        requestRows,
     };
 };

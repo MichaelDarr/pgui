@@ -28,6 +28,13 @@ export const TableData: FC<SectionProps> = props => {
         query.onMessage('row', row => {
             console.log({ src: 'tabledata', row });
         });
+
+        query.requestRows(5, {
+            callback: err => {
+                console.log({ src: 'tabledata', err });
+            },
+            requestMetadata: false,
+        })
     }
 
     return (

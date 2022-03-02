@@ -51,12 +51,19 @@ interface TableQueryOptions {
     table: string;
 }
 
-interface TableQuery {
+export interface TableQuery {
     errors: TableQueryError[];
     onMessage: <T extends MessageType>(
         type: T,
         callback: (message: MessageMap[T]) => void,
     ) => AddedListener;
+    requestRows: (
+        rowCount: number,
+        options?: {
+            callback?: (err: unknown) => void,
+            requestMetadata?: boolean,
+        }
+    ) => void;
 }
 
 export type TableQueryCreator = (options: TableQueryOptions) => TableQuery;
