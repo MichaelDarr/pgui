@@ -1,7 +1,7 @@
 import { Cell, Table, withLeyden } from 'leyden';
 import { Editable, Leyden, withReact } from 'leyden-react';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { createEditor } from 'slate';
 
 
@@ -23,10 +23,15 @@ const generateTable = (columns: number): Table => {
     ));
 };
 
-const valueState = atom<null|[Table]>({
-    key: 'TableValue',
-    default: null,
-});
+const fieldsAreEqual = (a: Field.AsObject, b: Field.AsObject) => {
+    return a.name === b.name && a.tableoid === b.tableoid
+};
+
+const fieldListsAreEqual = (a: Field.AsObject[], b: Field.AsObject[]) => {
+    return (a.length === b.length
+        && a.every((field, i) => fieldsAreEqual(field, b[i]))
+    );
+}
 
 export const tableFieldsState = atom<null|Field.AsObject[]>({
     key: 'TableFields',
@@ -47,8 +52,8 @@ export const TableData: FC<SectionProps> = ({
         })
     ), []);
 
-    const setTableFields = useSetRecoilState(tableFieldsState);
-    const [value, setValue] = useRecoilState(valueState);
+    const [tableFields, setTableFields] = useRecoilState(tableFieldsState);
+    const [value, setValue] = useState<null|[Table]>(null);
     const connectionID = useRecoilValue(connectionIDState);
     const schema = useRecoilValue(schemaState);
     const table = useRecoilValue(tableState);
@@ -67,8 +72,9 @@ export const TableData: FC<SectionProps> = ({
 
         const listeners = [
             newQuery.on('metadata', metadata => {
-                if (value === null) {
+                if (tableFields === null || !fieldListsAreEqual(tableFields, metadata.fieldsList)) {
                     setTableFields(metadata.fieldsList);
+                    setValue(null);
                     setValue([generateTable(metadata.fieldsList.length)]);
                 }
             }),
