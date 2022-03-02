@@ -1,4 +1,5 @@
 import {
+    GetTableRequest,
     QueryResultStream,
 } from 'protos/postgres/postgres_pb';
 
@@ -45,13 +46,7 @@ export interface TableQueryError {
     error: Error;
 }
 
-interface TableQueryOptions {
-    connectionID: string;
-    schema: string;
-    table: string;
-}
-
-export interface TableQuery {
+interface TableQuery {
     errors: TableQueryError[];
     onMessage: <T extends MessageType>(
         type: T,
@@ -66,4 +61,4 @@ export interface TableQuery {
     ) => void;
 }
 
-export type TableQueryCreator = (options: TableQueryOptions) => TableQuery;
+export type TableQueryCreator = (options: GetTableRequest.InitializeQuery.AsObject) => TableQuery;

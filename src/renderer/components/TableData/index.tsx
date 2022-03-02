@@ -18,7 +18,7 @@ export const TableData: FC<SectionProps> = props => {
 
     const getData = () => {
         const query = postgres.newTableQuery({
-            connectionID,
+            connectionid: connectionID,
             schema,
             table: table.name,
         });
