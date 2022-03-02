@@ -33,6 +33,7 @@ const colorHex = (color: Color): string => (
 );
 
 export const palette = {
+    darkBlack: '#000000',
     // General text
     black: '#0D0A0B',
     // Subheadings

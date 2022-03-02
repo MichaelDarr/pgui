@@ -23,7 +23,10 @@ const gridTemplate = `
 " .         .              .         ${area.stripe}  .         .             .       " 0.375rem
 / 0.375rem  2.25rem        0.375rem  3px             0.375rem  1fr           0.25rem `;
 
-export const Connection: FC<SectionProps> = props => {
+export const Connection: FC<SectionProps> = ({
+    style,
+    ...props
+}) => {
     const [powerHovered, setPowerHovered] = useState(false);
 
     const [connection, setConnection] = useRecoilState(connectionState);
@@ -43,6 +46,10 @@ export const Connection: FC<SectionProps> = props => {
     return (
         <Grid
             {...props}
+            style={{
+                ...style,
+                backgroundColor: palette.white,
+            }}
             template={gridTemplate}
         >
             <GridItem

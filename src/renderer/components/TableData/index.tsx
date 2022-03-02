@@ -12,6 +12,7 @@ import { connectionIDState } from 'renderer/state/postgres/connection';
 import { schemaState } from 'renderer/state/postgres/schema';
 import { tableState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
+import { palette } from 'renderer/utils/color';
 
 import { headerRenderers } from './headers';
 
@@ -32,8 +33,11 @@ export const tableFieldsState = atom<null|Field.AsObject[]>({
     default: null,
 });
 
-export const TableData: FC<SectionProps> = props => {
-    const [query, setQuery] = useState<TableQuery|null>(null);
+export const TableData: FC<SectionProps> = ({
+    style,
+    ...props
+}) => {
+    const [, setQuery] = useState<TableQuery|null>(null);
 
     const editor = useMemo(() => (
         withLeyden({
@@ -97,8 +101,13 @@ export const TableData: FC<SectionProps> = props => {
     }
 
     return (
-        <section {...props}>
-            {query !== null && <button onClick={() => query.requestRows(5)}>GET MORE ROWS</button>}
+        <section
+            style={{
+                backgroundColor: palette.gray,
+                ...style,
+            }}
+            {...props}
+        >
             <Leyden
                 editor={editor}
                 value={value}
@@ -106,6 +115,10 @@ export const TableData: FC<SectionProps> = props => {
             >
                 <Editable
                     headerRenderers={headerRenderers}
+                    tableOptions={{
+                        cellGap: 1,
+                        stickyColumnHeaders: true,
+                    }}
                 />
             </Leyden>
         </section>

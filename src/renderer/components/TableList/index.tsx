@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { tablesState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
+import { palette } from 'renderer/utils/color';
 
 import { TableItem } from './TableItem';
 import { TableNoItems } from './TableNoItems';
@@ -37,6 +38,7 @@ export const TableList: FC<SectionProps> = ({
             style={{
                 ...style,
                 alignItems: 'stretch',
+                backgroundColor: palette.white,
                 display: 'flex',
                 flexDirection: 'column',
             }}
