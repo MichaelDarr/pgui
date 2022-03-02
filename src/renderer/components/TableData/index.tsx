@@ -74,7 +74,6 @@ export const TableData: FC<SectionProps> = ({
             newQuery.on('metadata', metadata => {
                 if (tableFields === null || !fieldListsAreEqual(tableFields, metadata.fieldsList)) {
                     setTableFields(metadata.fieldsList);
-                    setValue(null);
                     setValue([generateTable(metadata.fieldsList.length)]);
                 }
             }),
@@ -93,6 +92,7 @@ export const TableData: FC<SectionProps> = ({
         newQuery.requestRows(5);
 
         return () => {
+            setValue(null);
             listeners.forEach(listener => listener.remove());
             if (newQuery !== null) {
                 newQuery.close();
