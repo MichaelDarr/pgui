@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jackc/pgproto3/v2"
+
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	"github.com/MichaelDarr/pgui/backend/internal/pg"
 	proto "github.com/MichaelDarr/pgui/backend/protos/postgres"
@@ -13,29 +15,44 @@ import (
 // PostgresServer is an authentication GRPC server.
 type PostgresServer struct {
 	proto.UnimplementedPostgresServiceServer
-	conns map[string]pg.Conn
+	connPools map[string]pg.Pool
 }
 
 // newPostgresServer creates a PostgresServer.
 func newPostgresServer() *PostgresServer {
 	return &PostgresServer{
-		conns: make(map[string]pg.Conn),
+		connPools: make(map[string]pg.Pool),
 	}
 }
 
-// getConn gets a connection, creating it if not present.
-func (s *PostgresServer) getConn(connID string) (pg.Conn, error) {
-	for id, connection := range s.conns {
+// getPool gets a connection pool, creating it if not present.
+func (s *PostgresServer) getPool(connID string) (pg.Pool, error) {
+	for id, connPool := range s.connPools {
 		if id == connID {
-			return connection, nil
+			return connPool, nil
 		}
 	}
-	conn, err := config.Connect(context.Background(), connID)
+	pool, err := config.Connect(context.Background(), connID)
 	if err != nil {
-		return pg.Conn{}, err
+		return pg.Pool{}, err
 	}
-	s.conns[connID] = conn
-	return conn, nil
+	s.connPools[connID] = pool
+	return pool, nil
+}
+
+// withConn runs the passed function with a connection to the database specified by `connID`.
+// The connection is automatically released back to the pool after the passed function resolves.
+func (s *PostgresServer) withConn(ctx context.Context, connID string, connFunc func(conn pg.Conn) error) error {
+	pool, err := s.getPool(connID)
+	if err != nil {
+		return err
+	}
+	conn, err := pool.Acquire(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Release()
+	return connFunc(conn)
 }
 
 // DeleteConnection removes connection information from a user's configuration.
@@ -60,32 +77,28 @@ func (s *PostgresServer) GetConnections(context.Context, *proto.GetConnectionsRe
 
 // GetSchemas gets all schemas within a connection.
 func (s *PostgresServer) GetSchemas(ctx context.Context, req *proto.GetSchemasRequest) (*proto.GetSchemasResponse, error) {
-	conn, err := s.getConn(req.ConnectionID)
-	if err != nil {
-		return nil, err
-	}
-	schemas, err := conn.Schemas(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.GetSchemasResponse{
-		Schemas: schemas,
-	}, nil
+	response := &proto.GetSchemasResponse{}
+	err := s.withConn(ctx, req.ConnectionID, func(conn pg.Conn) error {
+		schemas, err := conn.Schemas(ctx)
+		if err == nil {
+			response.Schemas = schemas
+		}
+		return err
+	})
+	return response, err
 }
 
 // GetTables gets a slice of all tables within a schema.
 func (s *PostgresServer) GetSchemaTables(ctx context.Context, req *proto.GetSchemaTablesRequest) (*proto.GetSchemaTablesResponse, error) {
-	conn, err := s.getConn(req.ConnectionID)
-	if err != nil {
-		return nil, err
-	}
-	tables, err := conn.SchemaTables(ctx, req.Schema)
-	if err != nil {
-		return nil, err
-	}
-	return &proto.GetSchemaTablesResponse{
-		Tables: tables.Proto(),
-	}, nil
+	response := &proto.GetSchemaTablesResponse{}
+	err := s.withConn(ctx, req.ConnectionID, func(conn pg.Conn) error {
+		tables, err := conn.SchemaTables(ctx, req.Schema)
+		if err == nil {
+			response.Tables = tables.Proto()
+		}
+		return err
+	})
+	return response, err
 }
 
 // GetTable queries for table data.
@@ -98,22 +111,10 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 	if init == nil {
 		return errors.New("first message to `GetTable` must be `initialize`")
 	}
-	conn, err := s.getConn(init.ConnectionID)
-	if err != nil {
-		return err
-	}
-	rows, err := conn.Query(
-		stream.Context(),
-		fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
-	)
-	if err != nil {
-		return err
-	}
 
 	var rowsRead int64
 
-	sendFieldDescriptions := func() error {
-		fieldDescriptions := rows.FieldDescriptions()
+	sendFieldDescriptions := func(fieldDescriptions []pgproto3.FieldDescription) error {
 		fields := make([]*proto.Field, len(fieldDescriptions))
 		for i, fieldDescription := range fieldDescriptions {
 			fields[i] = &proto.Field{
@@ -133,15 +134,24 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 		})
 	}
 
-	// Send field descriptions upon query initialization (before reading any rows).
-	if err = sendFieldDescriptions(); err != nil {
-		return err
-	}
+	return s.withConn(stream.Context(), init.ConnectionID, func(conn pg.Conn) error {
+		rows, err := conn.Query(
+			stream.Context(),
+			fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
+		)
+		if err != nil {
+			return err
+		}
 
-	// TODO => Read table data
+		// Send field descriptions before reading any rows.
+		if err = sendFieldDescriptions(rows.FieldDescriptions()); err != nil {
+			return err
+		}
 
-	// Close stream
-	return nil
+		// TODO => Read table data
+
+		return nil
+	})
 }
 
 // SaveConnection saves connection information to a user's configuration.

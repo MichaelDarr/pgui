@@ -60,10 +60,10 @@ func GetConfig() (*Config, error) {
 }
 
 // Connect returns a pgx connection.
-func Connect(ctx context.Context, connectionID string) (pg.Conn, error) {
+func Connect(ctx context.Context, connectionID string) (pg.Pool, error) {
 	config, err := GetConfig()
 	if err != nil {
-		return pg.Conn{}, err
+		return pg.Pool{}, err
 	}
 	return config.Connect(ctx, connectionID)
 }
@@ -75,10 +75,10 @@ func (config *Config) AddConnection(connection Connection) error {
 }
 
 // Connect returns a pgx connection.
-func (config *Config) Connect(ctx context.Context, connectionID string) (pg.Conn, error) {
+func (config *Config) Connect(ctx context.Context, connectionID string) (pg.Pool, error) {
 	connection, err := config.GetConnection(connectionID)
 	if err != nil {
-		return pg.Conn{}, err
+		return pg.Pool{}, err
 	}
 	return connection.Connect(ctx)
 }

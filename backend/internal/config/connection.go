@@ -33,8 +33,8 @@ func GetConnection(connectionID string) (Connection, error) {
 	return cfg.GetConnection(connectionID)
 }
 
-// Connect returns a pgx connection.
-func (c Connection) Connect(ctx context.Context) (pg.Conn, error) {
+// Connect returns a pgx connection pool.
+func (c Connection) Connect(ctx context.Context) (pg.Pool, error) {
 	return c.Credentials.Connect(ctx)
 }
 

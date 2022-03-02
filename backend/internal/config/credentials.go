@@ -27,8 +27,8 @@ func NewCredentialsFromProto(credentials *proto.Credentials) Credentials {
 	}
 }
 
-// Connect returns a pgx connection.
-func (c Credentials) Connect(ctx context.Context) (pg.Conn, error) {
+// Connect returns a pgx connection pool.
+func (c Credentials) Connect(ctx context.Context) (pg.Pool, error) {
 	return pg.Connect(ctx, c.ConnectionString())
 }
 

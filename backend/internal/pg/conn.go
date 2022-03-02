@@ -4,21 +4,12 @@ import (
 	"context"
 	"regexp"
 
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 // Conn is a pgx connection.
 type Conn struct {
-	*pgx.Conn
-}
-
-// Connect creates a new pgx connection
-func Connect(ctx context.Context, connString string) (Conn, error) {
-	conn, err := pgx.Connect(ctx, connString)
-	if err != nil {
-		return Conn{}, err
-	}
-	return Conn{conn}, nil
+	*pgxpool.Conn
 }
 
 // Schemas gets all schemas.

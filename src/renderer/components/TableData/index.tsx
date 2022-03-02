@@ -29,12 +29,7 @@ export const TableData: FC<SectionProps> = props => {
             console.log({ src: 'tabledata', row });
         });
 
-        query.requestRows(5, {
-            callback: err => {
-                console.log({ src: 'tabledata', err });
-            },
-            requestMetadata: false,
-        })
+        query.requestRows(5);
     }
 
     return (
