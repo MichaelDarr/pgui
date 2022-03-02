@@ -6,7 +6,7 @@ import { PostgresServiceClient } from '../protos/postgres/postgres_grpc_pb';
 export type PostgresServiceNonUnaryName =
     | 'getTable';
 
-type PostgresServiceNonUnary = {
+export type PostgresServiceNonUnary = {
     'newTableQuery': TableQueryCreator;
 };
 

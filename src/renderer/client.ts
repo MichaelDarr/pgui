@@ -1,6 +1,7 @@
 import type { ClientUnaryCall, requestCallback } from '@grpc/grpc-js';
 
 import type {
+    PostgresServiceNonUnary,
     PostgresServiceUnaryName,
     PostgresServiceUnaryRequest,
     PostgresServiceUnaryResponse,
@@ -27,7 +28,7 @@ export type PostgresService = {
         argument: PostgresServiceUnaryRequest<T>,
         callback: requestCallback<PostgresServiceUnaryResponse<T>>
     ) => ClientUnaryCall;
-};
+} & PostgresServiceNonUnary;
 
 function createPostgresSourceMethod <T extends Serializable, K>(
     postgresKey: PostgresServiceUnaryName,
@@ -46,6 +47,7 @@ export const postgres: PostgresService = {
     getConnections: createPostgresSourceMethod('getConnections', GetConnectionsResponse),
     getSchemas: createPostgresSourceMethod('getSchemas', GetSchemasResponse),
     getSchemaTables: createPostgresSourceMethod('getSchemaTables', GetSchemaTablesResponse),
+    newTableQuery: window.electron.proto.postgres.newTableQuery,
     saveConnection: createPostgresSourceMethod('saveConnection', SaveConnectionResponse),
     testConnection: createPostgresSourceMethod('testConnection', TestConnectionResponse),
 }

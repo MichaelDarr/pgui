@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/MichaelDarr/pgui/backend/internal/config"
 	"github.com/MichaelDarr/pgui/backend/internal/pg"
@@ -101,7 +102,10 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 	if err != nil {
 		return err
 	}
-	rows, err := conn.Query(stream.Context(), `SELECT * FROM $1.$2`, init.Schema, init.Table)
+	rows, err := conn.Query(
+		stream.Context(),
+		fmt.Sprintf(`SELECT * FROM %s.%s`, init.Schema, init.Table),
+	)
 	if err != nil {
 		return err
 	}
