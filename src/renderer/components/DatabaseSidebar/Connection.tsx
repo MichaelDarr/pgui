@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useRecoilState,  } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { PowerIcon } from 'renderer/components/Icons/PowerIcon';
