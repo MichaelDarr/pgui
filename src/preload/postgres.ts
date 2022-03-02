@@ -12,10 +12,11 @@ import { PostgresServiceClient } from 'protos/postgres/postgres_grpc_pb';
 
 import { wrapClientUnaryCall } from './rpc';
 import { getCredentials, getServerAddress } from './server';
+import { newTableQuery } from './tableQuery';
 import { Deserializer, PostgresService, PostgresServiceUnaryName } from './types';
 
 let postgresClient: PostgresServiceClient|null = null;
-const getPostgresClient = (): PostgresServiceClient => {
+export const getPostgresClient = (): PostgresServiceClient => {
     if (postgresClient === null) {
         postgresClient = new PostgresServiceClient(
             getServerAddress(),
@@ -24,11 +25,6 @@ const getPostgresClient = (): PostgresServiceClient => {
     }
     return postgresClient;
 };
-
-export type Distribute<T> =
-    T extends T
-        ? T
-        : never;
 
 const createPostgresTargetMethod = <T extends PostgresServiceUnaryName>(
     postgresKey: T,
@@ -51,6 +47,7 @@ const createPostgresTargetMethod = <T extends PostgresServiceUnaryName>(
 }
 
 export const postgresTarget: PostgresService = {
+    newTableQuery,
     deleteConnection: createPostgresTargetMethod('deleteConnection', DeleteConnectionRequest),
     getConnections: createPostgresTargetMethod('getConnections', GetConnectionsRequest),
     getSchemas: createPostgresTargetMethod('getSchemas', GetSchemasRequest),

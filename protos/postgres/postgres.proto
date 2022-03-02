@@ -52,7 +52,7 @@ message QueryResultStream {
         int64 rowsRead = 2;
     }
     message RowResult {
-        repeated google.protobuf.Any value = 2;
+        repeated google.protobuf.Any values = 2;
     }
     oneof data {
         MetadataResult metadata = 1;
