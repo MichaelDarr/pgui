@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-import { getFontFamily } from '../../utils/font';
+import { getFontFamily } from 'renderer/common/font';
 
 export const primaryFontFamilyState = atom({
     key: 'stylePrimaryFontState',

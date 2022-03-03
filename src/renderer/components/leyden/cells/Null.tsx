@@ -1,6 +1,6 @@
 import { CellRenderer } from 'leyden-react';
 
-export const Empty: CellRenderer<'Empty'> = ({
+export const Null: CellRenderer<'Null'> = ({
     attributes,
     children,
 }) => {

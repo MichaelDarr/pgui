@@ -1,6 +1,6 @@
 import { CSSProperties, FC } from 'react';
 
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 import { HeadingProps } from 'renderer/types';
 
 export interface Heading extends HeadingProps {

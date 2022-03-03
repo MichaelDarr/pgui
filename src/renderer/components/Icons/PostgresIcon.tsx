@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
+import { palette } from 'renderer/common/color';
 import { SVGProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
 export const PostgresIcon: FC<SVGProps> = props => {
     return (

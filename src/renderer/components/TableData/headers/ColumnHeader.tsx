@@ -1,9 +1,9 @@
 import { HeaderRenderer } from 'leyden-react';
 import { useRecoilValue } from 'recoil';
 
+import { palette } from 'renderer/common/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { Paragraph } from 'renderer/components/Text';
-import { palette } from 'renderer/utils/color';
 import { tableFieldsState } from 'renderer/components/TableData';
 
 const area = {

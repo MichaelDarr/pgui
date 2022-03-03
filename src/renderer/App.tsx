@@ -1,11 +1,11 @@
 import { CSSProperties, FC, Suspense, useEffect } from 'react';
 import { RecoilRoot, useRecoilState } from 'recoil';
 
+import { palette } from './common/color';
+import { getFontFamily } from './common/font';
 import { Router } from './Router';
 import { primaryFontFamilyState } from './state/style/font';
 import { DivProps } from './types';
-import { palette } from './utils/color';
-import { getFontFamily } from './utils/font';
 
 export const App: FC = () => {
     return (

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { palette } from 'renderer/common/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { Select } from 'renderer/components/Input/Select';
 import { schemasState, schemaState } from 'renderer/state/postgres/schema';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
 const area = {
     selector: 'selector',

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { atom, selector, useRecoilState } from 'recoil';
 
 import { StringInput } from 'renderer/components/Input/StringInput';
-import { stringIsInteger } from 'renderer/utils/regex';
+import { stringIsInteger } from 'renderer/common/regex';
 
 const portInputState = atom<string>({
     key: 'CredentialsFormPortInput',

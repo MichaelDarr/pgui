@@ -8,7 +8,7 @@ import { CrossIcon } from 'renderer/components/Icons/CrossIcon';
 import { Paragraph } from 'renderer/components/Text';
 import { connectionIDState, connectionsState } from 'renderer/state/postgres/connection';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 
 export interface ConnectionItem extends SectionProps {
     connection: Connection.AsObject;

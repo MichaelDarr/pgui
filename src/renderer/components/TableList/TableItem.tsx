@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil';
 import { FC, MouseEventHandler, useState } from 'react';
 
 import { Table } from 'protos/postgres/postgres_pb';
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { TableIcon } from 'renderer/components/Icons/TableIcon';
 import { Paragraph } from 'renderer/components/Text';

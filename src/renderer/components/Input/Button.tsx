@@ -8,7 +8,7 @@ import {
     useState
 } from 'react';
 
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 
 export type Button = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 

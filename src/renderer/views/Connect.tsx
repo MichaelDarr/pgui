@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
+import { palette } from 'renderer/common/color';
 import { ConnectionSidebar } from 'renderer/components/ConnectionSidebar';
 import { CredentialsForm } from 'renderer/components/CredentialsForm';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
 const area = {
     connectionsSidebar: 'connections-sidebar',

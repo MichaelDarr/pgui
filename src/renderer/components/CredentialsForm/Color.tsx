@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { atom, useRecoilState } from 'recoil';
 
+import { randomColorHex } from 'renderer/common/color';
 import { SpanProps } from 'renderer/types';
-import { randomColorHex } from 'renderer/utils/color';
 
 export const colorState = atom<string>({
     key: 'CredentialsFormColor',

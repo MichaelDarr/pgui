@@ -1,6 +1,6 @@
 import { ChangeEventHandler, DetailedHTMLProps, FC, InputHTMLAttributes } from 'react';
 
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 
 export interface StringInput extends Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, 'type'|'onChange'> {
     value: string;

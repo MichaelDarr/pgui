@@ -1,5 +1,6 @@
 import { FC, Suspense } from 'react';
 
+import { palette } from 'renderer/common/color';
 import { Connection } from 'renderer/components/Connection';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { PostgresIcon } from 'renderer/components/Icons/PostgresIcon';
@@ -7,7 +8,6 @@ import { SchemaSelector } from 'renderer/components/SchemaSelector';
 import { TableData } from 'renderer/components/TableData';
 import { TableList } from 'renderer/components/TableList';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
 const area = {
     connection: 'connection',

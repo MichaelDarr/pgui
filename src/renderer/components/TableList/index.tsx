@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { tablesState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 
 import { TableItem } from './TableItem';
 import { TableNoItems } from './TableNoItems';

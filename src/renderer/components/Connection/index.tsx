@@ -1,12 +1,12 @@
 import { FC, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { palette } from 'renderer/common/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
 import { PowerIcon } from 'renderer/components/Icons/PowerIcon';
 import { Paragraph } from 'renderer/components/Text';
 import { connectionState } from 'renderer/state/postgres/connection';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
 const area = {
     info: 'info',

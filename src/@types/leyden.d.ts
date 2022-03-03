@@ -4,8 +4,8 @@ interface BaseText<T extends string = string> {
     text: T;
 }
 
-// NullCell displays a value that is null.
-interface NullCell {
+// EmptyCell contains no data.
+interface EmptyCell {
     children: [Text<'Empty'>];
     isVoid: true;
 }
@@ -38,7 +38,8 @@ declare module 'leyden' {
             Float: TextCell;
             Int32: TextCell;
             Int64: TextCell;
-            Empty: NullCell;
+            Null: EmptyCell;
+            Placeholder: EmptyCell;
             String: TextCell;
             Timestamp: ValueCell<Date>;
             UInt64: TextCell;

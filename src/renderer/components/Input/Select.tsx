@@ -1,6 +1,6 @@
 import { DetailedHTMLProps, FC, SelectHTMLAttributes} from 'react';
 
-import { palette } from 'renderer/utils/color';
+import { palette } from 'renderer/common/color';
 
 export type Select = DetailedHTMLProps<SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>
 

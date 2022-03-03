@@ -1,4 +1,4 @@
-import { Cell, Table, withLeyden } from 'leyden';
+import { Table, withLeyden } from 'leyden';
 import { Editable, Leyden, withReact } from 'leyden-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
@@ -7,22 +7,16 @@ import { createEditor } from 'slate';
 import { Field } from 'protos/postgres/postgres_pb';
 import type { TableQuery } from 'preload/tableQuery/types';
 import { postgres } from 'renderer/client';
+import { palette } from 'renderer/common/color';
+import { cellRenderers } from 'renderer/components/leyden/cells';
+import { textRenderers } from 'renderer/components/leyden/text';
+import { Serialize } from 'renderer/serialization';
 import { connectionIDState } from 'renderer/state/postgres/connection';
 import { schemaState } from 'renderer/state/postgres/schema';
 import { tableState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
-import { palette } from 'renderer/utils/color';
 
-import { cellRenderers } from './cells';
 import { headerRenderers } from './headers';
-import { textRenderers } from './text';
-
-const generateTable = (columns: number): Table => {
-    return Table.new(columns, Array.from(
-        { length: columns },
-        () => Cell.newDefault(Math.floor(Math.random()*100))
-    ));
-};
 
 const fieldsAreEqual = (a: Field.AsObject, b: Field.AsObject) => {
     return a.name === b.name && a.tableoid === b.tableoid
@@ -75,7 +69,7 @@ export const TableData: FC<SectionProps> = ({
             newQuery.on('metadata', metadata => {
                 if (tableFields === null || !fieldListsAreEqual(tableFields, metadata.fieldsList)) {
                     setTableFields(metadata.fieldsList);
-                    setValue([generateTable(metadata.fieldsList.length)]);
+                    setValue([Serialize.emptyTable(metadata.fieldsList.length)]);
                 }
             }),
             newQuery.on('row', row => {
