@@ -4,7 +4,6 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 import { createEditor } from 'slate';
 
-
 import { Field } from 'protos/postgres/postgres_pb';
 import type { TableQuery } from 'preload/tableQuery/types';
 import { postgres } from 'renderer/client';
@@ -14,6 +13,7 @@ import { tableState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
 import { palette } from 'renderer/utils/color';
 
+import { textRenderers } from './text';
 import { headerRenderers } from './headers';
 
 const generateTable = (columns: number): Table => {
@@ -125,6 +125,7 @@ export const TableData: FC<SectionProps> = ({
                         cellGap: 1,
                         stickyColumnHeaders: true,
                     }}
+                    textRenderers={textRenderers}
                 />
             </Leyden>
         </section>

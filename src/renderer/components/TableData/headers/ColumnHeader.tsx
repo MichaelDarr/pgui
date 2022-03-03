@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { HeaderRenderer } from 'leyden-react';
 import { useRecoilValue } from 'recoil';
 
