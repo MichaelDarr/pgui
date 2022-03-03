@@ -9,6 +9,8 @@ module.exports = {
     rules: {
         // A temporary hack related to IDE not resolving correct package.json
         'import/no-extraneous-dependencies': 'off',
+        // Leyden does not play nice with this one
+        'react/prop-types': 'off',
         // Since React 17 and typescript 4.1 you can safely disable the rule
         'react/react-in-jsx-scope': 'off',
         // Eslint inheritance is buggy for this one, so it's set here as well as in the global file.
