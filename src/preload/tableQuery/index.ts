@@ -106,7 +106,7 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                 } else {
                                     return {
                                         type: 'bytes',
-                                        value: unpacked.getValue_asB64(),
+                                        value: unpacked.toString(),
                                     };
                                 }
                             }
