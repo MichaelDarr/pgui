@@ -13,8 +13,9 @@ import { tableState } from 'renderer/state/postgres/table';
 import { SectionProps } from 'renderer/types';
 import { palette } from 'renderer/utils/color';
 
-import { textRenderers } from './text';
+import { cellRenderers } from './cells';
 import { headerRenderers } from './headers';
+import { textRenderers } from './text';
 
 const generateTable = (columns: number): Table => {
     return Table.new(columns, Array.from(
@@ -120,6 +121,7 @@ export const TableData: FC<SectionProps> = ({
                 onChange={setValue}
             >
                 <Editable
+                    cellRenderers={cellRenderers}
                     headerRenderers={headerRenderers}
                     tableOptions={{
                         cellGap: 1,
