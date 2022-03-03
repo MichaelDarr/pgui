@@ -1,4 +1,3 @@
-import { Empty } from 'google-protobuf/google/protobuf/empty_pb';
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 import {
     BoolValue,
@@ -20,8 +19,12 @@ import {
 
 import { newListeners } from './listeners';
 import { genInitializeRequest, genQueryRequest } from './requestGenerators';
-import { TableQueryError, TableQueryCreator } from './types';
+import { TableQueryError, TableQueryCreator, Value } from './types';
 import { getPostgresClient } from '../postgres';
+
+const notNull = <T>(val: T|null): val is T => (
+    val !== null
+);
 
 export const newTableQuery: TableQueryCreator = (options) => {
 
@@ -76,8 +79,7 @@ export const newTableQuery: TableQueryCreator = (options) => {
             case QueryResultStream.DataCase.ROW: {
                 const row = result.getRow();
                 if (row) {
-                    const values = row.getValuesList();
-                    values.forEach(value => {
+                    const values = row.getValuesList().map<Value|null>(value => {
                         /* eslint-disable @typescript-eslint/unbound-method */
                         switch(value.getTypeName()) {
                             case 'google.protobuf.BoolValue': {
@@ -86,9 +88,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED BOOL');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'bool',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
                             }
                             case 'google.protobuf.BytesValue': {
                                 const unpacked = value.unpack(
@@ -96,9 +102,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED BYTES');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'bytes',
+                                        value: unpacked.getValue_asB64(),
+                                    };
                                 }
-                                break;
                             }
                             case 'google.protobuf.DoubleValue': {
                                 const unpacked = value.unpack(
@@ -106,9 +116,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED DOUBLE');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'double',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
                             }
                             case 'google.protobuf.FloatValue': {
                                 const unpacked = value.unpack(
@@ -116,19 +130,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED FLOAT');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'float',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
-                            }
-                            case 'google.protobuf.Int64Value': {
-                                const unpacked = value.unpack(
-                                    Int64Value.deserializeBinary,
-                                    value.getTypeName()
-                                );
-                                if (unpacked === null) {
-                                    console.log('MISSED INT64');
-                                }
-                                break;
                             }
                             case 'google.protobuf.Int32Value': {
                                 const unpacked = value.unpack(
@@ -136,19 +144,33 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED INT32');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'int32',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
                             }
-                            case 'google.protobuf.Empty': {
+                            case 'google.protobuf.Int64Value': {
                                 const unpacked = value.unpack(
-                                    Empty.deserializeBinary,
+                                    Int64Value.deserializeBinary,
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED EMPTY');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'int64',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
+                            }
+                            case 'google.protobuf.Empty': {
+                                return {
+                                    type: 'empty',
+                                    value: undefined,
+                                };
                             }
                             case 'google.protobuf.StringValue': {
                                 const unpacked = value.unpack(
@@ -156,9 +178,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED STRING');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'string',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
                             }
                             case 'google.protobuf.Timestamp': {
                                 const unpacked = value.unpack(
@@ -166,19 +192,13 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED TIMESTAMP');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'timestamp',
+                                        value: unpacked.toDate(),
+                                    };
                                 }
-                                break;
-                            }
-                            case 'google.protobuf.UInt64Value': {
-                                const unpacked = value.unpack(
-                                    UInt64Value.deserializeBinary,
-                                    value.getTypeName()
-                                );
-                                if (unpacked === null) {
-                                    console.log('MISSED UINT64');
-                                }
-                                break;
                             }
                             case 'google.protobuf.UInt32Value': {
                                 const unpacked = value.unpack(
@@ -186,16 +206,39 @@ export const newTableQuery: TableQueryCreator = (options) => {
                                     value.getTypeName()
                                 );
                                 if (unpacked === null) {
-                                    console.log('MISSED UINT32');
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'uint32',
+                                        value: unpacked.getValue(),
+                                    };
                                 }
-                                break;
+                            }
+                            case 'google.protobuf.UInt64Value': {
+                                const unpacked = value.unpack(
+                                    UInt64Value.deserializeBinary,
+                                    value.getTypeName()
+                                );
+                                if (unpacked === null) {
+                                    return null;
+                                } else {
+                                    return {
+                                        type: 'uint64',
+                                        value: unpacked.getValue(),
+                                    };
+                                }
                             }
                             default:
-                                console.log({ missed: value.getTypeUrl() });
+                                return null;
                         }
                         /* eslint-enable @typescript-eslint/unbound-method */
-                    })
-                    listeners.emit('row', row.toObject());
+                    });
+                    const validValues = values.filter(notNull);
+                    if (values.length !== validValues.length) {
+                        logError(errorStage, `failed to unpack ${values.length-validValues.length} values`);
+                    } else {
+                        listeners.emit('row', validValues);
+                    }
                 } else {
                     logError(errorStage, `row message data missing`);
                 }

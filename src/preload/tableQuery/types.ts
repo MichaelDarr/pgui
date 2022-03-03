@@ -3,12 +3,35 @@ import type {
     QueryResultStream,
 } from 'protos/postgres/postgres_pb';
 
+/* Database Values
+ ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
+
+type ValueMap = {
+    ['bool']: boolean;
+    ['bytes']: string;
+    ['double']: number;
+    ['float']: number;
+    ['int32']: number;
+    ['int64']: number;
+    ['empty']: void;
+    ['string']: string;
+    ['timestamp']: Date;
+    ['uint64']: number;
+    ['uint32']: number;
+}
+
+export type Value = keyof ValueMap extends infer U
+    ? U extends keyof ValueMap
+        ? { type: U, value: ValueMap[U] }
+        : never
+    : never;
+
 /* Stream messages
  ┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*/
 
 type MessageMap = {
     'metadata': QueryResultStream.MetadataResult.AsObject,
-    'row': QueryResultStream.RowResult.AsObject,
+    'row': Value[],
     'end': void,
 }
 
