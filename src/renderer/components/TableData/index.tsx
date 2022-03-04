@@ -10,7 +10,8 @@ import { postgres } from 'renderer/client';
 import { palette } from 'renderer/common/color';
 import { cellRenderers } from 'renderer/components/leyden/cells';
 import { textRenderers } from 'renderer/components/leyden/text';
-import { Serialize } from 'renderer/serialization';
+import { withPlaceholders } from 'renderer/editor/withPlaceholders';
+import { Serialize } from 'renderer/serialize';
 import { connectionIDState } from 'renderer/state/postgres/connection';
 import { schemaState } from 'renderer/state/postgres/schema';
 import { tableState } from 'renderer/state/postgres/table';
@@ -40,11 +41,13 @@ export const TableData: FC<SectionProps> = ({
     const [, setQuery] = useState<TableQuery|null>(null);
 
     const editor = useMemo(() => (
-        withLeyden({
-            editor: withReact(
-                createEditor()
-            ),
-        })
+        withPlaceholders(
+            withLeyden({
+                editor: withReact(
+                    createEditor()
+                ),
+            })
+        )
     ), []);
 
     const [tableFields, setTableFields] = useRecoilState(tableFieldsState);

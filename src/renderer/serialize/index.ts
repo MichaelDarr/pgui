@@ -19,9 +19,9 @@ export const Serialize: Serialize = {
      */
 
     emptyTable(columns) {
-            return Table.new(
-                columns,
-                Array.from({ length: columns }, Serialize.Cell.Placeholder),
-            );
+        return Table.new(
+            columns,
+            Array.from({ length: columns }, Serialize.Cell.Placeholder),
+        );
     },
 };
