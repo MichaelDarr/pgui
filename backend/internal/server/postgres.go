@@ -220,6 +220,7 @@ func (s *PostgresServer) GetTable(stream proto.PostgresService_GetTableServer) e
 					if err != nil {
 						return err
 					}
+					rowsRead++
 					sendRow(pbVals)
 				}
 			}

@@ -1,4 +1,4 @@
-import { Table, withLeyden } from 'leyden';
+import { Table, Transforms, withLeyden } from 'leyden';
 import { Editable, Leyden, withReact } from 'leyden-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
@@ -76,7 +76,8 @@ export const TableData: FC<SectionProps> = ({
                 }
             }),
             newQuery.on('row', row => {
-                console.log({ src: 'tabledata', row });
+                const cells = row.map(Serialize.Cell.fromValue);
+                Transforms.insertRows(editor, cells);
             }),
             newQuery.on('end', () => {
                 if (newQuery !== null) {
@@ -87,7 +88,7 @@ export const TableData: FC<SectionProps> = ({
         ];
 
         // request some initial rows
-        newQuery.requestRows(5);
+        newQuery.requestRows(500);
 
         return () => {
             setValue(null);

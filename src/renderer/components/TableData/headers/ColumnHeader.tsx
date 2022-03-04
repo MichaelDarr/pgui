@@ -1,5 +1,6 @@
 import { HeaderRenderer } from 'leyden-react';
 import { useRecoilValue } from 'recoil';
+import { style } from 'typestyle';
 
 import { palette } from 'renderer/common/color';
 import { Grid, GridItem } from 'renderer/components/Grid';
@@ -11,10 +12,29 @@ const area = {
 };
 
 const gridTemplate = `
-" .         .             .        " 0.25rem
-" .         ${area.name}  .        " auto
-" .         .             .        " 0.25rem
-/ 0.375rem  auto          0.375rem `;
+" .         .             .    .        " 1fr
+" .         ${area.name}  .    .        " auto
+" .         .             .    .        " 1fr
+/ 0.375rem  auto          1fr  0.375rem `;
+
+const columnHeaderClass = style({
+    backgroundColor: palette.white,
+    minWidth: '3rem',
+    $nest: {
+        '::before': {
+            content: "''",
+            position: 'absolute',
+            top: 0,
+            right: -1,
+            bottom: -1,
+            left: -1,
+            boxSizing: 'border-box',
+            borderLeft: `1px solid ${palette.gray}`,
+            borderRight: `1px solid ${palette.gray}`,
+            borderBottom: `2px solid ${palette.gray}`,
+        },
+    },
+});
 
 export const ColumnHeader: HeaderRenderer = ({ position }) => {
     const fields = useRecoilValue(tableFieldsState);
@@ -25,9 +45,8 @@ export const ColumnHeader: HeaderRenderer = ({ position }) => {
 
     return (
         <Grid
-            style={{
-                backgroundColor: palette.white,
-            }}
+            className={columnHeaderClass}
+            style={{ height: '1.375rem' }}
             template={gridTemplate}
         >
             <GridItem area={area.name}>

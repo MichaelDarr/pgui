@@ -5,8 +5,8 @@ export const Placeholder: CellRenderer<'Placeholder'> = ({
     children,
 }) => {
     return (
-        <section {...attributes}>
+        <span {...attributes}>
             {children}
-        </section>
+        </span>
     );
 };

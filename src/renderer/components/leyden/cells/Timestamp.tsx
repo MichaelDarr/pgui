@@ -1,20 +1,18 @@
 import { CellRenderer } from 'leyden-react';
 
-import { Paragraph } from 'renderer/components/Text';
+import { BasicCell } from './helpers/BasicCell';
 
 export const Timestamp: CellRenderer<'Timestamp'> = ({
     attributes,
     children,
     element,
 }) => {
-    const copyText = element.value.toString();
-
     return (
-        <section {...attributes}>
-            <Paragraph>
-                {copyText}
-            </Paragraph>
+        <BasicCell
+            attributes={attributes}
+            value={element.value.toLocaleString()}
+        >
             {children}
-        </section>
+        </BasicCell>
     );
 };

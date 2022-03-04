@@ -13,11 +13,11 @@ type ValueMap = {
     ['float']: number;
     ['int32']: number;
     ['int64']: number;
-    ['empty']: void;
+    ['null']: void;
     ['string']: string;
     ['timestamp']: Date;
-    ['uint64']: number;
     ['uint32']: number;
+    ['uint64']: number;
 }
 
 export type Value = keyof ValueMap extends infer U

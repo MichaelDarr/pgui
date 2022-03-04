@@ -2,8 +2,10 @@ package pg
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -47,7 +49,10 @@ func NewAnypb(value interface{}) (*anypb.Any, error) {
 		message = wrapperspb.Bytes(t[:])
 	case time.Time:
 		message = timestamppb.New(t)
+	case uuid.UUID:
+		message = wrapperspb.String(t.String())
 	default:
+		fmt.Printf("failed to convert value to any: %v\n%v\n", t, reflect.TypeOf(t))
 		return nil, fmt.Errorf(`failed to convert value to any: %v`, t)
 	}
 	return anypb.New(message)

@@ -25,7 +25,7 @@ export const withPlaceholders = <T extends PguiEditor>(editor: T): T => {
             if (Cell.isCell(node.children[0], { type: 'Placeholder' })
              || Cell.isCell(node.children[node.children.length-1], { type: 'Placeholder' })) {
                 Editor.withoutNormalizing(editor, () => {
-                    for (const [, coords] of Table.cells(node, { type: 'Placeholder' })) {
+                    for (const [, coords] of Table.cells(node, { type: 'Placeholder', reverse: true })) {
                         Transforms.removeNodes(editor, {
                             at: LeydenEditor.cellPath(editor, { at: coords }),
                         });

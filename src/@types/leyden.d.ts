@@ -19,12 +19,6 @@ interface ValueCell<T> {
     };
 }
 
-// TextCell displays a value editable as plain text, like a string or number.
-interface TextCell {
-    children: [Text<'BaseText'>];
-    isVoid: false;
-}
-
 interface Empty extends BaseText<''> {
     validator: 'empty';
 }
@@ -33,17 +27,17 @@ declare module 'leyden' {
     interface CustomTypes {
         Cells: {
             Bool: ValueCell<boolean>;
-            Bytes: TextCell;
-            Double: TextCell;
-            Float: TextCell;
-            Int32: TextCell;
-            Int64: TextCell;
+            Bytes: ValueCell<string>;
+            Double: ValueCell<number>;
+            Float: ValueCell<number>;
+            Int32: ValueCell<number>;
+            Int64: ValueCell<number>;
             Null: EmptyCell;
             Placeholder: EmptyCell;
-            String: TextCell;
+            String: ValueCell<string>;
             Timestamp: ValueCell<Date>;
-            UInt64: TextCell;
-            UInt32: TextCell;
+            UInt64: ValueCell<number>;
+            UInt32: ValueCell<number>;
         };
         Text: {
             BaseText: BaseText,

@@ -168,7 +168,7 @@ export const newTableQuery: TableQueryCreator = (options) => {
                             }
                             case 'google.protobuf.Empty': {
                                 return {
-                                    type: 'empty',
+                                    type: 'null',
                                     value: undefined,
                                 };
                             }

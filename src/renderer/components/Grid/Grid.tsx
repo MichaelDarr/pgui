@@ -1,12 +1,20 @@
+import { CellType } from 'leyden';
+import { CellRenderer } from 'leyden-react';
 import { CSSProperties, FC } from 'react';
 
 import type { GridManual, GridShorthand } from './types';
 import { gridIsShorthand } from './typeGuards';
 
-export const Grid: FC<GridManual|GridShorthand> = (props) => {
+export type Grid = (GridManual|GridShorthand)&{
+    // Passed if rendered as the root of a Leyden cell.
+    attributes?: Parameters<CellRenderer<CellType>>[0]['attributes'];
+}
+
+export const Grid: FC<Grid> = props => {
     const {
         alignContent,
         alignItems,
+        attributes,
         children,
         display = 'grid',
         fillParent,
@@ -75,7 +83,11 @@ export const Grid: FC<GridManual|GridShorthand> = (props) => {
     }
 
     return (
-        <section {...rest} style={gridStyle}>
+        <section
+            {...rest}
+            style={gridStyle}
+            {...attributes}
+        >
             {children}
         </section>
     )

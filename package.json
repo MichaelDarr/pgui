@@ -149,7 +149,8 @@
     "recoil": "^0.6.1",
     "regenerator-runtime": "^0.13.9",
     "slate": "^0.73.1",
-    "slate-react": "^0.73.0"
+    "slate-react": "^0.73.0",
+    "typestyle": "^2.3.0"
   },
   "devEngines": {
     "node": ">=14.x",
