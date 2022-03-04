@@ -76,8 +76,10 @@ export const TableData: FC<SectionProps> = ({
                 }
             }),
             newQuery.on('row', row => {
-                const cells = row.map(Serialize.Cell.fromValue);
-                Transforms.insertRows(editor, cells);
+                Transforms.insertRows(
+                    editor,
+                    row.map(Serialize.Cell.fromValue)
+                );
             }),
             newQuery.on('end', () => {
                 if (newQuery !== null) {

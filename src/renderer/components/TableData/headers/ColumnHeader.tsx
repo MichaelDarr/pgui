@@ -20,6 +20,7 @@ const gridTemplate = `
 const columnHeaderClass = style({
     backgroundColor: palette.white,
     minWidth: '3rem',
+    position: 'relative',
     $nest: {
         '::before': {
             content: "''",

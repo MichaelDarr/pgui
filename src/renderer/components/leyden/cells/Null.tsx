@@ -11,7 +11,7 @@ export const Null: CellRenderer<'Null'> = ({
         <BasicCell
             attributes={attributes}
             style={{
-                color: palette.darkGray,
+                color: palette.stoneGray,
             }}
             value={'NULL'}
         >
