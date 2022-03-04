@@ -141,8 +141,8 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.4.5",
     "google-protobuf": "^3.19.4",
-    "leyden": "^0.31.0",
-    "leyden-react": "^0.31.0",
+    "leyden": "^0.32.0",
+    "leyden-react": "^0.32.0",
     "node-ipc": "^10.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
